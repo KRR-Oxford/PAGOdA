@@ -1,1 +1,5 @@
 /bin/
+/target/
+/backup/
+/tmp/
+/testcase/

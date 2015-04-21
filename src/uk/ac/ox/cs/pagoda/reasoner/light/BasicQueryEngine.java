@@ -47,8 +47,8 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 				getDataStore().clearRulesAndMakeFactsExplicit();
 			} catch (JRDFStoreException e) {
 				e.printStackTrace();
-				gap.clear(); 
 			} finally {
+				gap.clear(); 
 			}
 		}
 		else 
@@ -149,9 +149,14 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 					if (instanceTuples != null) instanceTuples.dispose(); 
 				}
 			}
+		} catch (JRDFStoreException e) {
+			e.printStackTrace();
+		} finally {			
+			if (predicateTuples != null) predicateTuples.dispose();
+			predicateTuples = null; 
+		}
 			
-			predicateTuples.dispose();
-			
+		try {
 			predicateTuples = getDataStore().compileQuery("SELECT DISTINCT ?Y WHERE { ?X ?Y ?Z }", prefixes, parameters);
 			for (long multi = predicateTuples.open(); multi != 0; multi = predicateTuples.getNext()) {
 				predicate = RDFoxTripleManager.getQuotedTerm(predicateTuples.getResource(0)); 
@@ -172,6 +177,7 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 			e.printStackTrace();
 		} finally {
 			if (predicateTuples != null) predicateTuples.dispose();
+			predicateTuples = null;
 		}
 		
 		Utility.redirectCurrentOut(filename);
@@ -184,13 +190,13 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 	
 	public TupleIterator internal_evaluateAgainstIDBs(String queryText) throws JRDFStoreException {
 		TupleIterator iter = store.compileQuery(queryText, prefixes, parameters, TripleStatus.TUPLE_STATUS_IDB.union(TripleStatus.TUPLE_STATUS_EDB), TripleStatus.TUPLE_STATUS_IDB);
-		iter.open();
+//		iter.open();
 		return iter; 
 	}
 
 	public TupleIterator internal_evaluate(String queryText) throws JRDFStoreException {
 		TupleIterator iter = store.compileQuery(queryText, prefixes, parameters);
-		iter.open(); 
+//		iter.open(); 
 		return iter; 
 	}
 	
@@ -201,7 +207,7 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 	public TupleIterator internal_evaluateNotExpanded(String queryText) throws JRDFStoreException {
 		parameters.m_expandEquality = false; 
 		TupleIterator iter = store.compileQuery(queryText, prefixes, parameters); 
-		iter.open(); 
+//		iter.open(); 
 		parameters.m_expandEquality = true; 
 		return iter;
 	}
@@ -346,19 +352,22 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 			for (int[] t: collection) 
 				store.addTriplesByResourceIDs(t, ut);
 			
-			iter = internal_evaluateAgainstIDBs("select ?x ?y ?z where { ?x ?y ?z . }");
-			for (long multi = iter.open(); multi != 0; multi = iter.getNext()) {
-				int[] triple = new int[3];
-				for (int i = 0; i < 3; ++i)
-					triple[i] = iter.getResourceID(i); 
-				store.addTriplesByResourceIDs(triple, ut);
+			try {
+				iter = internal_evaluateAgainstIDBs("select ?x ?y ?z where { ?x ?y ?z . }");
+				for (long multi = iter.open(); multi != 0; multi = iter.getNext()) {
+					int[] triple = new int[3];
+					for (int i = 0; i < 3; ++i)
+						triple[i] = iter.getResourceID(i); 
+					store.addTriplesByResourceIDs(triple, ut);
+				}
+			} finally {
+				if (iter != null) iter.dispose();
+				iter = null; 
 			}
 			store.applyReasoning(true);
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
-		} finally {
-			if (iter != null) iter.dispose();
-		}
+		} 
 		Utility.logInfo("Time for deletion: " + timer.duration()); 
 	}
 

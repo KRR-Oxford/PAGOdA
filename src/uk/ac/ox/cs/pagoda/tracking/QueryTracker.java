@@ -35,6 +35,7 @@ import uk.ac.ox.cs.JRDFox.model.Datatype;
 import uk.ac.ox.cs.JRDFox.store.DataStore;
 import uk.ac.ox.cs.JRDFox.store.Resource;
 import uk.ac.ox.cs.JRDFox.store.TupleIterator;
+import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
 
 public class QueryTracker {
 
@@ -80,7 +81,7 @@ public class QueryTracker {
 			Timer t1 = new Timer();
 			oldTripleCount = store.getTriplesCount();
 			// store.addRules(new String[] {m_encoder.getTrackingProgram()});
-			store.importRules(m_encoder.getTrackingProgram());
+			store.importRules(m_encoder.getTrackingProgram(), UpdateType.ScheduleForAddition);
 			store.applyReasoning(incrementally);
 			tripleCount = store.getTriplesCount();
 
@@ -93,8 +94,7 @@ public class QueryTracker {
 					+ t1.duration() + " seconds.");
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
-		}
-
+		} 
 		extractAxioms(trackingStore);
 
 		trackingStore.clearRulesAndIDBFacts(m_encoder.getAddedData()); 
@@ -145,8 +145,7 @@ public class QueryTracker {
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
 		} finally {
-			if (answers != null)
-				answers.dispose();
+			if (answers != null) answers.dispose();
 		}
 
 		Utility.logTrace("Extracted TBox axioms: ");
@@ -190,7 +189,6 @@ public class QueryTracker {
 					}
 				}
 			} catch (JRDFStoreException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
 				if (trackingAnswers != null) trackingAnswers.dispose(); 
@@ -329,9 +327,7 @@ public class QueryTracker {
 				continue;
 			TupleIterator answers = null, lowerAnswers = null;
 			Set<String> lower = new HashSet<String>();
-			OWLClass cls = factory
-					.getOWLClass(IRI.create(clsIRI.startsWith("<") ? OWLHelper
-							.removeAngles(clsIRI) : clsIRI));
+			OWLClass cls = factory.getOWLClass(IRI.create(clsIRI.startsWith("<") ? OWLHelper.removeAngles(clsIRI) : clsIRI));
 			try {
 				answers = trackingStore.internal_evaluateAgainstIDBs(getSPARQLQuery4Unary(trackingIRI));
 				answers.open();
@@ -359,10 +355,8 @@ public class QueryTracker {
 			} catch (JRDFStoreException e) {
 				e.printStackTrace();
 			} finally {
-				if (answers != null)
-					answers.dispose();
-				if (lowerAnswers != null)
-					lowerAnswers.dispose();
+				if (answers != null) answers.dispose();
+				if (lowerAnswers != null) lowerAnswers.dispose();
 				lower.clear();
 			}
 			Utility.logDebug("class: " + clsIRI + " " + count);
@@ -370,53 +364,37 @@ public class QueryTracker {
 		return aboxAxiomCounter;
 	}
 
-	private void getDerivedPredicates(BasicQueryEngine trackingStore,
-			Set<String> unaryPredicates, Set<String> binaryPredicates) {
-
+	private void getDerivedPredicates(BasicQueryEngine trackingStore, Set<String> unaryPredicates, Set<String> binaryPredicates) {
 		TupleIterator derivedTuples = null;
 		String selectedPredicate = OWLHelper.addAngles(m_encoder.getSelectedPredicate());
 		try {
-			derivedTuples = trackingStore
-					.internal_evaluateAgainstIDBs("select distinct ?z where { ?x <"
-							+ Namespace.RDF_TYPE + "> ?z . }");
+			derivedTuples = trackingStore.internal_evaluateAgainstIDBs("select distinct ?z where { ?x <" + Namespace.RDF_TYPE + "> ?z . }");
 			for (long multi = derivedTuples.open(); multi != 0; multi = derivedTuples.getNext()) {
 				String p = RDFoxTripleManager.getQuotedTerm(derivedTuples.getResource(0));
-				if (p.equals(selectedPredicate))
-					;
-				else if (m_encoder.isAuxPredicate(p))
-					;
-				else
-					unaryPredicates.add(p);
+				if (p.equals(selectedPredicate)) ;
+				else if (m_encoder.isAuxPredicate(p)) ;
+				else unaryPredicates.add(p);
 			}
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
 		} finally {
-			if (derivedTuples != null)
-				derivedTuples.dispose();
+			if (derivedTuples != null) derivedTuples.dispose();
 		}
 
 		derivedTuples = null;
 		try {
-			derivedTuples = trackingStore
-					.internal_evaluateAgainstIDBs("select distinct ?y where { ?x ?y ?z . }");
+			derivedTuples = trackingStore.internal_evaluateAgainstIDBs("select distinct ?y where { ?x ?y ?z . }");
 			for (long multi = derivedTuples.open(); multi != 0; multi = derivedTuples.getNext()) {
 				String p = RDFoxTripleManager.getQuotedTerm(derivedTuples.getResource(0));
-				if (p.equals(Namespace.RDF_TYPE_ABBR)
-						|| p.equals(Namespace.RDF_TYPE_QUOTED))
-					;
-				else if (p.equals(Namespace.EQUALITY_ABBR)
-						|| p.equals(Namespace.EQUALITY_QUOTED))
-					;
-				else if (m_encoder.isAuxPredicate(p))
-					;
-				else
-					binaryPredicates.add(p);
+				if (p.equals(Namespace.RDF_TYPE_ABBR) || p.equals(Namespace.RDF_TYPE_QUOTED)) ;
+				else if (p.equals(Namespace.EQUALITY_ABBR) || p.equals(Namespace.EQUALITY_QUOTED)) ;
+				else if (m_encoder.isAuxPredicate(p)) ;
+				else binaryPredicates.add(p);
 			}
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
 		} finally {
-			if (derivedTuples != null)
-				derivedTuples.dispose();
+			if (derivedTuples != null) derivedTuples.dispose();
 		}
 	}
 
@@ -428,8 +406,7 @@ public class QueryTracker {
 				toAddedRecords.add(botQueryRecord);
 
 		for (QueryRecord botQueryRecord : toAddedRecords) {
-			m_manager.addAxioms(m_record.getRelevantOntology(), botQueryRecord
-					.getRelevantOntology().getAxioms());
+			m_manager.addAxioms(m_record.getRelevantOntology(), botQueryRecord.getRelevantOntology().getAxioms());
 			for (DLClause clause : botQueryRecord.getRelevantClauses())
 				m_record.addRelevantClauses(clause);
 		}
@@ -456,16 +433,14 @@ public class QueryTracker {
 
 	private String getSPARQLQuery4Unary(String p) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("select ?x where { ?x <")
-				.append(Namespace.RDF_TYPE).append("> ");
+		builder.append("select ?x where { ?x <").append(Namespace.RDF_TYPE).append("> ");
 		builder.append(p).append(" . }");
 		return builder.toString();
 	}
 
 	private String getSPARQLQuery4Binary(String p) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("select ?x ?y where { ?x ").append(p)
-				.append(" ?y . }");
+		builder.append("select ?x ?y where { ?x ").append(p).append(" ?y . }");
 		return builder.toString();
 	}
 

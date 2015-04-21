@@ -113,7 +113,7 @@ public class ELHOUQueryReasoner extends QueryReasoner {
 		}			
 
 		OWLOntology ontology = o; 
-		program = new DatalogProgram(ontology, !forSemFacet); 
+		program = new DatalogProgram(ontology, properties.getToClassify()); 
 		
 		importData(program.getAdditionalDataFile());
 		

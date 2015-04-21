@@ -18,6 +18,9 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 		super(name, checkValidity);
 	}
 
+	/**
+	 * c-chase
+	 */
 	@Override
 	public void materialiseFoldedly(DatalogProgram dProgram, GapByStore4ID gap) {
 		materialise("lower program", dProgram.getLower().toString());
@@ -27,6 +30,9 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 		materialise(program, treatment, gap); 
 	}
 	
+	/**
+	 * c-chase^f
+	 */
 	@Override
 	public int materialiseRestrictedly(DatalogProgram dProgram, GapByStore4ID gap) {
 		if (gap != null)

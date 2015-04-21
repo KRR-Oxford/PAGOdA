@@ -53,7 +53,7 @@ public class GapByTriple extends GapTupleIterator<String> {
 	
 	@Override
 	public boolean hasNext() {
-		TupleIterator iter;
+		TupleIterator iter = null;
 		boolean inGap; 
 		StringBuffer queryBuffer = new StringBuffer();
 		try {
@@ -75,9 +75,13 @@ public class GapByTriple extends GapTupleIterator<String> {
 				queryBuffer.setLength(0);
 				queryBuffer.append("SELECT WHERE { ").append(sub).append(" ").append(predicate).append(" ").append(obj).append(" }");
 
-				iter = lowerStore.compileQuery(queryBuffer.toString(), prefixes, parameters);
-				inGap = iter.open() != 0;
-				iter.dispose();
+				try {
+					iter = lowerStore.compileQuery(queryBuffer.toString(), prefixes, parameters);
+					inGap = iter.open() != 0;
+				} finally {
+					if (iter != null) iter.dispose();
+					iter = null; 
+				}
 				if (inGap) 
 					return true;
 			}

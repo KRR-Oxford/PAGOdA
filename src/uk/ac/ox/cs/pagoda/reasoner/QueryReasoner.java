@@ -14,23 +14,41 @@ import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
+import uk.ac.ox.cs.pagoda.util.Properties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
 public abstract class QueryReasoner {
 	
-	protected boolean forSemFacet = false;
-	
+//	protected boolean forSemFacet = false;
+	Properties properties; 
+
 	public static enum Type { Full, RLU, ELHOU };  
 	
-	public static QueryReasoner getInstanceForSemFacet(OWLOntology o) {
-		QueryReasoner reasoner = getInstance(Type.Full, o, true, true); 
-		reasoner.forSemFacet = true; 		
-		return reasoner; 
+	public static QueryReasoner getInstance(Properties p) {
+		OWLOntology ontology = OWLHelper.loadOntology(p.getOntologyPath());
+		QueryReasoner pagoda = getInstance(ontology, p);
+		pagoda.properties = p; 
+		pagoda.loadOntology(ontology);
+		pagoda.importData(p.getDataPath());
+		if (pagoda.preprocess()) {
+			System.out.println("The ontology is consistent!");
+			return pagoda; 
+		}
+		else {
+			System.out.println("The ontology is inconsistent!");
+			pagoda.dispose();
+			return null;
+		}
 	}
 	
-	
 	public static QueryReasoner getInstance(OWLOntology o) {
+		QueryReasoner pagoda = getInstance(Type.Full, o, true, true);
+		pagoda.properties = new Properties(); 
+		return pagoda; 
+	}
+	
+	private static QueryReasoner getInstance(OWLOntology o, Properties p) {
 		return getInstance(Type.Full, o, true, true); 
 	}
 	

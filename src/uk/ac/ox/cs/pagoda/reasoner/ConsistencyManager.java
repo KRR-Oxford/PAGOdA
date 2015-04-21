@@ -43,7 +43,15 @@ public class ConsistencyManager {
 	
 	boolean checkRLLowerBound() {
 		fullQueryRecord = m_queryManager.create(QueryRecord.botQueryText, 0);
-		fullQueryRecord.updateLowerBoundAnswers(m_reasoner.rlLowerStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()));
+		AnswerTuples iter = null; 
+		
+		try {
+			iter = m_reasoner.rlLowerStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
+			fullQueryRecord.updateLowerBoundAnswers(iter);
+		} finally {
+			iter.dispose();
+		}
+		
 		if (fullQueryRecord.getNoOfSoundAnswers() > 0) {
 			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple()); 
 			return unsatisfiability(t.duration());
@@ -81,8 +89,15 @@ public class ConsistencyManager {
 //		if (!checkRLLowerBound()) return false; 
 //		if (!checkELLowerBound()) return false;  
 //		if (checkLazyUpper()) return true; 
+		AnswerTuples iter = null; 
 		
-		fullQueryRecord.updateUpperBoundAnswers(m_reasoner.trackingStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()));
+		try {
+			iter = m_reasoner.trackingStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()); 
+			fullQueryRecord.updateUpperBoundAnswers(iter);
+		} finally {
+			if (iter != null) iter.dispose();
+		}
+		
 		if (fullQueryRecord.getNoOfCompleteAnswers() == 0)
 			return satisfiability(t.duration()); 
 		
@@ -101,7 +116,7 @@ public class ConsistencyManager {
 		for (QueryRecord r: getQueryRecords()) {
 			// TODO to be removed ... 
 //			r.saveRelevantOntology("bottom" + r.getQueryID() + ".owl");
-			checker = new HermitSummaryFilter(r); // m_reasoner.factory.getSummarisedReasoner(r);
+			checker = new HermitSummaryFilter(r, true); // m_reasoner.factory.getSummarisedReasoner(r);
 			satisfiability = checker.isConsistent(); 
 			checker.dispose();
 			if (!satisfiability) return unsatisfiability(t.duration()); 
@@ -143,8 +158,15 @@ public class ConsistencyManager {
 			QueryRecord[] tempQueryRecords = new QueryRecord[number - 1];
 			QueryRecord record; 
 			for (int i = 0; i < number - 1; ++i) {
-				tempQueryRecords[i] = record = m_queryManager.create(QueryRecord.botQueryText.replace("Nothing", "Nothing" + (i + 1)), 0, i + 1); 
-				record.updateUpperBoundAnswers(m_reasoner.trackingStore.evaluate(record.getQueryText(), record.getAnswerVariables())); 
+				tempQueryRecords[i] = record = m_queryManager.create(QueryRecord.botQueryText.replace("Nothing", "Nothing" + (i + 1)), 0, i + 1);
+				AnswerTuples iter = null; 
+				try {
+					iter = m_reasoner.trackingStore.evaluate(record.getQueryText(), record.getAnswerVariables());
+					record.updateUpperBoundAnswers(iter); 
+				} finally {
+					if (iter != null) iter.dispose();
+					iter = null; 
+				}
 			}
 			
 			int bottomNumber = 0; 

@@ -245,6 +245,7 @@ public abstract class MultiStageUpperProgram {
 					if (tuples != null) tuples.dispose();
 				}
 				
+				tuples = null; 
 				try {
 					tuples = engine.internal_evaluateNotExpanded(SparqlHelper.getSPARQLQuery(atoms, x, y)); 
 					for (long multi = tuples.open(); multi != 0; multi = tuples.getNext()) 
@@ -279,7 +280,7 @@ public abstract class MultiStageUpperProgram {
 		TupleIterator tuples = null; 
 		try {
 			tuples = engine.internal_evaluateNotExpanded(headQuery); 
-			for (; tuples.isValid(); tuples.getNext()) 
+			for (long multi = tuples.open(); multi != 0; multi = tuples.getNext()) 
 				headAnswers.add(new AnswerTupleID(tuples));
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();

@@ -1,9 +1,7 @@
 package uk.ac.ox.cs.pagoda.tester;
 
-import org.semanticweb.owlapi.model.OWLOntology;
-
-import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
+import uk.ac.ox.cs.pagoda.util.Properties;
 
 public class ORETester {
 
@@ -13,17 +11,11 @@ public class ORETester {
 //		args = new String[] { "/home/yzhou/krr-nas-share/Yujiao/ontologies/ORE2014/DL/wine_nodatatype.owl" };
 		
 //		args = new String[] { "/home/yzhou/krr-nas-share/Yujiao/ontologies/ORE2014/EL/b7700fe1-103b-4b32-a21c-f6604a763ba5_t-cell.owl" };
-		args = new String[] { "/home/yzhou/krr-nas-share/Yujiao/ontologies/ORE2014/EL/baa29363-f93c-4285-827e-0e2380c82efc_cations.n3" };
+//		args = new String[] { "/home/yzhou/krr-nas-share/Yujiao/ontologies/ORE2014/EL/baa29363-f93c-4285-827e-0e2380c82efc_cations.n3" };
 		
-		
-		OWLOntology ontology = OWLHelper.loadOntology(args[0]);
-		QueryReasoner pagoda = QueryReasoner.getInstance(ontology);
-		System.out.println(pagoda); 
-		pagoda.loadOntology(ontology);
-		if (pagoda.preprocess())
-			System.out.println("The ontology is consistent!"); 
-		else 
-			System.out.println("The ontology is inconsistent!"); 
+		Properties properties = new Properties("config/sys.conf"); 
+		QueryReasoner pagoda = QueryReasoner.getInstance(properties);
+		pagoda.dispose();
 	}
 	
 }

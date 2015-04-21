@@ -54,7 +54,7 @@ public class ELHOQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void loadOntology(OWLOntology ontology) {
-		program = new LowerDatalogProgram(!forSemFacet); 
+		program = new LowerDatalogProgram(properties.getToClassify()); 
 		program.load(ontology, new UnaryBottom());
 		program.transform();
 		

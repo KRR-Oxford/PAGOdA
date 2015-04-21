@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.reasoner;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.summary.HermitSummaryFilter;
@@ -32,8 +33,15 @@ public class ConsistencyManager2 extends ConsistencyManager {
 //		if (!checkRLLowerBound()) return false; 
 //		if (!checkELLowerBound()) return false;  
 		if (checkLazyUpper()) return true; 
+		AnswerTuples iter = null; 
 		
-		fullQueryRecord.updateUpperBoundAnswers(m_reasoner.trackingStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()));
+		try {
+			iter = m_reasoner.trackingStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
+			fullQueryRecord.updateUpperBoundAnswers(iter);
+		} finally {
+			if (iter != null) iter.dispose();
+		}
+		
 		if (fullQueryRecord.getNoOfCompleteAnswers() == 0)
 			return satisfiability(t.duration());
 		
@@ -43,7 +51,7 @@ public class ConsistencyManager2 extends ConsistencyManager {
 			e.printStackTrace();
 		}
 		
-		Checker checker = new HermitSummaryFilter(fullQueryRecord);  // m_reasoner.factory.getSummarisedReasoner(fullQueryRecord);
+		Checker checker = new HermitSummaryFilter(fullQueryRecord, true);  // m_reasoner.factory.getSummarisedReasoner(fullQueryRecord);
 //		fullQueryRecord.saveRelevantOntology("fragment_bottom.owl");
 		boolean satisfiable = checker.isConsistent(); 
 		checker.dispose();

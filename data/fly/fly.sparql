@@ -7,8 +7,8 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 SELECT ?X
 WHERE {
  ?X rdf:type obo:FBbt_00005106 .
- ?X obo:RO_0002131 ?Y .
- ?Y rdf:type obo:FBbt_00007401
+ ?X obo:RO_0002131 _:Y .
+ _:Y rdf:type obo:FBbt_00007401
 }
 
 #########################
@@ -21,10 +21,10 @@ PREFIX FBbt: <http://purl.obolibrary.org/obo/FBbt#>
 SELECT ?X
 WHERE {
  ?X rdf:type obo:FBbt_00005106 .
- ?X obo:RO_0002131 ?Y .
- ?Y rdf:type obo:FBbt_00007401 .
- ?X FBbt:develops_from ?Z .
- ?Z rdf:type obo:FBbt_00067346
+ ?X obo:RO_0002131 _:Y .
+ _:Y rdf:type obo:FBbt_00007401 .
+ ?X FBbt:develops_from _:Z .
+ _:Z rdf:type obo:FBbt_00067346
 }
 
 #########################
@@ -47,8 +47,8 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 SELECT ?X
 WHERE {
 ?X rdf:type obo:FBbt_00007173 .
-?X obo:RO_0002131 ?Y .
-?Y rdf:type obo:FBbt_00003924
+?X obo:RO_0002131 _:Y .
+_:Y rdf:type obo:FBbt_00003924
 }
 
 
@@ -60,8 +60,8 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 SELECT ?X
 WHERE {
-?X obo:RO_0002131 ?Y .
-?Y rdf:type obo:FBbt_00005801
+?X obo:RO_0002131 _:Y .
+_:Y rdf:type obo:FBbt_00005801
 }
 
 #########################
@@ -72,6 +72,6 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 SELECT ?X
 WHERE {
-?X obo:RO_0002130 ?Y .
-?Y rdf:type obo:FBbt_00007053
+?X obo:RO_0002130 _:Y .
+_:Y rdf:type obo:FBbt_00007053
 }

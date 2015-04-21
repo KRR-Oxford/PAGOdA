@@ -5,13 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
-import org.semanticweb.owlapi.model.OWLOntology;
-
-import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.reasoner.*; 
-import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner.Type; 
+import uk.ac.ox.cs.pagoda.util.Properties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -93,8 +90,6 @@ public class PagodaTester {
 	public static final String atlas_abox = onto_dir + "bio2rdf/atlas/graph sampling/sample_1.nt"; 
 	public static final String atlas_queries = onto_dir + "bio2rdf/atlas/queries/atomic_one.sparql"; 
 	
-	public static boolean ShellMode = false; 
-	
 	public static void main(String... args) {
 		if (args.length == 0) {
 //			args = new String[] {test_tbox, test_abox, test_query};
@@ -109,7 +104,7 @@ public class PagodaTester {
 //			args = new String[] {"../SemFacet/WebContent/WEB-INF/data/dbpedia.owl", "../SemFacet/WebContent/WEB-INF/data/dbpediaA.nt", null}; 
 //			args = new String[] {"../core/WebContent/WEB-INF/data/fly.owl", "../core/WebContent/WEB-INF/data/fly-data.nt", null}; 
 //			args = new String[] {"data/lubm/univ-bench.owl", "data/lubm/lubm1.ttl", "data/lubm/lubm.sparql", "lubm.ans"}; 
-			args = new String[] {"data/uobm/univ-bench-dl.owl", "data/uobm/uobm1.ttl", "data/uobm/uobm.sparql", "uobm.ans"}; 
+//			args = new String[] {"data/uobm/univ-bench-dl.owl", "data/uobm/uobm1.ttl", "data/uobm/uobm.sparql", "uobm.ans"}; 
 //			args = new String[] {"data/fly/fly_anatomy_XP_with_GJ_FC_individuals.owl", "data/fly/fly.sparql", "fly.ans"}; 
 //			args = new String[] {bioModels_tbox, bioModels_abox, bioModels_queries}; 
 //			args = new String[] {chembl_tbox, chembl_abox, chembl_queries};
@@ -124,66 +119,42 @@ public class PagodaTester {
 //			args[2] = args[2].replace(".sparql", "_pellet.sparql");
 		}
 
-		int ontoIndex = 0, dataIndex = 1, queryIndex = 2;
-
-		if (args.length > dataIndex && args[dataIndex] != null && args[dataIndex].endsWith(".sparql")) {
-			String[] inputArgs = args;
-			args = new String[inputArgs.length + 1];
-			for (int i = 0; i < dataIndex; ++i)
-				args[i] = inputArgs[i];
-			args[dataIndex] = null;
-			args[queryIndex] = inputArgs[dataIndex];
-			for (int i = dataIndex + 1; i < inputArgs.length; ++i)
-				args[i + 1] = inputArgs[i]; 
-		}
-
-		StringBuilder info = new StringBuilder(); 
-		info.append("System started with \n");
-		for (int i = 0; i < args.length; ++i)
-			info.append("Arg " + (i + 1) + ": " + args[i] + "\n"); 
-		Utility.logInfo(info);
-
-//		Utility.redirectCurrentOut("temp.out");
-
-		OWLOntology ontology = OWLHelper.loadOntology(args[ontoIndex]);
+		Properties properties = new Properties("config/uobm.conf"); 
 		
-		QueryReasoner pagoda = QueryReasoner.getInstance(Type.Full, ontology, true, true); 
-//		QueryReasoner pagoda = QueryReasoner.getInstance(Type.ELHOU, ontology, true, true);
+		int index = 0; 
+		if (args.length > index) properties.setOntologyPath(args[index++]);   
+		if (args.length > index && (args[index].endsWith(".ttl") || args[index].endsWith(".nt"))) properties.setDataPath(args[index++]);   
+		if (args.length > index && args[index].endsWith(".sparql")) properties.setQueryPath(args[index++]);   
+		if (args.length > index && !args[index].startsWith("-")) properties.setAnswerPath(args[index++]);   
+		if (args.length > index) properties.setToClassify(Boolean.parseBoolean(args[index++].substring(1)));   
+		if (args.length > index) properties.setToCallHermiT(Boolean.parseBoolean(args[index++].substring(1)));   
+	
+		QueryReasoner pagoda = null; 
 		
-//		QueryReasoner pagoda = QueryReasoner.getInstanceForSemFacet(ontology);
-//		QueryReasoner pagoda = QueryReasoner.getHermiTReasoner(false); 
-		
-//		PagodaTester tester = new PagodaTester(pagoda);
-		String ansFile = args.length > 3 ? args[3] : null; 
 		try {
 			Timer t = new Timer();
-			pagoda.loadOntology(ontology);
-			pagoda.importData(args[dataIndex]);
-			if (!pagoda.preprocess())
-				return;
+			pagoda = QueryReasoner.getInstance(properties); 
+			if (pagoda == null) return;
+			
 			Utility.logInfo("Preprocessing Done in " + t.duration()	+ " seconds.");
-//			tester.printPredicatesWithGap(); 
-//			tester.testSemFacetQueries();
-//			tester.testSomeFlyQueries();
-//			tester.testISGQueries();
-//			tester.testReactomeQueries(); 
-			if (args[queryIndex] != null)
-				for (String queryFile: args[queryIndex].split(";"))
-					pagoda.evaluate(pagoda.getQueryManager().collectQueryRecords(queryFile), ansFile);
+			
+			if (properties.getQueryPath() != null)
+				for (String queryFile: properties.getQueryPath().split(";"))
+					pagoda.evaluate(pagoda.getQueryManager().collectQueryRecords(queryFile), properties.getAnswerPath());
 
-			if (ShellMode)
+			if (properties.getShellMode())
 				try {
 					evaluateConsoleQuery(pagoda);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} 
  		} finally {
-			pagoda.dispose();
+			if (pagoda != null) pagoda.dispose();
 		}
 
 		Utility.closeCurrentOut();
 		
-		if (ShellMode) System.exit(0);
+		if (properties.getShellMode()) System.exit(0);
 	}
 	
 //	private void printPredicatesWithGap() {

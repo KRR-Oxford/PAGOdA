@@ -121,30 +121,19 @@ public class MyKarma {
 	private Set<AnswerTuple> answerCQ_multiThread(ConjunctiveQuery q, AnswerTuples soundAnswerTuples, boolean isGround) {
 		Set<Future<AnswerTuple>> set = new HashSet<Future<AnswerTuple>>();
 		ExtendedConjunctiveQuery qext = ExtendedConjunctiveQuery.computeExtension(q);
-		TupleIterator tupleIterator;
+		TupleIterator tupleIterator = null;
+		ExecutorService es = null; 
 		try {
 			tupleIterator = store.compileQuery(qext.toString(), prefixes, parameters);
-		} catch (JRDFStoreException e) {
-			e.printStackTrace();
-			return null; 
-		} 
-		ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		AnswerTuple tuple; 
-		try {
-			try {
-				for (long multi = tupleIterator.open(); multi != 0; multi = tupleIterator.getNext()) {
-					Map<Term, GroundTerm> match = new HashMap<Term, GroundTerm>();
-					for (int i = 0; i < qext.getNumberOfAnswerTerms(); i++) {
-						match.put(qext.getAnswerTerm(i), tupleIterator.getGroundTerm(i)); 
-					}
-					if ((tuple = contains(qext, soundAnswerTuples, match)) != null) 
-							set.add(es.submit(new Spurious(qext, match, tuple, isGround)));
+			es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+			AnswerTuple tuple; 
+			for (long multi = tupleIterator.open(); multi != 0; multi = tupleIterator.getNext()) {
+				Map<Term, GroundTerm> match = new HashMap<Term, GroundTerm>();
+				for (int i = 0; i < qext.getNumberOfAnswerTerms(); i++) {
+					match.put(qext.getAnswerTerm(i), tupleIterator.getGroundTerm(i)); 
 				}
-			} catch (JRDFStoreException e) {
-				e.printStackTrace();
-				return null; 
-			} finally {
-				tupleIterator.dispose();
+				if ((tuple = contains(qext, soundAnswerTuples, match)) != null) 
+					set.add(es.submit(new Spurious(qext, match, tuple, isGround)));
 			}
 			Set<AnswerTuple> result = new HashSet<AnswerTuple>(set.size());
 			while(!set.isEmpty()) {
@@ -166,28 +155,28 @@ public class MyKarma {
 				}
 			}
 			return result;
+		} catch (JRDFStoreException e1) {
+			e1.printStackTrace();
+			return null; 
 		} finally {
-			es.shutdown();
+			if (tupleIterator != null) tupleIterator.dispose();
+			if (es != null) es.shutdown();
 		}
 	}
 	
 	private Set<AnswerTuple> answerCQ_singleThread(ConjunctiveQuery q, AnswerTuples soundAnswerTuples, boolean isGround) {
 		ExtendedConjunctiveQuery qext = ExtendedConjunctiveQuery.computeExtension(q);
-		TupleIterator tupleIterator;
+		boolean useBushyValue = parameters.m_useBushy, allAnswersInRootValue = parameters.m_allAnswersInRoot;
+		Set<AnswerTuple> result = new HashSet<AnswerTuple>();
+		
+		TupleIterator tupleIterator = null;
 		try {
 			tupleIterator = store.compileQuery(qext.toString(), prefixes, parameters);
-		} catch (JRDFStoreException e) {
-			e.printStackTrace();
-			return null; 
-		}
-		
-		boolean useBushyValue = parameters.m_useBushy, allAnswersInRootValue = parameters.m_allAnswersInRoot;
-		parameters.m_useBushy = false; 
-		parameters.m_allAnswersInRoot = false; 
-		try {
-		Set<AnswerTuple> result = new HashSet<AnswerTuple>();
-		AnswerTuple tuple; 
-		try {
+			parameters.m_useBushy = false; 
+			parameters.m_allAnswersInRoot = false; 
+			
+			AnswerTuple tuple; 
+
 			for (long multi = tupleIterator.open(); multi != 0; multi = tupleIterator.getNext()) {
 				Map<Term, GroundTerm> match = new HashMap<Term, GroundTerm>();
 				for (int i = 0; i < qext.getNumberOfAnswerTerms(); i++) {
@@ -200,14 +189,11 @@ public class MyKarma {
 			e.printStackTrace();
 			return null; 
 		} finally {
-			tupleIterator.dispose();
-		}
-		return result;
-		} finally {
+			if (tupleIterator != null) tupleIterator.dispose();
 			parameters.m_useBushy = useBushyValue;
 			parameters.m_allAnswersInRoot = allAnswersInRootValue; 
 		}
-
+		return result;
 	}
 	
 	private AnswerTuple contains(ExtendedConjunctiveQuery qext, AnswerTuples answerTuples, Map<Term, GroundTerm> match) {

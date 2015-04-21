@@ -2,12 +2,9 @@ package uk.ac.ox.cs.pagoda.reasoner.light;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-
 import org.semanticweb.HermiT.model.AnnotatedEquality;
 import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.AtomicConcept;
@@ -37,7 +34,7 @@ public class RDFoxTripleManager {
 
 	DataStore m_store;
 	Dictionary m_dict; 
-	Set<Atom> triplesByTerm = new HashSet<Atom>();
+//	Set<Atom> triplesByTerm = new HashSet<Atom>();
 	
 	public RDFoxTripleManager(DataStore store, boolean incrementally) {
 		m_store = store;
@@ -63,7 +60,16 @@ public class RDFoxTripleManager {
 	}
 	
 	public void addTripleByID(int[] tuple) {
+//		System.out.println(getRawTerm(tuple[0]) + " " + getRawTerm(tuple[1]) + " " + getRawTerm(tuple[2]) + " ."); 
 		try {
+//			Resource[] rsc = new Resource[3]; 
+//			m_dict.getResources(tuple, 0, 3, rsc);
+//			
+//			GroundTerm[] terms = new GroundTerm[3]; 
+//			for (int i = 0; i < 3; ++i)
+//				terms[i] = uk.ac.ox.cs.JRDFox.model.Individual.create(rsc[i].m_lexicalForm); 
+//			m_store.addTriples(terms, m_incrementally);
+			
 			m_store.addTriplesByResourceIDs(tuple, m_incrementally);
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();

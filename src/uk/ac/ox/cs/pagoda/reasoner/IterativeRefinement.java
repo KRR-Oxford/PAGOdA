@@ -7,6 +7,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.constraints.UpperUnaryBottom;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.GeneralProgram;
@@ -47,7 +48,13 @@ public class IterativeRefinement {
 					return m_record.getRelevantOntology(); 
 				}
 				
-				update = m_record.updateUpperBoundAnswers(tEngine.evaluate(m_record.getQueryText()));
+				AnswerTuples ans = null; 
+				try {
+					ans = tEngine.evaluate(m_record.getQueryText());
+					update = m_record.updateUpperBoundAnswers(ans);
+				} finally {
+					if (ans != null) ans.dispose();
+				}				
 			} finally {
 				tEngine.dispose();
 			}
@@ -78,7 +85,13 @@ public class IterativeRefinement {
 					return m_record.getRelevantOntology(); 
 				}
 				
-				update = m_record.updateUpperBoundAnswers(tEngine.evaluate(m_record.getQueryText()));
+				AnswerTuples ans = null; 
+				try {
+					ans = tEngine.evaluate(m_record.getQueryText()); 
+					update = m_record.updateUpperBoundAnswers(ans);
+				} finally {
+					if (ans != null) ans.dispose();
+				}
 			} finally {
 				tEngine.dispose();
 			}

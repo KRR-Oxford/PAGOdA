@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.junit;
 import org.junit.Test;
 
 import uk.ac.ox.cs.pagoda.tester.PagodaTester;
+import uk.ac.ox.cs.pagoda.util.Properties;
 
 public class JAIR_Scalability {
 	
@@ -78,7 +79,7 @@ public class JAIR_Scalability {
 	}
 	
 	public static void main(String... args) {
-		PagodaTester.ShellMode = true; 
+		Properties.ShellModeDefault = true; 
 		new JAIR_Scalability().testUniProt(50, false);
 	}
 

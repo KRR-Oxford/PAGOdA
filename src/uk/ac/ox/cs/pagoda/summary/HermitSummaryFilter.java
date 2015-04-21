@@ -34,9 +34,9 @@ public class HermitSummaryFilter implements Checker {
 	
 	Endomorph endomorphismChecker = null;
 	
-	public HermitSummaryFilter(QueryRecord record) {
+	public HermitSummaryFilter(QueryRecord record, boolean toCallHermiT) {
 		m_record = record; 
-		HermitChecker hermitChecker = new HermitChecker(record.getRelevantOntology(), record); 
+		HermitChecker hermitChecker = new HermitChecker(record.getRelevantOntology(), record, toCallHermiT); 
 		endomorphismChecker = new Endomorph(record, hermitChecker);
 		hermitChecker.setDependencyGraph(endomorphismChecker.getDependencyGraph()); 
 	}

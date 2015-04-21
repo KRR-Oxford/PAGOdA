@@ -85,7 +85,7 @@ public class MyQueryReasoner extends QueryReasoner {
 		}			
 
 		ontology = o; 
-		program = new DatalogProgram(ontology, !forSemFacet);
+		program = new DatalogProgram(ontology, properties.getToClassify());
 //		program.getLower().save();
 //		program.getUpper().save();
 //		program.getGeneral().save();
@@ -275,11 +275,10 @@ public class MyQueryReasoner extends QueryReasoner {
 			rlAnswer = upperStore.evaluate(queryText, answerVariables);
 			Utility.logDebug(t.duration());
 			queryRecord.updateUpperBoundAnswers(rlAnswer); 
-			rlAnswer.dispose();
 		} finally {
 			if (rlAnswer != null) rlAnswer.dispose();
+			rlAnswer = null;
 		}
-		rlAnswer = null;
 	}
 
 	@Override
@@ -296,11 +295,11 @@ public class MyQueryReasoner extends QueryReasoner {
 //		queryRecord.saveRelevantOntology("fragment_query" + queryRecord.getQueryID() + ".owl"); 
 		
 		Timer t = new Timer(); 
-		Checker summarisedChecker = new HermitSummaryFilter(queryRecord); 
+		Checker summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT()); 
 		int validNumber = summarisedChecker.check(queryRecord.getGapAnswers()); 
 		summarisedChecker.dispose();
 		Utility.logDebug("Total time for full reasoner: " + t.duration());
-		if (!forSemFacet || validNumber == 0) { 
+		if (validNumber == 0) { 
 			queryRecord.markAsProcessed(); 
 			Utility.logDebug("Difficulty of this query: " + queryRecord.getDifficulty());
 		}

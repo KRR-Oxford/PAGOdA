@@ -149,8 +149,8 @@ abstract class TwoStageApplication {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
-				if (tuples != null)
-					tuples.dispose();
+				if (tuples != null)	tuples.dispose();
+				tuples = null; 
 			}
 		}
 	}
@@ -209,8 +209,7 @@ abstract class TwoStageApplication {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (tuples != null)
-				tuples.dispose();
+			if (tuples != null)	tuples.dispose();
 		}
 		return ret;
 	}

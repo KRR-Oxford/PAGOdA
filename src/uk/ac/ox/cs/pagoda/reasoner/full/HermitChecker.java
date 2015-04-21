@@ -43,6 +43,7 @@ public class HermitChecker implements Checker {
 	protected OWLOntology ontology;
 	protected QueryRecord record; 
 	protected QueryGraph qGraph = null; 
+	boolean toCheck = true;
 	
 	public HermitChecker(Checker checker) {
 		if (checker instanceof HermitChecker) {
@@ -58,12 +59,13 @@ public class HermitChecker implements Checker {
 		hermit = new Reasoner(ontology);
 	}
 	
-	public HermitChecker(OWLOntology ontology, QueryRecord record) {
+	public HermitChecker(OWLOntology ontology, QueryRecord record, boolean toCheck) {
 		this.ontology = ontology;
 		queryText = record.getQueryText(); 
 		answerVariable = record.getVariables();
 		queryClause = record.getClause(); 
 //		this.record = record;  
+		this.toCheck = toCheck; 
 	}
 	
 	public HermitChecker(OWLOntology ontology, String queryText) {
@@ -198,6 +200,8 @@ public class HermitChecker implements Checker {
 	
 	@Override
 	public boolean check(AnswerTuple answerTuple) {
+		if (!toCheck) return false; 
+		
 		if (hermit == null) initialiseReasoner();
 		if (tag != 0) return tag == 1; 
 		++counter; 
