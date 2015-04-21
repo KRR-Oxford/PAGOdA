@@ -1,0 +1,77 @@
+#########################
+# neuron that overlaps some 'adult antennal lobe'
+#########################
+^[Query1]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+SELECT ?X
+WHERE {
+ ?X rdf:type obo:FBbt_00005106 .
+ ?X obo:RO_0002131 ?Y .
+ ?Y rdf:type obo:FBbt_00007401
+}
+
+#########################
+# neuron that overlaps some 'adult antennal lobe' and develops_from some 'antero-dorsal AL neuroblast'
+#########################
+^[Query2]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX FBbt: <http://purl.obolibrary.org/obo/FBbt#>
+SELECT ?X
+WHERE {
+ ?X rdf:type obo:FBbt_00005106 .
+ ?X obo:RO_0002131 ?Y .
+ ?Y rdf:type obo:FBbt_00007401 .
+ ?X FBbt:develops_from ?Z .
+ ?Z rdf:type obo:FBbt_00067346
+}
+
+#########################
+# 'adult antennal lobe projection neuron DL2v adPN'
+#########################
+^[Query3]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+SELECT ?X
+WHERE {
+ ?X rdf:type obo:FBbt_00100388
+}
+
+#########################
+# 'cholinergic neuron' that overlaps some 'antennal lobe'
+#########################
+^[Query4]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+SELECT ?X
+WHERE {
+?X rdf:type obo:FBbt_00007173 .
+?X obo:RO_0002131 ?Y .
+?Y rdf:type obo:FBbt_00003924
+}
+
+
+#########################
+# overlaps some 'mushroom body'
+#########################
+^[Query5]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+SELECT ?X
+WHERE {
+?X obo:RO_0002131 ?Y .
+?Y rdf:type obo:FBbt_00005801
+}
+
+#########################
+# has_synaptic_terminals_in some 'lateral horn'
+#########################
+^[Query6]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+SELECT ?X
+WHERE {
+?X obo:RO_0002130 ?Y .
+?Y rdf:type obo:FBbt_00007053
+}

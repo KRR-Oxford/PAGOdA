@@ -1,0 +1,221 @@
+package uk.ac.ox.cs.pagoda.reasoner;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Collection;
+
+import org.semanticweb.owlapi.model.OWLOntology;
+
+import uk.ac.ox.cs.pagoda.owl.OWLHelper;
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.query.QueryManager;
+import uk.ac.ox.cs.pagoda.query.QueryRecord;
+import uk.ac.ox.cs.pagoda.util.Timer;
+import uk.ac.ox.cs.pagoda.util.Utility;
+
+public abstract class QueryReasoner {
+	
+	protected boolean forSemFacet = false;
+	
+	public static enum Type { Full, RLU, ELHOU };  
+	
+	public static QueryReasoner getInstanceForSemFacet(OWLOntology o) {
+		QueryReasoner reasoner = getInstance(Type.Full, o, true, true); 
+		reasoner.forSemFacet = true; 		
+		return reasoner; 
+	}
+	
+	
+	public static QueryReasoner getInstance(OWLOntology o) {
+		return getInstance(Type.Full, o, true, true); 
+	}
+	
+	public static QueryReasoner getInstance(Type type, OWLOntology o, boolean performMultiStages, boolean considerEqualities) {
+		Utility.initialise(); 
+		QueryReasoner reasoner; 
+		if (OWLHelper.isInOWL2RL(o)) reasoner = new RLQueryReasoner();
+		else if (OWLHelper.isInELHO(o)) reasoner = new ELHOQueryReasoner();
+		else 
+		switch (type) {
+			case RLU: 
+				reasoner = new RLUQueryReasoner(performMultiStages, considerEqualities); break;   
+			case ELHOU: 
+				reasoner = new ELHOUQueryReasoner(performMultiStages, considerEqualities); break;  
+			default: 
+				reasoner = new MyQueryReasoner(performMultiStages, considerEqualities); 
+			}
+		return reasoner; 
+	}
+	
+	public static final String ImportDataFileSeparator = ";"; 
+	protected StringBuilder importedData = new StringBuilder(); 
+	
+	public void importData(String datafile) {
+		if (datafile != null && !datafile.equalsIgnoreCase("null"))
+			importData(datafile.split(ImportDataFileSeparator)); 
+	}
+
+	public void importData(String[] datafiles) {
+		if (datafiles != null) {
+			for (String datafile: datafiles) {
+				File file = new File(datafile); 
+				if (file.exists()) {
+					if (file.isFile()) importDataFile(file);
+					else importDataDirectory(file);
+				}
+				else {
+					Utility.logError("warning: file " + datafile + " doesn't exists."); 
+				}
+			}
+		}
+	}
+	
+	private void importDataDirectory(File file) {
+		for (File child: file.listFiles())
+			if (child.isFile()) importDataFile(child);
+			else importDataDirectory(child);
+	}
+	
+	private void importDataFile(File file) {
+		String datafile;
+		try {
+			datafile = file.getCanonicalPath();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ; 
+		} 
+		importDataFile(datafile); 
+	}
+	
+	protected final void importDataFile(String datafile) {
+		if (importedData.length() == 0)
+			importedData.append(datafile); 
+		else 
+			importedData.append(ImportDataFileSeparator).append(datafile);
+
+	}
+	
+	public abstract void loadOntology(OWLOntology ontology);
+	
+	public abstract boolean preprocess(); 
+
+	public abstract boolean isConsistent(); 
+
+	public boolean fullReasoner = this instanceof MyQueryReasoner; 
+
+	public abstract void evaluate(QueryRecord record);
+	
+	public abstract void evaluateUpper(QueryRecord record); 
+	
+	public AnswerTuples evaluate(String queryText, boolean forFacetGeneration) {
+		if (forFacetGeneration) {
+			QueryRecord record = m_queryManager.create(queryText);
+			Utility.logInfo("---------- start evaluating upper bound for Query " + record.getQueryID() + " ----------", queryText);
+			if (!record.processed()) 
+				evaluateUpper(record);
+//			AnswerTuples tuples = record.getUpperBoundAnswers();
+//			for (AnswerTuple tuple; tuples.isValid(); tuples.moveNext()) {
+//				tuple = tuples.getTuple(); 
+//				if (tuple.toString().contains("NC"))
+//					System.out.println(tuple.toString()); 
+//			}
+			return record.getUpperBoundAnswers(); 
+		}
+		else 
+			return evaluate(queryText); 
+	}
+	
+	public AnswerTuples evaluate(String queryText) {
+		QueryRecord record = m_queryManager.create(queryText); 
+		Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", queryText);
+		if (!record.processed())
+			evaluate(record);
+		AnswerTuples answer = record.getAnswers(); 
+		record.dispose();
+		return answer;
+  
+	}
+	
+	public void evaluate_shell(String queryText) {
+		QueryRecord record = m_queryManager.create(queryText); 
+		Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", queryText);
+		if (!record.processed())
+			evaluate(record);
+		Utility.logInfo("Answers to this query: ", record.outputSoundAnswerTuple());
+		record.dispose();
+  
+	}
+	
+	public void evaluate(Collection<QueryRecord> queryRecords) {
+		evaluate(queryRecords, null); 
+	}
+	
+	BufferedWriter answerWriter = null; 
+	
+	public void evaluate(Collection<QueryRecord> queryRecords, String answerFile) {
+		if (!isConsistent()) {
+			Utility.logDebug("The ontology and dataset is inconsistent."); 
+			return ; 
+		}
+		
+		if (answerWriter == null && answerFile != null) {
+			try {
+				answerWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(answerFile)));
+			} catch (FileNotFoundException e) {
+				Utility.logInfo("The answer file not found! " + answerFile);
+				return ; 
+			} 
+		}
+		
+		Timer t = new Timer(); 
+		for (QueryRecord record: queryRecords) {
+//			if (Integer.parseInt(record.getQueryID()) != 218) continue; 
+			Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", 
+					record.getQueryText());
+			if (!record.processed()) {
+				t.reset();
+				if (!record.processed())
+					evaluate(record); 
+				Utility.logInfo("Total time to answer this query: " + t.duration()); 
+				if (!fullReasoner && !record.processed()) {
+					Utility.logInfo("The query has not been fully answered in " + t.duration() + " seconds."); 
+					continue; 
+				}
+			}
+			// FIXME: change the argument below
+			try {
+				record.outputAnswers(answerWriter);
+			} catch (IOException e) {
+				Utility.logInfo("Error in outputing answers " + answerFile);
+			}
+			record.outputTimes();
+			record.dispose();
+		}
+	}
+	
+	public void dispose() {
+		if (answerWriter != null)
+			try {
+				answerWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		Utility.cleanup();
+	}  
+
+	private QueryManager m_queryManager = new QueryManager(); 
+	
+	public QueryManager getQueryManager() {
+		return m_queryManager; 
+	}
+
+
+	public static QueryReasoner getHermiTReasoner(boolean toCheckSatisfiability) {
+		return new HermiTReasoner(toCheckSatisfiability);
+	}
+	
+}
