@@ -107,8 +107,10 @@ public class PagodaTester {
 //			args = new String[] {npd_tbox, npd_abox, npd_query};
 //			args = new String[] {npd_bench_tbox, npd_bench_abox, npd_bench_query};
 //			args = new String[] {"../SemFacet/WebContent/WEB-INF/data/dbpedia.owl", "../SemFacet/WebContent/WEB-INF/data/dbpediaA.nt", null}; 
-//			args = new String[] {"../SemFacet/WebContent/WEB-INF/data/isg.owl", "../SemFacet/WebContent/WEB-INF/data/isg.nt", null}; 
-			args = new String[] {"..\\core\\WebContent\\WEB-INF\\data\\fly.owl", "..\\core\\WebContent\\WEB-INF\\data\\fly-data.nt", null}; 
+//			args = new String[] {"../core/WebContent/WEB-INF/data/fly.owl", "../core/WebContent/WEB-INF/data/fly-data.nt", null}; 
+//			args = new String[] {"data/lubm/univ-bench.owl", "data/lubm/lubm1.ttl", "data/lubm/lubm.sparql", "lubm.ans"}; 
+			args = new String[] {"data/uobm/univ-bench-dl.owl", "data/uobm/uobm1.ttl", "data/uobm/uobm.sparql", "uobm.ans"}; 
+//			args = new String[] {"data/fly/fly_anatomy_XP_with_GJ_FC_individuals.owl", "data/fly/fly.sparql", "fly.ans"}; 
 //			args = new String[] {bioModels_tbox, bioModels_abox, bioModels_queries}; 
 //			args = new String[] {chembl_tbox, chembl_abox, chembl_queries};
 //			args = new String[] {reactome_tbox, reactome_abox, reactome_queries};

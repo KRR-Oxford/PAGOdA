@@ -42,25 +42,31 @@ public class SimpleETL {
 //		RDFParser parser = new TurtleParser();
 		RDFParser parser = new RDFXMLParser(); 
 		
-		RDFWriter writer = new TurtleWriter(new FileOutputStream(m_fileToExport));
+		FileOutputStream fos = new FileOutputStream(m_fileToExport); 
+		try {
+			RDFWriter writer = new TurtleWriter(fos);
 		
-//		String m_fileToExport = m_fileToImport.replace(".owl", ".ntriple"); 
-//		RDFWriter writer = new NTriplesWriter(new FileOutputStream(m_fileToExport));
+//			String m_fileToExport = m_fileToImport.replace(".owl", ".ntriple"); 
+//			RDFWriter writer = new NTriplesWriter(new FileOutputStream(m_fileToExport));
 		
-		RDFHandlerWriter multiHandler = new RDFHandlerWriter(writer);
-		parser.setRDFHandler(multiHandler);
-		File fileToImport = new File(m_fileToImport);
-		if(fileToImport.isDirectory()) {
-			for(File file : fileToImport.listFiles()) {
-				if(file.isFile() && (Pattern.matches(".*.owl", file.getName()) || Pattern.matches(".*.rdf", file.getName()))) {
-					Utility.logDebug("Parsing " + file.getName());
-					parser.parse(new FileInputStream(file), m_prefix);
+			RDFHandlerWriter multiHandler = new RDFHandlerWriter(writer);
+			parser.setRDFHandler(multiHandler);
+			File fileToImport = new File(m_fileToImport);
+			if(fileToImport.isDirectory()) {
+				for(File file : fileToImport.listFiles()) {
+					if(file.isFile() && (Pattern.matches(".*.owl", file.getName()) || Pattern.matches(".*.rdf", file.getName()))) {
+						Utility.logDebug("Parsing " + file.getName());
+						parser.parse(new FileInputStream(file), m_prefix);
+					}
 				}
 			}
+			else
+				parser.parse(new FileInputStream(fileToImport), m_prefix);
+			writer.endRDF();
 		}
-		else
-			parser.parse(new FileInputStream(fileToImport), m_prefix);
-		writer.endRDF();
+		finally {
+			fos.close();
+		}
 		Utility.logInfo("SimpleETL rewriting DONE", 
 				"additional ontology data is saved in " + m_fileToExport + "."); 
 	}

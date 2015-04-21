@@ -36,8 +36,9 @@ public abstract class RDFoxQueryEngine implements QueryEngine {
 		DataStore store = getDataStore(); 
 		try {
 			long oldTripleCount = store.getTriplesCount(), tripleCount;
-			for (String file: importedFile.split(QueryReasoner.ImportDataFileSeparator))
+			for (String file: importedFile.split(QueryReasoner.ImportDataFileSeparator)) {
 				store.importTurtleFile(new File(file), prefixes);
+			}
 			tripleCount = store.getTriplesCount(); 
 			Utility.logDebug(name + " store after importing " + fileName + ": " + tripleCount + " (" + (tripleCount - oldTripleCount) + " new)");
 			store.clearRulesAndMakeFactsExplicit();
