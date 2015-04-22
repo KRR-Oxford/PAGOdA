@@ -48,6 +48,14 @@ public abstract class QueryReasoner {
 		return pagoda; 
 	}
 	
+	public void setToClassify(boolean flag) {
+		properties.setToClassify(flag);
+	}
+	
+	public void setToCallHermiT(boolean flag) {
+		properties.setToCallHermiT(flag);
+	}
+	
 	private static QueryReasoner getInstance(OWLOntology o, Properties p) {
 		return getInstance(Type.Full, o, true, true); 
 	}
