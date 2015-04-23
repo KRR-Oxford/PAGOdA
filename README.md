@@ -33,3 +33,4 @@ How to compile RDFox?
 How to run the project?
 ===
 
+To run PAGOdA inside your java project, please check the simple example in src/example/simpleExample.jar. To run PAGOdA in command line once you have a jar package, follow the instruction on the following website https://www.cs.ox.ac.uk/isg/tools/PAGOdA/. 
