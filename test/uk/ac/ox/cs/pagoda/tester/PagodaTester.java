@@ -99,7 +99,7 @@ public class PagodaTester {
 //			args = new String[] {dbpedia_tbox, dbpedia_abox, dbpedia_query};
 //			args = new String[] {travel_tbox, null, dbpedia_query274};
 //			args = new String[] {fly, null, fly_query};
-//			args = new String[] {npd_tbox, npd_abox, npd_query};
+			args = new String[] {npd_tbox, npd_abox, npd_query};
 //			args = new String[] {npd_bench_tbox, npd_bench_abox, npd_bench_query};
 //			args = new String[] {"../SemFacet/WebContent/WEB-INF/data/dbpedia.owl", "../SemFacet/WebContent/WEB-INF/data/dbpediaA.nt", null}; 
 //			args = new String[] {"../core/WebContent/WEB-INF/data/fly.owl", "../core/WebContent/WEB-INF/data/fly-data.nt", null}; 
@@ -129,6 +129,11 @@ public class PagodaTester {
 		if (args.length > index) properties.setToClassify(Boolean.parseBoolean(args[index++].substring(1)));   
 		if (args.length > index) properties.setToCallHermiT(Boolean.parseBoolean(args[index++].substring(1)));   
 	
+		System.out.println("Ontology file: " + properties.getOntologyPath()); 
+		System.out.println("Data files: " + properties.getDataPath());  
+		System.out.println("Query files: " + properties.getQueryPath()); 
+		System.out.println("Answer file: " + properties.getAnswerPath());
+		
 		QueryReasoner pagoda = null; 
 		
 		try {
