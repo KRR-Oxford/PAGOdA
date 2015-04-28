@@ -42,6 +42,8 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+import uk.ac.ox.cs.pagoda.util.Namespace;
+
 public class QueryGraph {
 	
 	Set<Variable> freeVars = new HashSet<Variable>(); 
@@ -63,10 +65,10 @@ public class QueryGraph {
 		
 		for (Atom atom: bodyAtoms) {
 			if (atom.getArity() == 1) {
-				updateExistentiallyVariables(atom.getArgumentVariable(0)); 
-				IRI iri = IRI.create(((AtomicConcept) atom.getDLPredicate()).getIRI()); 
-				if (ontology.containsClassInSignature(iri))
-					concepts.add(atom.getArgument(0), factory.getOWLClass(IRI.create(((AtomicConcept) atom.getDLPredicate()).getIRI())));
+				updateExistentiallyVariables(atom.getArgumentVariable(0));
+				String id = ((AtomicConcept) atom.getDLPredicate()).getIRI(); 
+				if (!id.equals(Namespace.PAGODA_ORIGINAL))
+					concepts.add(atom.getArgument(0), factory.getOWLClass(IRI.create(id)));
 			}
 			else if (atom.getArity() == 2) {
 				updateExistentiallyVariables(atom.getArgumentVariable(0)); 

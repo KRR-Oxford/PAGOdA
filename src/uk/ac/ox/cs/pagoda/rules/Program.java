@@ -138,7 +138,7 @@ public abstract class Program implements KnowledgeBase {
 		transitiveAxioms = new LinkedList<OWLTransitiveObjectPropertyAxiom>();
 		subPropChainAxioms = new LinkedList<OWLSubPropertyChainOfAxiom>();
 		
-		OWLEntity date = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLDatatype(IRI.create("http://www.w3.org/2001/XMLSchema#date")); 
+		OWLDatatype date = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLDatatype(IRI.create("http://www.w3.org/2001/XMLSchema#date")); 
 		int noOfDataPropertyRangeAxioms = 0, noOfAxioms = 0; 
 		for (OWLOntology onto: ontology.getImportsClosure())
 			for (OWLAxiom axiom: onto.getAxioms()) {
@@ -152,7 +152,7 @@ public abstract class Program implements KnowledgeBase {
 					Utility.logInfo("The axiom: " + axiom + " is being ignored.");
 				}
 				else {
-					if (axiom.containsEntityInSignature(date)) {
+					if (axiom.getDatatypesInSignature().contains(date)) {
 						Utility.logInfo("The axiom: " + axiom + " is being ignored.");
 					}
 					else manager.addAxiom(filteredOntology, axiom);

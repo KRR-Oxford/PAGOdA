@@ -31,6 +31,8 @@ import org.semanticweb.owlapi.model.OWLDataMinCardinality;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
@@ -46,6 +48,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.profiles.OWL2RLProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileReport;
 import org.semanticweb.owlapi.profiles.OWLProfileViolation;
@@ -360,6 +363,9 @@ public class RLPlusOntology implements KnowledgeBase {
 		Map<OWLClassExpression, OWLClass> complex2atomic= new HashMap<OWLClassExpression, OWLClass>();
 		
 		OWLDatatype anyURI = factory.getOWLDatatype(IRI.create(Namespace.XSD_NS + "anyURI")); 
+		OWLObjectProperty sameAs = factory.getOWLObjectProperty(IRI.create(Namespace.EQUALITY));
+		OWLObjectProperty differentFrom = factory.getOWLObjectProperty(IRI.create(Namespace.INEQUALITY));
+		
 		for (OWLOntology imported: inputOntology.getImportsClosure())
 			for (OWLAxiom axiom: imported.getAxioms()) {
 				if (axiom instanceof OWLClassAssertionAxiom) {
@@ -381,9 +387,32 @@ public class RLPlusOntology implements KnowledgeBase {
 					} 
 				}
 				else if (axiom instanceof OWLObjectPropertyAssertionAxiom || axiom instanceof OWLDataPropertyAssertionAxiom || axiom instanceof OWLAnnotationAssertionAxiom) {
-					if (axiom.containsEntityInSignature(anyURI)) continue; 
+					if (axiom.getDataPropertiesInSignature().contains(anyURI)) continue; 
 					flag = true;
 					manager.addAxiom(aBox, axiom);
+				}
+				else if (axiom instanceof OWLSameIndividualAxiom) {
+					OWLIndividual firstIndividual = null, previousIndividual = null, lastIndividual = null; 
+					for (OWLIndividual next: ((OWLSameIndividualAxiom) axiom).getIndividuals()) {
+						if (firstIndividual == null) firstIndividual = previousIndividual = next; 
+						else 						
+							manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(sameAs, previousIndividual, next));
+						previousIndividual = lastIndividual = next;
+					}
+					manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(sameAs, lastIndividual, firstIndividual));
+				}
+				else if (axiom instanceof OWLDifferentIndividualsAxiom) {
+					int index1 = 0, index2; 
+					for (OWLIndividual individual1: ((OWLDifferentIndividualsAxiom) axiom).getIndividuals()) {
+						++index1;
+						index2 = 0; 
+						for (OWLIndividual individual2: ((OWLDifferentIndividualsAxiom) axiom).getIndividuals()) {
+							if (index2++ < index1) {
+								manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(differentFrom, individual1, individual2));							
+							}
+							else break; 
+						}
+					}
 				}
 				else 
 					manager.addAxiom(tBox, axiom);

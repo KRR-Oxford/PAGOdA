@@ -68,7 +68,7 @@ public class Clause {
 		getVariableOccurrence(var2atom, bodyAtoms);
 
 		DLPredicate predicate;
-		Variable W = null;
+ 		Term W = null;
 
 		Map<Variable, String> nom2iri = new HashMap<Variable, String>();
 		Map<Variable, Constant> nom2datatype = new HashMap<Variable, Constant>();
@@ -97,8 +97,7 @@ public class Clause {
 				AtomicConcept concept = (AtomicConcept) predicate;
 				Variable v = atom.getArgumentVariable(0);
 				if (v == X)
-					subClasses.add(factory.getOWLClass(IRI.create(concept
-							.getIRI())));
+					subClasses.add(factory.getOWLClass(IRI.create(concept.getIRI())));
 				else if (predicate.toString().startsWith("<internal:nom#"))
 					nom2iri.put(v, DLClauseHelper.getIRI4Nominal(concept));
 			} else if (predicate instanceof AtomicRole) {
@@ -168,54 +167,58 @@ public class Clause {
 
 				OWLObjectPropertyExpression roleExp = factory
 						.getOWLObjectProperty(IRI.create(role.getIRI()));
-				if ((W = atom.getArgumentVariable(1)) == X) {
+				if ((W = atom.getArgument(1)).equals(X)) {
 					roleExp = roleExp.getInverseProperty();
-					W = atom.getArgumentVariable(0);
+					W = atom.getArgument(0);
 				}
 
-				if (X == W)
+				if (X == W) 
 					subClasses.add(factory.getOWLObjectHasSelf(roleExp));
-
-				AtomicConcept concept;
-				OWLClassExpression clsExp = null;
-				int number = 1;
-				Set<Variable> set = varCliques.get(W);
-				if (set != null)
-					number = set.size();
-
-				if (var2atom.containsKey(W)) {
-					Atom tAtom = var2atom.get(W);
-					DLPredicate tPredicate = tAtom.getDLPredicate();
-					if (tPredicate instanceof AtomicConcept) {
-						concept = (AtomicConcept) tPredicate;
-						clsExp = factory.getOWLClass(IRI.create(concept
-								.getIRI()));
-						if (headAtoms.contains(tAtom)) {
-							superClasses.add(factory.getOWLObjectAllValuesFrom(
-									roleExp, clsExp));
+				else if (W instanceof Individual)
+					subClasses.add(factory.getOWLObjectHasValue(roleExp, factory.getOWLNamedIndividual(IRI.create(((Individual) W).getIRI()))));
+				else {
+					AtomicConcept concept;
+					OWLClassExpression clsExp = null;
+					int number = 1;
+					Set<Variable> set = varCliques.get(W);
+					if (set != null)
+						number = set.size();
+	
+					if (var2atom.containsKey(W)) {
+						Atom tAtom = var2atom.get(W);
+						DLPredicate tPredicate = tAtom.getDLPredicate();
+						if (tPredicate instanceof AtomicConcept) {
+							concept = (AtomicConcept) tPredicate;
+							clsExp = factory.getOWLClass(IRI.create(concept
+									.getIRI()));
+							if (headAtoms.contains(tAtom)) {
+								superClasses.add(factory.getOWLObjectAllValuesFrom(
+										roleExp, clsExp));
+								subClasses.add(factory.getOWLObjectSomeValuesFrom(
+										roleExp, factory.getOWLThing()));
+								headAtoms.remove(tAtom);
+							} else {
+								if (number == 1)
+									subClasses.add(factory
+											.getOWLObjectSomeValuesFrom(roleExp,
+													clsExp));
+								else
+									subClasses.add(factory
+											.getOWLObjectMinCardinality(number,
+													roleExp, clsExp));
+							}
+						} else {
+							Utility.logDebug(tAtom, "strange ... -___-|||");
+						}
+					}
+					else {
+						if (number == 1)
 							subClasses.add(factory.getOWLObjectSomeValuesFrom(
 									roleExp, factory.getOWLThing()));
-							headAtoms.remove(tAtom);
-						} else {
-							if (number == 1)
-								subClasses.add(factory
-										.getOWLObjectSomeValuesFrom(roleExp,
-												clsExp));
-							else
-								subClasses.add(factory
-										.getOWLObjectMinCardinality(number,
-												roleExp, clsExp));
-						}
-					} else {
-						Utility.logDebug(tAtom, "strange ... -___-|||");
+						else
+							subClasses.add(factory.getOWLObjectMinCardinality(
+									number, roleExp));
 					}
-				} else {
-					if (number == 1)
-						subClasses.add(factory.getOWLObjectSomeValuesFrom(
-								roleExp, factory.getOWLThing()));
-					else
-						subClasses.add(factory.getOWLObjectMinCardinality(
-								number, roleExp));
 				}
 			}
 		}

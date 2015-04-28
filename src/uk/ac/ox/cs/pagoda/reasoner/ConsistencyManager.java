@@ -108,7 +108,7 @@ public class ConsistencyManager {
 		} catch (OWLOntologyCreationException e) {
 			e.printStackTrace();
 		}
-		fullQueryRecord.saveRelevantClause();
+//		fullQueryRecord.saveRelevantClause();
 		
 		boolean satisfiability; 
 		

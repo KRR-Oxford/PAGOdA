@@ -296,13 +296,14 @@ public class MyQueryReasoner extends QueryReasoner {
 		
 		Timer t = new Timer(); 
 		Checker summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT()); 
-		int validNumber = summarisedChecker.check(queryRecord.getGapAnswers()); 
+//		int validNumber = 
+		summarisedChecker.check(queryRecord.getGapAnswers()); 
 		summarisedChecker.dispose();
 		Utility.logDebug("Total time for full reasoner: " + t.duration());
-		if (validNumber == 0) { 
+//		if (validNumber == 0) { 
 			queryRecord.markAsProcessed(); 
 			Utility.logDebug("Difficulty of this query: " + queryRecord.getDifficulty());
-		}
+//		}
 	}
 	
 	@Override
