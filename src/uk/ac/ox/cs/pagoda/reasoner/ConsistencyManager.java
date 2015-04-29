@@ -23,6 +23,7 @@ import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
 
 public class ConsistencyManager {
 
@@ -218,7 +219,7 @@ public class ConsistencyManager {
 			Timer t1 = new Timer();
 			oldTripleCount = store.getTriplesCount();
 			for (String program: programs) 
-				store.importRules(program);
+				store.importRules(program, UpdateType.ScheduleForAddition);
 			store.applyReasoning(true);
 			tripleCount = store.getTriplesCount(); 
 			

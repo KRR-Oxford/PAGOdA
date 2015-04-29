@@ -77,8 +77,7 @@ public class HermitChecker implements Checker {
 	}
 	
 	private int tag = 0;
-//	AnswerTuple topAnswerTuple = null; 
-	AnswerTuple botAnswerTuple = null; 
+	AnswerTuple topAnswerTuple = null, botAnswerTuple = null; 
 	
 	private void initialiseReasoner() {
 		qGraph = new QueryGraph(queryClause.getBodyAtoms(), answerVariable[1], ontology); 
@@ -88,17 +87,20 @@ public class HermitChecker implements Checker {
 		if (hermit != null)	hermit.dispose();
 		
 		if (dGraph != null && answerVariable[1].length == 1 && (dGraph.getExits().size() > 1 || dGraph.getEntrances().size() > 1)) {
-			Set<OWLAxiom> axioms = new HashSet<OWLAxiom>(); 
-			addTopAndBotTuple(axioms);
-			manager.addAxioms(ontology, axioms); 
+			Set<OWLAxiom> topAxioms = new HashSet<OWLAxiom>(); 
+			Set<OWLAxiom> botAxioms = new HashSet<OWLAxiom>(); 
+			addTopAndBotTuple(topAxioms, botAxioms);
+			manager.addAxioms(ontology, topAxioms); 
+			manager.addAxioms(ontology, botAxioms); 
 			hermit = new Reasoner(ontology);
-			if (!hermit.isConsistent()) {
+			boolean topValid = true; 
+			if (!hermit.isConsistent() || topAnswerTuple != null && (topValid = check(topAnswerTuple))) {
 				hermit.dispose();
-				manager.removeAxioms(ontology, axioms); 
+				manager.removeAxioms(ontology, topAxioms); 
 				hermit = new Reasoner(ontology); 
 			} else {
-//				if (topAnswerTuple != null && !check(topAnswerTuple)) tag = -1; 
-//				else 
+				if (!topValid) tag = -1; 
+				else 
 					if (botAnswerTuple != null && check(botAnswerTuple)) tag = 1; 
 			}
 		}
@@ -106,23 +108,20 @@ public class HermitChecker implements Checker {
 			hermit = new Reasoner(ontology);
 	}
 	
-	private void addTopAndBotTuple(Set<OWLAxiom> axioms) {
-//		String top_str = Namespace.PAGODA_ANONY + "top";
-		String bot_str = Namespace.PAGODA_ANONY + "bot";
-//		topAnswerTuple = new AnswerTuple(new uk.ac.ox.cs.JRDFox.model.Individual[] { uk.ac.ox.cs.JRDFox.model.Individual.create(top_str) } ); 
+	private void addTopAndBotTuple(Set<OWLAxiom> topAxioms, Set<OWLAxiom> botAxioms) {
+		String top_str = Namespace.PAGODA_ANONY + "top", bot_str = Namespace.PAGODA_ANONY + "bot";
+		topAnswerTuple = new AnswerTuple(new uk.ac.ox.cs.JRDFox.model.Individual[] { uk.ac.ox.cs.JRDFox.model.Individual.create(top_str) } ); 
 		botAnswerTuple = new AnswerTuple(new uk.ac.ox.cs.JRDFox.model.Individual[] { uk.ac.ox.cs.JRDFox.model.Individual.create(bot_str) } );  
-//		OWLIndividual top_ind = factory.getOWLNamedIndividual(IRI.create(top_str));
-		OWLIndividual bot_ind = factory.getOWLNamedIndividual(IRI.create(bot_str));
+		OWLIndividual top_ind = factory.getOWLNamedIndividual(IRI.create(top_str)), bot_ind = factory.getOWLNamedIndividual(IRI.create(bot_str));
 		Map<OWLAxiom, Integer> counter = new HashMap<OWLAxiom, Integer>(); 
 		
-//		Set<String> topAnswers = new HashSet<String>();
-		Set<String> botAnswers = new HashSet<String>();
+		Set<String> topAnswers = new HashSet<String>(), botAnswers = new HashSet<String>();
 		OWLIndividual sub, obj; 
-//		if (dGraph.getExits().size() > 1) {
-//			for (Clique answerClique: dGraph.getExits())  
-//				topAnswers.add(((uk.ac.ox.cs.JRDFox.model.Individual) answerClique.getRepresentative().getAnswerTuple().getGroundTerm(0)).getIRI());
-//		}
-//		else topAnswerTuple = null; 
+		if (dGraph.getExits().size() > 1) {
+			for (Clique answerClique: dGraph.getExits())  
+				topAnswers.add(((uk.ac.ox.cs.JRDFox.model.Individual) answerClique.getRepresentative().getAnswerTuple().getGroundTerm(0)).getIRI());
+		}
+		else topAnswerTuple = null; 
 		
 		if (dGraph.getEntrances().size() > 1) {
 			for (Clique answerClique: dGraph.getEntrances()) 
@@ -134,23 +133,23 @@ public class HermitChecker implements Checker {
 			if (axiom instanceof OWLClassAssertionAxiom) {
 				OWLClassAssertionAxiom ca = (OWLClassAssertionAxiom) axiom;
 				sub = ca.getIndividual();
-//				if (topAnswers.contains(sub.toStringID())) 
-//					axioms.add(factory.getOWLClassAssertionAxiom(ca.getClassExpression(), top_ind));
+				if (topAnswers.contains(sub.toStringID())) 
+					topAxioms.add(factory.getOWLClassAssertionAxiom(ca.getClassExpression(), top_ind));
 				if (botAnswers.contains(sub.toStringID())) 
 					inc(counter, factory.getOWLClassAssertionAxiom(ca.getClassExpression(), bot_ind));
 			}
 			else if (axiom instanceof OWLObjectPropertyAssertionAxiom) {
 				OWLObjectPropertyAssertionAxiom oa = (OWLObjectPropertyAssertionAxiom) axiom; 
 				sub = oa.getSubject(); obj = oa.getObject(); 
-////				if (topAnswers.contains(sub.toStringID()))
-////					if (topAnswers.contains(obj.toStringID()))
-////						axioms.add(factory.getOWLObjectPropertyAssertionAxiom(oa.getProperty(), top_ind, top_ind));
-////					else 
-////						axioms.add(factory.getOWLObjectPropertyAssertionAxiom(oa.getProperty(), top_ind, obj));
-////				else {
-////					if (topAnswers.contains(obj.toStringID()))
-////						axioms.add(factory.getOWLObjectPropertyAssertionAxiom(oa.getProperty(), sub, top_ind));
-////				}
+				if (topAnswers.contains(sub.toStringID()))
+					if (topAnswers.contains(obj.toStringID()))
+						topAxioms.add(factory.getOWLObjectPropertyAssertionAxiom(oa.getProperty(), top_ind, top_ind));
+					else 
+						topAxioms.add(factory.getOWLObjectPropertyAssertionAxiom(oa.getProperty(), top_ind, obj));
+				else {
+					if (topAnswers.contains(obj.toStringID()))
+						topAxioms.add(factory.getOWLObjectPropertyAssertionAxiom(oa.getProperty(), sub, top_ind));
+				}
 				
 				if (botAnswers.contains(sub.toStringID()))
 					if (botAnswers.contains(obj.toStringID()))
@@ -166,8 +165,8 @@ public class HermitChecker implements Checker {
 			else if (axiom instanceof OWLDataPropertyAssertionAxiom) {
 				OWLDataPropertyAssertionAxiom da = (OWLDataPropertyAssertionAxiom) axiom; 
 				sub = da.getSubject(); 
-//				if (topAnswers.contains(sub.toStringID())) 
-//					axioms.add(factory.getOWLDataPropertyAssertionAxiom(da.getProperty(), top_ind, da.getObject()));
+				if (topAnswers.contains(sub.toStringID())) 
+					topAxioms.add(factory.getOWLDataPropertyAssertionAxiom(da.getProperty(), top_ind, da.getObject()));
 				
 				if (botAnswers.contains(sub.toStringID())) 
 					inc(counter, factory.getOWLDataPropertyAssertionAxiom(da.getProperty(), bot_ind, da.getObject()));
@@ -176,7 +175,7 @@ public class HermitChecker implements Checker {
 		int number = botAnswers.size(); 
 		for (Map.Entry<OWLAxiom, Integer> entry: counter.entrySet()) {
 			if (entry.getValue() == number) 
-				axioms.add(entry.getKey());
+				botAxioms.add(entry.getKey());
 		}
 	}
 

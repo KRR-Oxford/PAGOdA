@@ -21,7 +21,10 @@ import uk.ac.ox.cs.pagoda.util.Utility;
 public abstract class QueryReasoner {
 	
 //	protected boolean forSemFacet = false;
-	Properties properties; 
+	Properties properties;
+	
+	private static boolean defaultMultiStages = true; 
+	private static boolean defaultEqualities = true; 
 
 	public static enum Type { Full, RLU, ELHOU };  
 	
@@ -43,7 +46,7 @@ public abstract class QueryReasoner {
 	}
 	
 	public static QueryReasoner getInstance(OWLOntology o) {
-		QueryReasoner pagoda = getInstance(Type.Full, o, true, true);
+		QueryReasoner pagoda = getInstance(Type.Full, o, defaultMultiStages, defaultEqualities);
 		pagoda.properties = new Properties(); 
 		return pagoda; 
 	}
@@ -57,7 +60,7 @@ public abstract class QueryReasoner {
 	}
 	
 	private static QueryReasoner getInstance(OWLOntology o, Properties p) {
-		return getInstance(Type.Full, o, true, true); 
+		return getInstance(Type.Full, o, defaultMultiStages, defaultEqualities); 
 	}
 	
 	public static QueryReasoner getInstance(Type type, OWLOntology o, boolean performMultiStages, boolean considerEqualities) {
