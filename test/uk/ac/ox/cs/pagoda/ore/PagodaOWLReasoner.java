@@ -111,6 +111,9 @@ public class PagodaOWLReasoner implements OWLReasoner {
 	
 	@Override
 	public void precomputeInferences(InferenceType... inferenceTypes) throws ReasonerInterruptedException, TimeOutException, InconsistentOntologyException {
+		if (!sat) {
+			throw new InconsistentOntologyException();
+		}
 		if (inferenceTypes.length == 1 && inferenceTypes[0].equals(InferenceType.CLASS_ASSERTIONS) && types.isEmpty()) {
 			Set<OWLClass> queriedClasses = new HashSet<OWLClass>(); 
 			for (OWLOntology onto: ontology.getImportsClosure())
@@ -389,6 +392,9 @@ public class PagodaOWLReasoner implements OWLReasoner {
 	
 	@Override
 	public NodeSet<OWLClass> getTypes(OWLNamedIndividual ind, boolean direct) throws InconsistentOntologyException, FreshEntitiesException,	ReasonerInterruptedException, TimeOutException {
+		if (!sat) {
+			throw new InconsistentOntologyException(); 
+		}
 		if (types.containsKey(ind)) return types.get(ind); 
 		return thing; 
 	}
