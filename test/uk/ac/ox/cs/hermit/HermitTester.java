@@ -27,7 +27,7 @@ public class HermitTester {
 		for (OWLOntology o: onto.getImportsClosure()) {
 			System.out.println(o.containsEntityInSignature(concept));
 			for (OWLAxiom axiom: o.getAxioms())
-				if (axiom.containsEntityInSignature(concept))
+				if (axiom.getClassesInSignature().contains(concept))
 					System.out.println(axiom); 
 		}
 		

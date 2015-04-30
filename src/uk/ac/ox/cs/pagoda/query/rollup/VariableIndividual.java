@@ -261,12 +261,6 @@ class VariableIndividual implements OWLNamedIndividual {
 	}
 
 	@Override
-	public boolean containsEntityInSignature(OWLEntity owlEntity) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public EntityType<?> getEntityType() {
 		// TODO Auto-generated method stub
 		return null;

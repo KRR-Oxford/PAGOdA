@@ -111,12 +111,6 @@ class VariableConstant implements OWLLiteral {
 	}
 
 	@Override
-	public boolean containsEntityInSignature(OWLEntity owlEntity) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void accept(OWLAnnotationValueVisitor visitor) {
 		// TODO Auto-generated method stub
 		

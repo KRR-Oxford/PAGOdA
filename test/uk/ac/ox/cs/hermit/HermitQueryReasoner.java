@@ -73,7 +73,7 @@ public class HermitQueryReasoner {
 		if (onto.containsEntityInSignature(date)) {
 			for (OWLOntology o: onto.getImportsClosure())
 				for (OWLAxiom axiom: o.getAxioms())
-					if (axiom.containsEntityInSignature(date)) {
+					if (axiom.getDatatypesInSignature().contains(date)) {
 						System.out.println("The axiom: " + axiom + " is being ingored. ");
 						man.removeAxiom(onto, axiom); 
 					}

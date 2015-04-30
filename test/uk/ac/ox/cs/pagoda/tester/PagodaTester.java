@@ -119,7 +119,7 @@ public class PagodaTester {
 //			args[2] = args[2].replace(".sparql", "_pellet.sparql");
 		}
 
-		Properties properties = new Properties("config/fly.conf"); 
+		Properties properties = new Properties("config/uobm.conf"); 
 		
 		int index = 0; 
 		if (args.length > index) properties.setOntologyPath(args[index++]);   

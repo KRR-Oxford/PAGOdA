@@ -13,10 +13,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import uk.ac.ox.cs.data.WriteIntoTurtle;
-
 @RunWith(Suite.class)
-@SuiteClasses({ WriteIntoTurtle.class, PagodaUOBM.class
+@SuiteClasses({ PagodaUOBM.class
 	})
 public class AllTests {
 

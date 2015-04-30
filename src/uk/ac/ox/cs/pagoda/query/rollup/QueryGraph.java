@@ -304,8 +304,8 @@ class Visitor implements OWLClassExpressionVisitorEx<OWLClassExpression> {
 
 	@Override
 	public OWLClassExpression visit(OWLObjectHasValue ce) {
-		if (ce.getFiller() instanceof VariableIndividual) {
-			Individual c = (Individual) assignment.get(((VariableIndividual) ce.getFiller()).var); 
+		if (ce.getValue() instanceof VariableIndividual) {
+			Individual c = (Individual) assignment.get(((VariableIndividual) ce.getValue()).var); 
 			OWLIndividual l = factory.getOWLNamedIndividual(IRI.create(c.getIRI())); 
 			return factory.getOWLObjectHasValue(ce.getProperty(), l); 
 		}
@@ -356,8 +356,8 @@ class Visitor implements OWLClassExpressionVisitorEx<OWLClassExpression> {
 
 	@Override
 	public OWLClassExpression visit(OWLDataHasValue ce) {
-		if (ce.getFiller() instanceof VariableConstant) {
-			Constant c = (Constant) assignment.get(((VariableConstant) ce.getFiller()).var); 
+		if (ce.getValue() instanceof VariableConstant) {
+			Constant c = (Constant) assignment.get(((VariableConstant) ce.getValue()).var); 
 			OWLLiteral l = factory.getOWLLiteral(c.getLexicalForm(), c.getDatatypeURI()); 
 			return factory.getOWLDataHasValue(ce.getProperty(), l); 
 		}
