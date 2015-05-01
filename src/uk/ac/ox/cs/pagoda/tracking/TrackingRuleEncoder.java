@@ -239,6 +239,8 @@ public abstract class TrackingRuleEncoder {
 			return AtomicRole.create(Namespace.EQUALITY + suffix);
 		else if (p instanceof Inequality) 
 			return AtomicRole.create(Namespace.INEQUALITY + suffix);
+		else if (p instanceof DatatypeRestriction)
+			return AtomicConcept.create(((DatatypeRestriction) p).getDatatypeURI() + suffix);
 		else {
 			Utility.logDebug("strange DL predicate appeared ... " + p, 
 					"the program paused here in TrackingRuleEncoderDisj.java"); 

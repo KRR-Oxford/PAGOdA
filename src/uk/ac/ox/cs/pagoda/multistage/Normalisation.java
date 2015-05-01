@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.multistage;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.model.AtomicNegationConcept;
 import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.Constant;
+import org.semanticweb.HermiT.model.ConstantEnumeration;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.Individual;
 import org.semanticweb.HermiT.model.Inequality;
@@ -85,6 +87,10 @@ public class Normalisation {
 		}
 		
 		Atom headAtom = clause.getHeadAtom(0); 
+		if (headAtom.getDLPredicate() instanceof AtLeastDataRange) {
+			m_normClauses.add(clause);
+			return ;
+		}
 		AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate(); 
 		AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0));
 		DLClause newClause; 
@@ -113,19 +119,43 @@ public class Normalisation {
 		}
 		
 		Atom[] newHeadAtoms = new Atom[clause.getHeadLength()];
+		Set<Atom> additionalAtoms = new HashSet<Atom>(); 
 		int index = 0; 
 		DLClause newClause; 
 		for (Atom headAtom: clause.getHeadAtoms()) {
 			if (headAtom.getDLPredicate() instanceof AtLeast) {
-				AtLeastConcept alc = toAtLeastConcept((AtLeast) headAtom.getDLPredicate()); 
-				AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0)); 
-				newHeadAtoms[index] = Atom.create(ac, headAtom.getArgument(0));
-				m_normClauses.add(newClause = DLClause.create(new Atom[] {Atom.create(alc, headAtom.getArgument(0))}, new Atom[] {newHeadAtoms[index]}));
-				exist2original.put(newClause, clause); 
+				AtLeast al = (AtLeast) headAtom.getDLPredicate();
+				if (al instanceof AtLeastDataRange && ((AtLeastDataRange) al).getToDataRange() instanceof ConstantEnumeration) {
+					ConstantEnumeration ldr = (ConstantEnumeration) ((AtLeastDataRange) al).getToDataRange();
+					newHeadAtoms[index] = null;
+					Atom newHeadAtom; 
+					for (int i = 0; i < ldr.getNumberOfConstants(); ++i) {
+						newHeadAtom = Atom.create(AtomicRole.create(((AtomicRole) ((AtLeastDataRange) al).getOnRole()).getIRI()), headAtom.getArgument(0), ldr.getConstant(i));
+						if (newHeadAtoms[index] == null) newHeadAtoms[index] = newHeadAtom; 
+						else additionalAtoms.add(newHeadAtom);
+					}					
+				} else {
+					AtLeastConcept alc = toAtLeastConcept((AtLeast) headAtom.getDLPredicate()); 
+					AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0)); 
+					newHeadAtoms[index] = Atom.create(ac, headAtom.getArgument(0));
+					m_normClauses.add(newClause = DLClause.create(new Atom[] {Atom.create(alc, headAtom.getArgument(0))}, new Atom[] {newHeadAtoms[index]}));
+					exist2original.put(newClause, clause); 
+				}
 			}
 			else 
 				newHeadAtoms[index] = headAtom;
 			++index; 
+		}
+		
+		if (!additionalAtoms.isEmpty()) {
+			Atom[] tempHeadAtoms = newHeadAtoms; 
+			newHeadAtoms = new Atom[newHeadAtoms.length + additionalAtoms.size()];
+			for (int i = 0; i < tempHeadAtoms.length; ++i) 
+				newHeadAtoms[i] = tempHeadAtoms[i];
+			int tempI = tempHeadAtoms.length; 
+			for (Iterator<Atom> iter = additionalAtoms.iterator(); iter.hasNext(); ) 
+				newHeadAtoms[tempI++] = iter.next();
+			additionalAtoms.clear();
 		}
 
 		m_normClauses.add(newClause = DLClause.create(newHeadAtoms, clause.getBodyAtoms()));
@@ -313,7 +343,10 @@ public class Normalisation {
 		if (individuals.length > 1)
 			builder.append("_").append(getName(individuals[0].getIRI()));
 		
-		builder.append("_exist"); 
+		builder.append("_exist");
+		
+		if (builder.toString().contains("Lens_mount_"))
+			System.out.println(builder.toString());
 		
 		return builder.toString(); 
 	}

@@ -14,6 +14,7 @@ import org.semanticweb.HermiT.model.AtomicNegationConcept;
 import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.DLPredicate;
+import org.semanticweb.HermiT.model.DatatypeRestriction;
 import org.semanticweb.HermiT.model.Equality;
 import org.semanticweb.HermiT.model.Inequality;
 import org.semanticweb.HermiT.model.InverseRole;
@@ -26,6 +27,7 @@ import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Namespace;
+import uk.ac.ox.cs.pagoda.util.Utility;
 
 public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 
@@ -119,7 +121,9 @@ public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 			return Atom.create(getGapDLPredicate(Equality.INSTANCE), headAtom.getArgument(0), headAtom.getArgument(1)); 
 		if (p instanceof Inequality) 
 			return Atom.create(getGapDLPredicate((Inequality) p), headAtom.getArgument(0), headAtom.getArgument(1)); 
-
+		if (p instanceof DatatypeRestriction)
+			return Atom.create(getGapDLPredicate((DatatypeRestriction) p), headAtom.getArgument(0)); 
+		Utility.logError(p + " is not recognised.");
 		return null;
 	}
 
@@ -423,7 +427,11 @@ public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 				
 			for (int i = 0; i < clause.getBodyLength(); ++i) 
 				newBodyAtoms[index++] = selectBodyAtoms[selectIndex++] = clause.getBodyAtom(i);
-			
+
+			for (int i = 0; i < newBodyAtoms.length; ++i)
+				if (newBodyAtoms[i] == null) {
+					System.out.println(clause);
+				}
 			for (Atom atom: newHeadAtoms) {
 				newClause = DLClause.create(new Atom[] {atom}, newBodyAtoms); 
 				trackingClauses.add(newClause);
