@@ -3,10 +3,12 @@ package uk.ac.ox.cs.pagoda.tracking;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.semanticweb.HermiT.model.AnnotatedEquality;
 import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.DLClause;
+import org.semanticweb.HermiT.model.Equality;
 import org.semanticweb.HermiT.model.Variable;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -83,11 +85,12 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 		}
 
 		DLClause newClause;
+		headAtom = clause.getHeadAtom(0);
 		
-		int offset = (clause.getBodyLength() == 1 && clause.getBodyAtom(0).getDLPredicate().toString().contains("owl:Nothing")) ? 1 : 2; 
+		boolean equalityHead = headAtom.getDLPredicate() instanceof Equality || headAtom.getDLPredicate() instanceof AnnotatedEquality; 
+		int offset = (equalityHead || (clause.getBodyLength() == 1 && clause.getBodyAtom(0).getDLPredicate().toString().contains("owl:Nothing"))) ? 1 : 2;
 		
 		Atom[] newBodyAtoms = new Atom[clause.getBodyLength() + offset];
-		headAtom = clause.getHeadAtom(0);
 		newBodyAtoms[0] = Atom.create(
 				getTrackingDLPredicate(headAtom.getDLPredicate()), 
 				DLClauseHelper.getArguments(headAtom));

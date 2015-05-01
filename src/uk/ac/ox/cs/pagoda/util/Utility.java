@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -30,7 +32,7 @@ public class Utility {
 	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
-	public static final String TempDirectory = (new File("tmp")).getAbsolutePath() + FILE_SEPARATOR;
+	public static final String TempDirectory = (new File("tmp" + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()))).getAbsolutePath() + FILE_SEPARATOR;
 	
 	public static final int TEST = -1; 
 	public static final int FLY = 0;
@@ -235,7 +237,11 @@ public class Utility {
 
 	public static void cleanup() {
 		File tmp = new File(TempDirectory);
-		if (tmp.exists()) tmp.delete(); 
+		if (tmp.exists()) {
+			for (File file: tmp.listFiles())
+				file.delete(); 
+			tmp.delete();
+		}
 	}
 
 	public static String toFileIRI(String path) {

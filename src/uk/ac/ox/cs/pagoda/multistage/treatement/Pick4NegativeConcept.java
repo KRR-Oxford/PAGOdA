@@ -76,7 +76,9 @@ public abstract class Pick4NegativeConcept implements Treatment {
 			String negativeQuery; 
 			String[] subVars; 
 			for (Atom headAtom: orderedAtoms) {
-				negativeQuery = SparqlHelper.getSPARQLQuery(new Atom[] { MultiStageUpperProgram.getNegativeAtom(headAtom) }, 
+				Atom negativeAtom = MultiStageUpperProgram.getNegativeAtom(headAtom); 
+				if (negativeAtom == null) continue; 
+				negativeQuery = SparqlHelper.getSPARQLQuery(new Atom[] { negativeAtom }, 
 						subVars = MultiStageUpperProgram.getVarSubset(violation.getVariables(), headAtom));
 				negTuples.clear();
 				Atom gapHeadAtom = addGap ? getGapAtom(headAtom) : null; 

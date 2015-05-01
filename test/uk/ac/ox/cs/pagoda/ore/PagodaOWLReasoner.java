@@ -463,8 +463,7 @@ public class PagodaOWLReasoner implements OWLReasoner {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		reasoner.dispose();
 	}
 
 }
