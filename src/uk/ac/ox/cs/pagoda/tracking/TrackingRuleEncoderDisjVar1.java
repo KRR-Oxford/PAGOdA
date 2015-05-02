@@ -428,10 +428,6 @@ public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 			for (int i = 0; i < clause.getBodyLength(); ++i) 
 				newBodyAtoms[index++] = selectBodyAtoms[selectIndex++] = clause.getBodyAtom(i);
 
-			for (int i = 0; i < newBodyAtoms.length; ++i)
-				if (newBodyAtoms[i] == null) {
-					System.out.println(clause);
-				}
 			for (Atom atom: newHeadAtoms) {
 				newClause = DLClause.create(new Atom[] {atom}, newBodyAtoms); 
 				trackingClauses.add(newClause);

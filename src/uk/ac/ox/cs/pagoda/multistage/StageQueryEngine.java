@@ -36,8 +36,8 @@ public abstract class StageQueryEngine extends BasicQueryEngine {
 		try {
 			iter = evaluate(QueryRecord.botQueryText);
 			validMaterialisation = !iter.isValid();
-			if (!validMaterialisation)
-				outputAnswers(QueryRecord.botQueryText);
+//			if (!validMaterialisation)
+//				outputAnswers(QueryRecord.botQueryText);
 		} finally {
 			if (iter != null) iter.dispose();
 		}

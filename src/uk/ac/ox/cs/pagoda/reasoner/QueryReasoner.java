@@ -35,7 +35,7 @@ public abstract class QueryReasoner {
 		pagoda.loadOntology(ontology);
 		pagoda.importData(p.getDataPath());
 		if (pagoda.preprocess()) {
-			System.out.println("The ontology is consistent!");
+			Utility.logInfo("The ontology is consistent!");
 			return pagoda; 
 		}
 		else {

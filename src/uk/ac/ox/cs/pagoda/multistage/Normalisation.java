@@ -345,9 +345,6 @@ public class Normalisation {
 		
 		builder.append("_exist");
 		
-		if (builder.toString().contains("Lens_mount_"))
-			System.out.println(builder.toString());
-		
 		return builder.toString(); 
 	}
 

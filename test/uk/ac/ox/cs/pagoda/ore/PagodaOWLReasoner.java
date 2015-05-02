@@ -40,6 +40,7 @@ import uk.ac.ox.cs.JRDFox.model.GroundTerm;
 import uk.ac.ox.cs.JRDFox.model.Individual;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
+import uk.ac.ox.cs.pagoda.util.Utility;
 
 public class PagodaOWLReasoner implements OWLReasoner {
 	
@@ -133,7 +134,7 @@ public class PagodaOWLReasoner implements OWLReasoner {
 									++cnt; 
 								}
 							}
-							System.out.println("The number of answers: " + cnt); 
+							Utility.logInfo("The number of answers: " + cnt); 
 						} finally {
 							if (tuples != null) tuples.dispose();
 						}
