@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,9 +26,11 @@ import java.util.Stack;
 import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.model.Atom;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class Utility {
 	
-	private static final Logger LOGS = null; // Logger.getLogger(""); 
+	private static final Logger LOGS = Logger.getLogger("PAGOdA");
 	
 	public static final String JAVA_FILE_SEPARATOR = "/";
 	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
@@ -253,6 +257,16 @@ public class Utility {
 		if (path.startsWith(FILE_SEPARATOR)) iri = "file:" + path; 
 		else iri = "file:\\\\\\" + path;
 		return iri.replace(FILE_SEPARATOR, JAVA_FILE_SEPARATOR).replace(" ", "%20");
+	}
+
+	public static String combinePaths(String path1, String path2) {
+		File file1 = new File(path1);
+		File file2 = new File(file1, path2);
+		return file2.getPath();
+	}
+
+	public static void copyFile(String src, String dst) throws IOException {
+		Files.copy(Paths.get(src), Paths.get(dst), REPLACE_EXISTING);
 	}
 
 }

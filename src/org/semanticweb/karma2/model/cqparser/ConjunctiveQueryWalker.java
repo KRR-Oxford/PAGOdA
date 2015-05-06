@@ -67,7 +67,7 @@ public class ConjunctiveQueryWalker {
 		assert (prefixList.getType() == ConjunctiveQueryLexer.PREFIX_LIST);
 		Prefixes prefixes = walkPrefixList(prefixList);
 		CommonTree rulebody = iterator.next();
-		assert (prefixList.getType() == ConjunctiveQueryLexer.RULE);
+		assert (rulebody.getType() == ConjunctiveQueryLexer.RULE);
 		return walkRuleNode(rulebody, prefixes);
 
 	}
