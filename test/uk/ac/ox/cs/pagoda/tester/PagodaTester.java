@@ -17,7 +17,7 @@ public class PagodaTester {
 //	public static final String onto_dir = "/media/RDFData/yzhou/";
 //	public static final String onto_dir = "/users/yzhou/ontologies/";
 //	public static final String onto_dir = "/home/scratch/yzhou/ontologies/";
-	public static final String onto_dir = "/home/yzhou/krr-nas-share/Yujiao/ontologies/"; 
+	public static final String onto_dir = "/home/alessandro/Big_files/Ontologies/";
 
 	public static final String fly = onto_dir + "fly/fly_anatomy_XP_with_GJ_FC_individuals.owl";
 	public static final String fly_query = onto_dir + "fly/queries/fly.sparql";
@@ -88,12 +88,12 @@ public class PagodaTester {
 	
 	public static final String atlas_tbox = onto_dir + "bio2rdf/atlas/gxaterms.owl"; 
 	public static final String atlas_abox = onto_dir + "bio2rdf/atlas/graph sampling/sample_1.nt"; 
-	public static final String atlas_queries = onto_dir + "bio2rdf/atlas/queries/atomic_one.sparql"; 
-	
+	public static final String atlas_queries = onto_dir + "bio2rdf/atlas/queries/atomic_one.sparql";
+
 	public static void main(String... args) {
 		if (args.length == 0) {
 //			args = new String[] {test_tbox, test_abox, test_query};
-//			args = new String[] {lubm_tbox, lubm_abox, lubm_query.replace(".sparql", "_all_pagoda.sparql")}; 
+			args = new String[] {lubm_tbox, lubm_abox, lubm_query};
 //			args = new String[] {uobm_tbox, uobm_abox, uobm_query.replace(".sparql", "_all_pagoda.sparql")};
 //			args = new String[] {fly, "null", fly_query.replace(".sparql", "_pellet.sparql") };
 //			args = new String[] {dbpedia_tbox, dbpedia_abox, dbpedia_query};
@@ -129,10 +129,10 @@ public class PagodaTester {
 		if (args.length > index) properties.setToClassify(Boolean.parseBoolean(args[index++].substring(1)));   
 		if (args.length > index) properties.setToCallHermiT(Boolean.parseBoolean(args[index++].substring(1)));   
 	
-		System.out.println("Ontology file: " + properties.getOntologyPath()); 
-		System.out.println("Data files: " + properties.getDataPath());  
-		System.out.println("Query files: " + properties.getQueryPath()); 
-		System.out.println("Answer file: " + properties.getAnswerPath());
+		Utility.logInfo("Ontology file: " + properties.getOntologyPath());
+		Utility.logInfo("Data files: " + properties.getDataPath());
+		Utility.logInfo("Query files: " + properties.getQueryPath());
+		Utility.logInfo("Answer file: " + properties.getAnswerPath());
 		
 		QueryReasoner pagoda = null; 
 		

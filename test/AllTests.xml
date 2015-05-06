@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="AllTests">
+
+    <test name="PagodaUOBM">
+        <classes>
+            <class name="uk.ac.ox.cs.pagoda.test_units.PagodaUOBM" />
+        </classes>
+    </test>
+
+</suite>
