@@ -1,43 +1,19 @@
 package uk.ac.ox.cs.pagoda.query;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Variable;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import org.semanticweb.HermiT.model.*;
+import org.semanticweb.owlapi.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxAnswerTuples;
 import uk.ac.ox.cs.pagoda.rules.GeneralProgram;
 import uk.ac.ox.cs.pagoda.util.ConjunctiveQueryHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class QueryRecord {
 	
@@ -47,11 +23,12 @@ public class QueryRecord {
 	
 	private String queryText; 
 	private int queryID = -1; 
-	private String[][] answerVariables = null; 
-	private Set<AnswerTuple> soundAnswerTuples = new HashSet<AnswerTuple>(); 
+
+	private String[][] answerVariables = null;
+	private Set<AnswerTuple> soundAnswerTuples = new HashSet<AnswerTuple>();
 	private Set<AnswerTuple> gapAnswerTuples = null;
 	
-	private QueryManager m_manager; 
+	private QueryManager m_manager;
 	
 	public QueryRecord(QueryManager manager, String text, int id, int subID) {
 		m_manager =manager; 
@@ -178,7 +155,7 @@ public class QueryRecord {
 //				str.contains("internal:def"); 
 //	}
 
-	boolean processed = false; 
+	boolean processed = false;
 
 	public void markAsProcessed() {
 		processed = true; 
@@ -205,7 +182,7 @@ public class QueryRecord {
 		return queryText; 
 	}
 	
-	String stringQueryID = null; 
+	String stringQueryID = null;
 	
 	public String getQueryID() {
 		return stringQueryID; 
@@ -233,33 +210,65 @@ public class QueryRecord {
 			writer.newLine();
 			writer.write(queryText);
 			writer.newLine();
-			StringBuilder space = new StringBuilder(); 
-			int arity = getArity(), varSpace = 0; 
+			StringBuilder space = new StringBuilder();
+			int arity = getArity(), varSpace = 0;
 			for (int i = 0; i < arity; ++i)
-				varSpace += answerVariables[0][i].length(); 
+				varSpace += answerVariables[0][i].length();
 			for (int i = 0; i < (SEPARATOR.length() - varSpace) / (arity + 1); ++i)
-				space.append(" "); 
+				space.append(" ");
 			for (int i = 0; i < getArity(); ++i) {
 				writer.write(space.toString());
 				writer.write(answerVariables[0][i]);
 			}
 			writer.newLine();
 			writer.write(SEPARATOR);
-			writer.newLine(); 
+			writer.newLine();
 			for (AnswerTuple tuple: soundAnswerTuples) {
-				writer.write(tuple.toString()); 
+				writer.write(tuple.toString());
 				writer.newLine();
 			}
 			if (!processed())
 				for (AnswerTuple tuple: gapAnswerTuples) {
 					writer.write("*");
-					writer.write(tuple.toString()); 
+					writer.write(tuple.toString());
 					writer.newLine();
 				}
 //			writer.write(SEPARATOR);
 			writer.newLine();
 		}
 		
+	}
+
+	public void outputAnswerStatistics() {
+
+		int answerCounter = soundAnswerTuples.size();
+		if (!processed()) answerCounter += gapAnswerTuples.size();
+
+		Utility.logInfo("The number of answer tuples: " + answerCounter);
+//		if (jsonAnswers != null) {
+//			JSONObject jsonAnswer = new JSONObject();
+//
+//			jsonAnswer.put("queryID", queryID);
+//			jsonAnswer.put("queryText", queryText);
+//
+//			JSONArray answerVars = new JSONArray();
+//			int arity = getArity(), varSpace = 0;
+//			for (int i = 0; i < getArity(); i++)
+//				answerVars.add(answerVariables[0][i]);
+//			jsonAnswer.put("answerVars", answerVars);
+//
+//			JSONArray answerTuples = new JSONArray();
+//			soundAnswerTuples.stream().forEach(t -> answerTuples.add(t));
+//			jsonAnswer.put("answerTuples", answerTuples);
+//
+//			if (!processed) {
+//				JSONArray gapAnswerTuples = new JSONArray();
+//				gapAnswerTuples.stream().forEach(t -> gapAnswerTuples.add(t));
+//			}
+//			jsonAnswer.put("gapAnswerTuples", gapAnswerTuples);
+//
+//			jsonAnswers.put(Integer.toString(queryID), jsonAnswer);
+//		}
 	}
 	
 	public void outputTimes() {
@@ -290,8 +299,8 @@ public class QueryRecord {
 		return diffculty; 
 	}
 
-	OWLOntology relevantOntology = null; 
-	Set<DLClause> relevantClauses = new HashSet<DLClause>(); 
+	OWLOntology relevantOntology = null;
+	Set<DLClause> relevantClauses = new HashSet<DLClause>();
 
 	public void setRelevantOntology(OWLOntology knowledgebase) {
 		relevantOntology = knowledgebase; 
@@ -355,7 +364,7 @@ public class QueryRecord {
 	public enum Step {LowerBound, UpperBound, ELLowerBound, 
 		Fragment, FragmentRefinement, Summarisation, Dependency, FullReasoning};  
 	
-	double[] timer; 
+	double[] timer;
 
 	public void addProcessingTime(Step step, double time) {
 		timer[step.ordinal()] += time; 
@@ -431,14 +440,14 @@ public class QueryRecord {
 		}
 	}
 
-	int subID; 
+	int subID;
 	
 	public void updateSubID() {
 		++subID; 
 		stringQueryID = String.valueOf(queryID) + "_" + subID;
 	}
 	
-	DLClause queryClause = null; 
+	DLClause queryClause = null;
 
 	public DLClause getClause() {
 		if (queryClause != null)
@@ -557,6 +566,88 @@ public class QueryRecord {
 	public boolean hasNonAnsDistinguishedVariables() {
 		return answerVariables[1].length > answerVariables[0].length;
 	}
-	
 
+	public static class QueryRecordSerializer implements JsonSerializer<QueryRecord> {
+
+		public JsonElement serialize(QueryRecord src, Type typeOfSrc, JsonSerializationContext context) {
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			JsonObject object = new JsonObject();
+			object.addProperty("queryID", src.queryID);
+			object.addProperty("queryText", src.queryText);
+			object.addProperty("difficulty", src.diffculty.toString());
+
+			object.add("answerVariables", context.serialize(src.getAnswerVariables()));
+			object.add("answers", context.serialize(src.soundAnswerTuples));
+			object.add("gapAnswers", context.serialize(src.gapAnswerTuples));
+
+			return object;
+		}
+	}
+
+	private QueryRecord() {	}
+
+	public class QueryRecordDeserializer implements JsonDeserializer<QueryRecord> {
+
+		public QueryRecord deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException {
+
+			QueryRecord record = new QueryRecord();
+			JsonObject object = json.getAsJsonObject();
+			record.queryID = object.getAsJsonPrimitive("queryID").getAsInt();
+			record.queryText = object.getAsJsonPrimitive("queryText").getAsString();
+
+			JsonArray answerVariablesJson = object.getAsJsonArray("answerVariables");
+			record.answerVariables = new String[2][];
+			record.answerVariables[0] = new String[answerVariablesJson.size()];
+			for(int i = 0; i < answerVariablesJson.size(); i++)
+				record.answerVariables[0][i] = answerVariablesJson.get(i).getAsString();
+
+			record.soundAnswerTuples = context.deserialize(object.getAsJsonObject("answers"),
+														   new TypeToken<Set<AnswerTuple>>() {}.getType());
+
+			record.gapAnswerTuples = context.deserialize(object.getAsJsonObject("gapAnswers"),
+														 new TypeToken<Set<AnswerTuple>>() {}.getType());
+			return null;
+		}
+	}
+
+	/*
+	 * Two QueryRecords are equal iff
+	 * they have the same queryText and
+	 * their AnswerTuples have the same string representation
+	 * */
+	@Override
+	public boolean equals(Object o) {
+		if(!o.getClass().equals(getClass())) return false;
+		QueryRecord that = (QueryRecord) o;
+
+		if(!this.queryText.equals(that.queryText)) return false;
+
+		if(soundAnswerTuples.size() != that.soundAnswerTuples.size()) return false;
+		if(gapAnswerTuples.size() != that.gapAnswerTuples.size()) return false;
+
+		ArrayList<AnswerTuple> thisSoundAnswers = new ArrayList<>(soundAnswerTuples);
+		Collections.sort(thisSoundAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+
+		ArrayList<AnswerTuple> thatSoundAnswers = new ArrayList<>(that.soundAnswerTuples);
+		Collections.sort(thatSoundAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+
+		Iterator<AnswerTuple> soundIt1 = this.soundAnswerTuples.iterator();
+		Iterator<AnswerTuple> soundIt2 = that.soundAnswerTuples.iterator();
+		while(soundIt1.hasNext() && soundIt2.hasNext())
+			if(!soundIt1.next().m_str.equals(soundIt2.next().m_str)) return false;
+
+		ArrayList<AnswerTuple> thisGapAnswers = new ArrayList<>(gapAnswerTuples);
+		Collections.sort(thisGapAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+
+		ArrayList<AnswerTuple> thatGapAnswers = new ArrayList<>(that.gapAnswerTuples);
+		Collections.sort(thatGapAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+
+		Iterator<AnswerTuple> gapIt1 = this.gapAnswerTuples.iterator();
+		Iterator<AnswerTuple> gapIt2 = that.gapAnswerTuples.iterator();
+		while(gapIt1.hasNext() && gapIt2.hasNext())
+			if(!gapIt1.next().m_str.equals(gapIt2.next().m_str)) return false;
+
+		return true;
+	}
 }

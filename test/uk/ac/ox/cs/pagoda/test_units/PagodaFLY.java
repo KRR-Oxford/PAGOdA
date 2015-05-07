@@ -1,16 +1,17 @@
 package uk.ac.ox.cs.pagoda.test_units;
 
 import org.junit.Test;
-
 import uk.ac.ox.cs.pagoda.tester.PagodaTester;
+import uk.ac.ox.cs.pagoda.util.TestUtil;
 
 public class PagodaFLY {
 
 	@Test
 	public void test() {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		PagodaTester.main(
-				PagodaTester.onto_dir + "fly/fly_anatomy_XP_with_GJ_FC_individuals.owl",
-				PagodaTester.onto_dir + "fly/queries/fly_pellet.sparql" 
+				TestUtil.combinePaths(ontoDir, "fly/fly_anatomy_XP_with_GJ_FC_individuals.owl"),
+				TestUtil.combinePaths(ontoDir, "fly/queries/fly_pellet.sparql")
 		); 
 		
 //		Statistics stat = new Statistics("output/log4j.log");

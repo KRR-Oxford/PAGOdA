@@ -1,19 +1,20 @@
 package uk.ac.ox.cs.pagoda.query;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.gson.*;
 import org.semanticweb.HermiT.model.Constant;
 import org.semanticweb.HermiT.model.Individual;
 import org.semanticweb.HermiT.model.Term;
 import org.semanticweb.HermiT.model.Variable;
-
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.model.Datatype;
 import uk.ac.ox.cs.JRDFox.model.GroundTerm;
 import uk.ac.ox.cs.JRDFox.model.Literal;
 import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.util.Namespace;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AnswerTuple {
 	
@@ -40,17 +41,21 @@ public class AnswerTuple {
 		m_tuple = new GroundTerm[arity]; 
 		for (int i = 0; i < arity; ++i) m_tuple[i] = sup.m_tuple[i]; 
 	}
+
+	private AnswerTuple(String m_str) {
+		this.m_str = m_str;
+	}
 	
 	public int getArity() {
 		return m_tuple.length; 
 	}
 
 	public int hashCode() {
-//		return toString().hashCode();
-		int code = 0; 
-		for (int i = 0; i < m_tuple.length; ++i)
-			code = code * 1997 + m_tuple[i].hashCode();
-		return code; 
+		return toString().hashCode();
+//		int code = 0;
+//		for (int i = 0; i < m_tuple.length; ++i)
+//			code = code * 1997 + m_tuple[i].hashCode();
+//		return code;
 	}
 	
 	public boolean equals(Object obj) {
@@ -131,5 +136,21 @@ public class AnswerTuple {
 		if (length == extendedTuple.getArity()) return extendedTuple;
 		else return new AnswerTuple(extendedTuple, length); 
 	}
-	
+
+
+	public static class AnswerTupleSerializer implements JsonSerializer<AnswerTuple> {
+
+		public JsonElement serialize(AnswerTuple src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonPrimitive(src.toString());
+		}
+
+	}
+
+	public class AnswerTupleDeserializer implements JsonDeserializer<AnswerTuple> {
+		public AnswerTuple deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException {
+			return new AnswerTuple(json.getAsJsonPrimitive().getAsString());
+		}
+	}
+
 }

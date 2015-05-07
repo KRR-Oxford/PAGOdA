@@ -1,16 +1,16 @@
 package uk.ac.ox.cs.pagoda.tester;
 
+import uk.ac.ox.cs.pagoda.query.AnswerTuple;
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
+import uk.ac.ox.cs.pagoda.util.Properties;
+import uk.ac.ox.cs.pagoda.util.Timer;
+import uk.ac.ox.cs.pagoda.util.Utility;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-
-import uk.ac.ox.cs.pagoda.query.AnswerTuple;
-import uk.ac.ox.cs.pagoda.query.AnswerTuples;
-import uk.ac.ox.cs.pagoda.reasoner.*; 
-import uk.ac.ox.cs.pagoda.util.Properties;
-import uk.ac.ox.cs.pagoda.util.Timer;
-import uk.ac.ox.cs.pagoda.util.Utility;
 
 public class PagodaTester {
 
@@ -93,7 +93,7 @@ public class PagodaTester {
 	public static void main(String... args) {
 		if (args.length == 0) {
 //			args = new String[] {test_tbox, test_abox, test_query};
-			args = new String[] {lubm_tbox, lubm_abox, lubm_query};
+			args = new String[] {lubm_tbox, lubm_abox, lubm_query, "/home/alessandro/Desktop/lubm1.ans"};
 //			args = new String[] {uobm_tbox, uobm_abox, uobm_query.replace(".sparql", "_all_pagoda.sparql")};
 //			args = new String[] {fly, "null", fly_query.replace(".sparql", "_pellet.sparql") };
 //			args = new String[] {dbpedia_tbox, dbpedia_abox, dbpedia_query};
@@ -145,7 +145,7 @@ public class PagodaTester {
 			
 			if (properties.getQueryPath() != null)
 				for (String queryFile: properties.getQueryPath().split(";"))
-					pagoda.evaluate(pagoda.getQueryManager().collectQueryRecords(queryFile), properties.getAnswerPath());
+					pagoda.evaluate(pagoda.getQueryManager().collectQueryRecords(queryFile));
 
 			if (properties.getShellMode())
 				try {

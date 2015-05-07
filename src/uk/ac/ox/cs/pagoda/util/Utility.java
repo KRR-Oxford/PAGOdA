@@ -1,32 +1,13 @@
 package uk.ac.ox.cs.pagoda.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.Stack;
-
 import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.model.Atom;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class Utility {
 	
@@ -257,16 +238,6 @@ public class Utility {
 		if (path.startsWith(FILE_SEPARATOR)) iri = "file:" + path; 
 		else iri = "file:\\\\\\" + path;
 		return iri.replace(FILE_SEPARATOR, JAVA_FILE_SEPARATOR).replace(" ", "%20");
-	}
-
-	public static String combinePaths(String path1, String path2) {
-		File file1 = new File(path1);
-		File file2 = new File(file1, path2);
-		return file2.getPath();
-	}
-
-	public static void copyFile(String src, String dst) throws IOException {
-		Files.copy(Paths.get(src), Paths.get(dst), REPLACE_EXISTING);
 	}
 
 }

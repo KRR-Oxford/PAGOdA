@@ -3,7 +3,7 @@ package uk.ac.ox.cs.pagoda.test_units;
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.tester.PagodaTester;
 import uk.ac.ox.cs.pagoda.util.Properties;
-import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.TestUtil;
 
 import java.io.IOException;
 
@@ -27,10 +27,11 @@ public class JAIR_Scalability {
 	}
 
 	public void testReactome(int percentage, boolean save) throws IOException {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		String[] args = new String[] {
-				PagodaTester.onto_dir + "bio2rdf/reactome/biopax-level3-processed.owl", 
-				PagodaTester.onto_dir + "bio2rdf/reactome/graph sampling/simplifed_sample_" + percentage + ".ttl", 
-				PagodaTester.onto_dir + "bio2rdf/reactome/queries/test.sparql"
+				TestUtil.combinePaths(ontoDir, "bio2rdf/reactome/biopax-level3-processed.owl"),
+				TestUtil.combinePaths(ontoDir, "bio2rdf/reactome/graph sampling/simplifed_sample_" + percentage + ".ttl"),
+				TestUtil.combinePaths(ontoDir, "bio2rdf/reactome/queries/test.sparql")
 				, "reactome.ans"
 		}; 
 		if (percentage == 10)
@@ -38,15 +39,16 @@ public class JAIR_Scalability {
 		
 		PagodaTester.main(args); 
 		if (save)
-			Utility.copyFile("log4j.log", "/home/yzhou/java-workspace/test-share/results_new/reactome/pagoda_" + percentage + "p" + date);
+			TestUtil.copyFile("log4j.log", "/home/yzhou/java-workspace/test-share/results_new/reactome/pagoda_" + percentage + "p" + date);
 	}
 	
 	public void testChEMBL(int percentage, boolean save) throws IOException {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		String[] args = new String[] {
-				PagodaTester.onto_dir + "bio2rdf/chembl/cco-noDPR.ttl", 
-				PagodaTester.onto_dir + "bio2rdf/chembl/sample_" + percentage + ".nt",
-//				PagodaTester.onto_dir + "bio2rdf/chembl/queries/atomic_ground.sparql"
-				PagodaTester.onto_dir + "bio2rdf/chembl/queries/test.sparql"
+				TestUtil.combinePaths(ontoDir, "bio2rdf/chembl/cco-noDPR.ttl"),
+				TestUtil.combinePaths(ontoDir, "bio2rdf/chembl/sample_" + percentage + ".nt"),
+//				TestUtil.combinePaths(ontoDir, "bio2rdf/chembl/queries/atomic_ground.sparql")
+				TestUtil.combinePaths(ontoDir, "bio2rdf/chembl/queries/test.sparql")
 				, "chembl.ans"
 		}; 
 		if (percentage == 1 || percentage == 10 || percentage == 50)
@@ -57,15 +59,16 @@ public class JAIR_Scalability {
 		
 		PagodaTester.main(args);
 		if (save)
-			Utility.copyFile("log4j.log", "/home/yzhou/java-workspace/test-share/results_new/chembl/pagoda_" + percentage + "p" + date);
+			TestUtil.copyFile("log4j.log", "/home/yzhou/java-workspace/test-share/results_new/chembl/pagoda_" + percentage + "p" + date);
 	}
 	
 	public void testUniProt(int percentage, boolean save) throws IOException {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		String[] args = new String[] {
-				PagodaTester.onto_dir + "bio2rdf/uniprot/core-sat-processed.owl", 
-				PagodaTester.onto_dir + "bio2rdf/uniprot/sample_" + percentage + ".nt",
-//				PagodaTester.onto_dir + "bio2rdf/uniprot/queries/atomic_ground.sparql"
-				PagodaTester.onto_dir + "bio2rdf/uniprot/queries/test.sparql"
+				TestUtil.combinePaths(ontoDir, "bio2rdf/uniprot/core-sat-processed.owl"),
+				TestUtil.combinePaths(ontoDir, "bio2rdf/uniprot/sample_" + percentage + ".nt"),
+//				TestUtil.combinePaths(ontoDir, "bio2rdf/uniprot/queries/atomic_ground.sparql")
+				TestUtil.combinePaths(ontoDir, "bio2rdf/uniprot/queries/test.sparql")
 				, "uniprot.ans"
 		}; 
 		
@@ -77,7 +80,7 @@ public class JAIR_Scalability {
 		
 		PagodaTester.main(args); 
 		if (save)
-			Utility.copyFile("log4j.log", "/home/yzhou/java-workspace/test-share/results_new/uniprot/pagoda_" + percentage + "p" + date);
+			TestUtil.copyFile("log4j.log", "/home/yzhou/java-workspace/test-share/results_new/uniprot/pagoda_" + percentage + "p" + date);
 	}
 	
 	public static void main(String... args) throws IOException {

@@ -1,22 +1,23 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Collection;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
+import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.util.Properties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collection;
 
 public abstract class QueryReasoner {
 	
@@ -179,28 +180,33 @@ public abstract class QueryReasoner {
   
 	}
 	
+//	public void evaluate(Collection<QueryRecord> queryRecords) {
+//		evaluate(queryRecords);
+//	}
+
+	BufferedWriter answerWriter = null;
+
 	public void evaluate(Collection<QueryRecord> queryRecords) {
-		evaluate(queryRecords, null); 
-	}
-	
-	BufferedWriter answerWriter = null; 
-	
-	public void evaluate(Collection<QueryRecord> queryRecords, String answerFile) {
 		if (!isConsistent()) {
 			Utility.logDebug("The ontology and dataset is inconsistent."); 
 			return ; 
 		}
-		
-		if (answerWriter == null && answerFile != null) {
+
+		if(properties.getAnswerPath() != null && answerWriter == null) {
 			try {
-				answerWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(answerFile)));
-			} catch (FileNotFoundException e) {
-				Utility.logInfo("The answer file not found! " + answerFile);
-				return ; 
-			} 
+				answerWriter = Files.newBufferedWriter(Paths.get(properties.getAnswerPath()));
+			} catch (IOException e) {
+				Utility.logError("The answer path is not valid!");
+				e.printStackTrace();
+			}
 		}
 		
-		Timer t = new Timer(); 
+		Timer t = new Timer();
+		Gson gson = new GsonBuilder()
+				.registerTypeAdapter(AnswerTuple.class, new AnswerTuple.AnswerTupleSerializer())
+				.registerTypeAdapter(QueryRecord.class, new QueryRecord.QueryRecordSerializer())
+				.setPrettyPrinting()
+				.create();
 		for (QueryRecord record: queryRecords) {
 //			if (Integer.parseInt(record.getQueryID()) != 218) continue; 
 			Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", 
@@ -215,24 +221,23 @@ public abstract class QueryReasoner {
 					continue; 
 				}
 			}
-			// FIXME: change the argument below
-			try {
-				record.outputAnswers(answerWriter);
-			} catch (IOException e) {
-				Utility.logInfo("Error in outputing answers " + answerFile);
-			}
+			record.outputAnswerStatistics();
 			record.outputTimes();
-			record.dispose();
 		}
+		// TODO it can handle one call only
+		// if you call twice, you will end up with a json file with multiple roots
+		gson.toJson(queryRecords, answerWriter);
+		queryRecords.stream().forEach(record -> record.dispose());
 	}
 	
 	public void dispose() {
-		if (answerWriter != null)
+		if (answerWriter != null) {
 			try {
 				answerWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 		Utility.cleanup();
 	}  
 
