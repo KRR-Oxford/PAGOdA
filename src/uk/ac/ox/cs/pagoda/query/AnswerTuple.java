@@ -15,6 +15,9 @@ import uk.ac.ox.cs.pagoda.util.Namespace;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnswerTuple {
 	
@@ -42,31 +45,31 @@ public class AnswerTuple {
 		for (int i = 0; i < arity; ++i) m_tuple[i] = sup.m_tuple[i]; 
 	}
 
-	private AnswerTuple(String m_str) {
-		this.m_str = m_str;
-	}
+//	private AnswerTuple(String m_str) {
+//		this.m_str = m_str;
+//	}
 	
 	public int getArity() {
 		return m_tuple.length; 
 	}
 
 	public int hashCode() {
-		return toString().hashCode();
-//		int code = 0;
-//		for (int i = 0; i < m_tuple.length; ++i)
-//			code = code * 1997 + m_tuple[i].hashCode();
-//		return code;
+//		return toString().hashCode();
+		int code = 0;
+		for (int i = 0; i < m_tuple.length; ++i)
+			code = code * 1997 + m_tuple[i].hashCode();
+		return code;
 	}
 	
 	public boolean equals(Object obj) {
 		if (!(obj instanceof AnswerTuple)) return false;
-		AnswerTuple that = (AnswerTuple) obj; 
-		if (m_tuple.length != that.m_tuple.length) return false; 
+		AnswerTuple that = (AnswerTuple) obj;
+		if (m_tuple.length != that.m_tuple.length) return false;
 		for (int i = 0; i < m_tuple.length; ++i)
 			if (!m_tuple[i].equals(that.m_tuple[i]))
-				return false; 
-		return true; 
-//		return toString().equals(obj.toString()); 
+				return false;
+		return true;
+//		return toString().equals(obj.toString());
 	}
 	
 	public String toString() {
@@ -77,7 +80,7 @@ public class AnswerTuple {
 			if (m_tuple[i] instanceof uk.ac.ox.cs.JRDFox.model.Individual)
 				sb.append("<").append(((uk.ac.ox.cs.JRDFox.model.Individual) m_tuple[i]).getIRI()).append(">");
 			else if (m_tuple[i] instanceof uk.ac.ox.cs.JRDFox.model.BlankNode) {
-				sb.append(((uk.ac.ox.cs.JRDFox.model.BlankNode) m_tuple[i]).toString()); 
+				sb.append(m_tuple[i].toString());
 			}
 			else {
 				Literal l = (Literal) m_tuple[i]; 
@@ -146,10 +149,40 @@ public class AnswerTuple {
 
 	}
 
-	public class AnswerTupleDeserializer implements JsonDeserializer<AnswerTuple> {
+	static final Pattern owlLiteralRegex = Pattern.compile("^\"(?<lexicalForm>[^@]+(@(?<langTag>.+))?)\"(^^<(?<dataType>.+)>)?$");
+
+	public static class AnswerTupleDeserializer implements JsonDeserializer<AnswerTuple> {
 		public AnswerTuple deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
-			return new AnswerTuple(json.getAsJsonPrimitive().getAsString());
+			String tuplesString = json.getAsJsonPrimitive().getAsString();
+			StringTokenizer tokenizer = new StringTokenizer(SEPARATOR);
+			GroundTerm[] terms = new GroundTerm[tokenizer.countTokens()];
+
+			// TODO test parsing
+			for (int i = 0; i < tokenizer.countTokens(); i++) {
+				String token = tokenizer.nextToken();
+				if (token.charAt(0) == '<') {
+					terms[i] = uk.ac.ox.cs.JRDFox.model.Individual.create(token.substring(1,token.length()-1));
+				}
+				else if (token.charAt(0) == '"') {
+					Matcher matcher = owlLiteralRegex.matcher(token);
+					if(matcher.matches()) {
+						String lexicalForm = matcher.group("lexicalForm");
+						String dataTypeIRI = matcher.group("dataType");
+						Datatype dataType;
+						if (dataTypeIRI.isEmpty()) dataType = Datatype.RDF_PLAIN_LITERAL;
+						else dataType = uk.ac.ox.cs.JRDFox.model.Datatype.value(dataTypeIRI);
+						terms[i] = uk.ac.ox.cs.JRDFox.model.Literal.create(lexicalForm, dataType);
+					}
+					else {
+						throw new IllegalArgumentException("The given json does not represent a valid AnswerTuple");
+					}
+				}
+				else {
+					terms[i] = uk.ac.ox.cs.JRDFox.model.BlankNode.create(token);
+				}
+			}
+			return new AnswerTuple(terms);
 		}
 	}
 

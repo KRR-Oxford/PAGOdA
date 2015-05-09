@@ -1,5 +1,6 @@
 package uk.ac.ox.cs.pagoda.util;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.model.Atom;
 
@@ -11,7 +12,11 @@ import java.util.*;
 
 public class Utility {
 	
-	private static final Logger LOGS = Logger.getLogger("PAGOdA");
+	private static Logger LOGS;
+	static {
+		LOGS = Logger.getLogger("PAGOdA");
+		LOGS.setLevel(Level.INFO);
+	}
 	
 	public static final String JAVA_FILE_SEPARATOR = "/";
 	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
@@ -184,7 +189,7 @@ public class Utility {
 	}
 
 	private static StringBuilder logMessage = new StringBuilder();
-	
+
 	private static String getLogMessage(Object[] messages) {
 		if (messages.length == 1) return messages[0].toString(); 
 		else {
@@ -198,7 +203,11 @@ public class Utility {
 		}
 
 	}
-	
+
+	public static void setLogLevel(Level level) {
+		LOGS.setLevel(level);
+	}
+
 	public static void logInfo(Object... messages) {
 		if (LOGS != null)
 			LOGS.info(getLogMessage(messages)); 

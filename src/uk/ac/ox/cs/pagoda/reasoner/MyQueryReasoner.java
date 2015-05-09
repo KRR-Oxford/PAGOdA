@@ -1,23 +1,28 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
-import java.util.Collection;
-
 import org.semanticweb.karma2.profile.ELHOProfile;
 import org.semanticweb.owlapi.model.OWLOntology;
-
-import uk.ac.ox.cs.pagoda.multistage.*; 
+import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
 import uk.ac.ox.cs.pagoda.owl.EqualitiesEliminator;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
-import uk.ac.ox.cs.pagoda.query.*;
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
+import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.query.QueryRecord.Step;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.reasoner.light.KarmaQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.summary.HermitSummaryFilter;
-import uk.ac.ox.cs.pagoda.tracking.*;
+import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
+import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
+import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
+import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 public class MyQueryReasoner extends QueryReasoner {
 
@@ -203,10 +208,17 @@ public class MyQueryReasoner extends QueryReasoner {
 		String[] extendedQuery = queryRecord.getExtendedQueryText(); 
 		
 		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-		if (!queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery[0]))
+
+		// TODO log correct partial answers
+		Utility.logDebug(toJson("upperBound1", queryRecord));
+		if (!queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery[0])) {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[0], queryRecord.getAnswerVariables());
-		if (!queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables()) 
+			Utility.logDebug(toJson("upperBound2", queryRecord));
+		}
+		if (!queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables()) {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[1], queryRecord.getDistinguishedVariables());
+			Utility.logDebug(toJson("upperBound3", queryRecord));
+		}
 			
 		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
 		if (queryRecord.processed()) {
@@ -268,13 +280,19 @@ public class MyQueryReasoner extends QueryReasoner {
 
 //	int counter = 0; 
 
+	private String toJson(String key, Object value) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put(key, value);
+		return QueryRecord.GsonCreator.getInstance().toJson(map);
+	}
+
 	private void queryUpperBound(BasicQueryEngine upperStore, QueryRecord queryRecord, String queryText, String[] answerVariables) {
 		AnswerTuples rlAnswer = null; 
 		try {
 			Utility.logDebug(queryText);
 			rlAnswer = upperStore.evaluate(queryText, answerVariables);
 			Utility.logDebug(t.duration());
-			queryRecord.updateUpperBoundAnswers(rlAnswer); 
+			queryRecord.updateUpperBoundAnswers(rlAnswer);
 		} finally {
 			if (rlAnswer != null) rlAnswer.dispose();
 			rlAnswer = null;

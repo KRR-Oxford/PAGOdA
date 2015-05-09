@@ -13,7 +13,7 @@ public class PagodaLUBM {
 		TestGlobalCorrectness.test(Paths.get(ontoDir, "lubm/univ-bench.owl"),
 								   Paths.get(ontoDir, "lubm/data/lubm" + number + ".ttl"),
 								   Paths.get(ontoDir, "lubm/queries/test.sparql"),
-								   Paths.get(ontoDir, "lubm/lubm" + number + ".ans"));
+								   Paths.get(ontoDir, "lubm/lubm" + number + ".json"));
 	}
 
 	@Test

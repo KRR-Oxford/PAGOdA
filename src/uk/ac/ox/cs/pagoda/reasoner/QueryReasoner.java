@@ -1,10 +1,8 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.semanticweb.owlapi.model.OWLOntology;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
-import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
@@ -202,11 +200,7 @@ public abstract class QueryReasoner {
 		}
 		
 		Timer t = new Timer();
-		Gson gson = new GsonBuilder()
-				.registerTypeAdapter(AnswerTuple.class, new AnswerTuple.AnswerTupleSerializer())
-				.registerTypeAdapter(QueryRecord.class, new QueryRecord.QueryRecordSerializer())
-				.setPrettyPrinting()
-				.create();
+		Gson gson = QueryRecord.GsonCreator.getInstance();
 		for (QueryRecord record: queryRecords) {
 //			if (Integer.parseInt(record.getQueryID()) != 218) continue; 
 			Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", 
@@ -226,7 +220,7 @@ public abstract class QueryReasoner {
 		}
 		// TODO it can handle one call only
 		// if you call twice, you will end up with a json file with multiple roots
-		gson.toJson(queryRecords, answerWriter);
+		if(answerWriter != null) gson.toJson(queryRecords, answerWriter);
 		queryRecords.stream().forEach(record -> record.dispose());
 	}
 	
@@ -251,5 +245,5 @@ public abstract class QueryReasoner {
 	public static QueryReasoner getHermiTReasoner(boolean toCheckSatisfiability) {
 		return new HermiTReasoner(toCheckSatisfiability);
 	}
-	
+
 }

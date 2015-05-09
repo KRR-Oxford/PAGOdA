@@ -37,7 +37,7 @@ public class PagodaTester {
 	public static final int uobm_number = 1;
 	public static final String uobm_tbox = onto_dir + "uobm/univ-bench-dl.owl";
 	public static final String uobm_abox = onto_dir + "uobm/data/uobm" + uobm_number + ".ttl";
-	public static final String uobm_query = onto_dir + "uobm/queries/standard.sparql";
+	public static final String uobm_query = onto_dir + "uobm/queries/test.sparql";
 	public static final String uobm_query_temp = onto_dir + "uobm/queries/temp.sparql";
 	public static final String uobm_query2 = onto_dir + "uobm/queries/standard_q2.sparql";
 	public static final String uobm_query9 = onto_dir + "uobm/queries/standard_q9.sparql";
@@ -93,8 +93,8 @@ public class PagodaTester {
 	public static void main(String... args) {
 		if (args.length == 0) {
 //			args = new String[] {test_tbox, test_abox, test_query};
-			args = new String[] {lubm_tbox, lubm_abox, lubm_query, "/home/alessandro/Desktop/lubm1.ans"};
-//			args = new String[] {uobm_tbox, uobm_abox, uobm_query.replace(".sparql", "_all_pagoda.sparql")};
+//			args = new String[] {lubm_tbox, lubm_abox, lubm_query};
+			args = new String[] {uobm_tbox, uobm_abox, uobm_query, "/home/alessandro/Desktop/uobm1.ans"};
 //			args = new String[] {fly, "null", fly_query.replace(".sparql", "_pellet.sparql") };
 //			args = new String[] {dbpedia_tbox, dbpedia_abox, dbpedia_query};
 //			args = new String[] {travel_tbox, null, dbpedia_query274};

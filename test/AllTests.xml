@@ -9,4 +9,10 @@
         </classes>
     </test>
 
+    <test name="PagodaLUBM">
+        <classes>
+            <class name="uk.ac.ox.cs.pagoda.test_units.PagodaLUBM" />
+        </classes>
+    </test>
+
 </suite>

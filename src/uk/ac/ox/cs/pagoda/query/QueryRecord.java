@@ -19,7 +19,7 @@ public class QueryRecord {
 	
 	public static final String botQueryText = "SELECT ?X WHERE { ?X <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Nothing> }";
 
-	private Step diffculty;
+	private Step difficulty;
 	
 	private String queryText; 
 	private int queryID = -1; 
@@ -90,7 +90,7 @@ public class QueryRecord {
 	}
 	
 	public boolean updateUpperBoundAnswers(AnswerTuples answerTuples, boolean toCheckAux) {
-		RDFoxAnswerTuples rdfAnswerTuples; 
+		RDFoxAnswerTuples rdfAnswerTuples;
 		if (answerTuples instanceof RDFoxAnswerTuples)
 			rdfAnswerTuples = (RDFoxAnswerTuples) answerTuples; 
 		else {
@@ -125,7 +125,7 @@ public class QueryRecord {
 				if ((!toCheckAux || !tuple.hasAuxPredicate()) && !soundAnswerTuples.contains(tuple)) {
 					if (!toCheckAux && justCheck) return false; 
 					tupleSet.add(extendedTuple);
-			}
+				}
 			}
 		}
 		
@@ -146,7 +146,7 @@ public class QueryRecord {
 		}
 		
 		Utility.logInfo("The number of answers in the upper bound: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
-		
+
 		return update; 
 	}
 	
@@ -292,11 +292,11 @@ public class QueryRecord {
 	}
 	
 	public void setDifficulty(Step step) {
-		this.diffculty = step;   
+		this.difficulty = step;
 	}
 
 	public Step getDifficulty() {
-		return diffculty; 
+		return difficulty;
 	}
 
 	OWLOntology relevantOntology = null;
@@ -567,14 +567,16 @@ public class QueryRecord {
 		return answerVariables[1].length > answerVariables[0].length;
 	}
 
+	/**
+	 * A Json serializer, which considers the main attributes.
+	 */
 	public static class QueryRecordSerializer implements JsonSerializer<QueryRecord> {
-
 		public JsonElement serialize(QueryRecord src, Type typeOfSrc, JsonSerializationContext context) {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			JsonObject object = new JsonObject();
 			object.addProperty("queryID", src.queryID);
 			object.addProperty("queryText", src.queryText);
-			object.addProperty("difficulty", src.diffculty.toString());
+			object.addProperty("difficulty", src.difficulty != null ? src.difficulty.toString() : "");
 
 			object.add("answerVariables", context.serialize(src.getAnswerVariables()));
 			object.add("answers", context.serialize(src.soundAnswerTuples));
@@ -586,8 +588,10 @@ public class QueryRecord {
 
 	private QueryRecord() {	}
 
-	public class QueryRecordDeserializer implements JsonDeserializer<QueryRecord> {
-
+	/**
+	 * A Json deserializer, compliant to the output of the serializer defined above.
+	 */
+	public static class QueryRecordDeserializer implements JsonDeserializer<QueryRecord> {
 		public QueryRecord deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
 
@@ -595,6 +599,7 @@ public class QueryRecord {
 			JsonObject object = json.getAsJsonObject();
 			record.queryID = object.getAsJsonPrimitive("queryID").getAsInt();
 			record.queryText = object.getAsJsonPrimitive("queryText").getAsString();
+			record.difficulty = Step.valueOf(object.getAsJsonPrimitive("difficulty").getAsString());
 
 			JsonArray answerVariablesJson = object.getAsJsonArray("answerVariables");
 			record.answerVariables = new String[2][];
@@ -602,52 +607,63 @@ public class QueryRecord {
 			for(int i = 0; i < answerVariablesJson.size(); i++)
 				record.answerVariables[0][i] = answerVariablesJson.get(i).getAsString();
 
-			record.soundAnswerTuples = context.deserialize(object.getAsJsonObject("answers"),
-														   new TypeToken<Set<AnswerTuple>>() {}.getType());
+			record.soundAnswerTuples = new HashSet<>();
+			record.gapAnswerTuples = new HashSet<>();
+			Type type = new TypeToken<AnswerTuple>() { }.getType();
+			for (JsonElement answer : object.getAsJsonArray("answers")) {
+				record.soundAnswerTuples.add(context.deserialize(answer, type));
+			}
+			for (JsonElement answer : object.getAsJsonArray("gapAnswers")) {
+				record.soundAnswerTuples.add(context.deserialize(answer, type));
+			}
 
-			record.gapAnswerTuples = context.deserialize(object.getAsJsonObject("gapAnswers"),
-														 new TypeToken<Set<AnswerTuple>>() {}.getType());
-			return null;
+			return record;
 		}
 	}
 
-	/*
-	 * Two QueryRecords are equal iff
-	 * they have the same queryText and
-	 * their AnswerTuples have the same string representation
+	/**
+	 * Two <tt>QueryRecords</tt> are equal iff
+	 * they have the same <tt>queryText</tt>,
+	 * <tt>soundAnswerTuples</tt>
+	 * and <tt>gapAnswerTuples</tt>.
 	 * */
 	@Override
 	public boolean equals(Object o) {
 		if(!o.getClass().equals(getClass())) return false;
 		QueryRecord that = (QueryRecord) o;
+		return this.queryText.equals(that.queryText)
+				&& soundAnswerTuples.equals(that.soundAnswerTuples)
+				&& gapAnswerTuples.equals(that.gapAnswerTuples);
+	}
 
-		if(!this.queryText.equals(that.queryText)) return false;
+	@Override
+	public int hashCode() {
+		return Objects.hash(queryText, soundAnswerTuples, gapAnswerTuples);
+	}
 
-		if(soundAnswerTuples.size() != that.soundAnswerTuples.size()) return false;
-		if(gapAnswerTuples.size() != that.gapAnswerTuples.size()) return false;
+	public static class GsonCreator {
 
-		ArrayList<AnswerTuple> thisSoundAnswers = new ArrayList<>(soundAnswerTuples);
-		Collections.sort(thisSoundAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+		private static Gson gson;
 
-		ArrayList<AnswerTuple> thatSoundAnswers = new ArrayList<>(that.soundAnswerTuples);
-		Collections.sort(thatSoundAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+		private GsonCreator() {}
 
-		Iterator<AnswerTuple> soundIt1 = this.soundAnswerTuples.iterator();
-		Iterator<AnswerTuple> soundIt2 = that.soundAnswerTuples.iterator();
-		while(soundIt1.hasNext() && soundIt2.hasNext())
-			if(!soundIt1.next().m_str.equals(soundIt2.next().m_str)) return false;
+		public static Gson getInstance() {
+			if(gson == null) {
+				gson = new GsonBuilder()
+						.registerTypeAdapter(AnswerTuple.class, new AnswerTuple.AnswerTupleSerializer())
+						.registerTypeAdapter(QueryRecord.class, new QueryRecord.QueryRecordSerializer())
+						.registerTypeAdapter(QueryRecord.class, new QueryRecord.QueryRecordDeserializer())
+						.registerTypeAdapter(AnswerTuple.class, new AnswerTuple.AnswerTupleDeserializer())
+						.disableHtmlEscaping()
+						.setPrettyPrinting()
+						.create();
+			}
+			return gson;
+		}
 
-		ArrayList<AnswerTuple> thisGapAnswers = new ArrayList<>(gapAnswerTuples);
-		Collections.sort(thisGapAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
+//		public static void dispose() {
+//			gson = null;
+//		}
 
-		ArrayList<AnswerTuple> thatGapAnswers = new ArrayList<>(that.gapAnswerTuples);
-		Collections.sort(thatGapAnswers, (AnswerTuple t1, AnswerTuple t2) -> t1.m_str.compareTo(t2.m_str));
-
-		Iterator<AnswerTuple> gapIt1 = this.gapAnswerTuples.iterator();
-		Iterator<AnswerTuple> gapIt2 = that.gapAnswerTuples.iterator();
-		while(gapIt1.hasNext() && gapIt2.hasNext())
-			if(!gapIt1.next().m_str.equals(gapIt2.next().m_str)) return false;
-
-		return true;
 	}
 }

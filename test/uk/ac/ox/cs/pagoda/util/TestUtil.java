@@ -48,7 +48,7 @@ public class TestUtil {
         Files.copy(Paths.get(src), Paths.get(dst), REPLACE_EXISTING);
     }
 
-    /*
+    /**
      * Get the log file, which is assumed unique.
      * */
     public static String getLogFileName() {
@@ -61,4 +61,5 @@ public class TestUtil {
         }
         return null;
     }
+
 }
