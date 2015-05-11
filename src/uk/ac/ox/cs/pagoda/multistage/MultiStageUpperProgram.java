@@ -1,46 +1,21 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.AtLeast;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.AtLeastDataRange;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
-import uk.ac.ox.cs.pagoda.constraints.*;
+import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
 import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
-import uk.ac.ox.cs.pagoda.rules.Approximator;
 import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.Program;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.SparqlHelper;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.store.TupleIterator;
+
+import java.io.*;
+import java.util.*;
 
 public abstract class MultiStageUpperProgram {
 	
@@ -49,7 +24,7 @@ public abstract class MultiStageUpperProgram {
 	Collection<DLClause> clauses; 
 
 	BottomStrategy m_bottom = null; 
-	Approximator m_approxExist = new OverApproxExist();
+	ExistApproximator m_approxExist = new ExistConstantApproximator();
 
 	protected static final Variable X = Variable.create("X"); 
 	
@@ -397,8 +372,14 @@ public abstract class MultiStageUpperProgram {
 	}
 
 	public Collection<DLClause> convertExist(DLClause clause, DLClause originalDLClause) {
-		return m_bottom.process(m_approxExist.convert(clause, originalDLClause)); 
+		return m_bottom.process(m_approxExist.convert(clause, originalDLClause, null));
 	}
+
+	public Collection<DLClause> convertExist(DLClause clause, DLClause originalDLClause, List<AnswerTupleID> violationTuples) {
+		return m_bottom.process(m_approxExist.convert(clause, originalDLClause, null));
+	}
+
+
 
 	public void save(String filename) {
 		try {

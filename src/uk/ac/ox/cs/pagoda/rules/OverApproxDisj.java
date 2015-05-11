@@ -1,22 +1,19 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
+
+import java.util.*;
 
 public class OverApproxDisj implements Approximator {
 
+	/**
+	 * Splits a disjunctive rule into a bunch of rules.
+	 * <p>
+	 * It returns a collection containing a rule for each atom in the head of the input rule.
+	 * Each rule has the same body of the input rule,
+	 * and the relative head atom as head.
+	 * */
 	@Override
 	public Collection<DLClause> convert(DLClause clause, DLClause originalClause) {
 		LinkedList<DLClause> distincts = new LinkedList<DLClause>();

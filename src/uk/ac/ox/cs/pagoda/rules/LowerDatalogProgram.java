@@ -1,23 +1,9 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
-
 import org.semanticweb.HermiT.Reasoner;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.Variable;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLObjectInverseOf;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.HermiT.model.*;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.Node;
-
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.constraints.NullaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.UnaryBottom;
@@ -26,6 +12,11 @@ import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.multistage.RestrictedApplication;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class LowerDatalogProgram extends ApproxProgram implements IncrementalProgram {
 	
@@ -68,7 +59,7 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 		norm.process();
 		for (DLClause nClause: norm.getNormlisedClauses()) {
 			if (nClause.getHeadLength() != 1)
-				for (DLClause newClause: RestrictedApplication.addAddtionalDatalogRules(nClause, tBottom, norm)) {
+				for (DLClause newClause: RestrictedApplication.addAdditionalDatalogRules(nClause, tBottom, norm)) {
 //					System.out.println(newClause); 
 					if (newClause.getHeadAtom(0).getDLPredicate() instanceof AtomicConcept || newClause.getHeadAtom(0).getDLPredicate() instanceof AtomicRole) {
 //						System.out.println(newClause); 

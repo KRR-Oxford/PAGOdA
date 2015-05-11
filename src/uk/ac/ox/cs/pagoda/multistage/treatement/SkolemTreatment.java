@@ -1,11 +1,11 @@
 package uk.ac.ox.cs.pagoda.multistage.treatement;
 
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.pagoda.multistage.FoldedApplication;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
 import uk.ac.ox.cs.pagoda.multistage.Violation;
 
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-
+// TODO should I implement something like this?
 public class SkolemTreatment implements Treatment {
 
 	public SkolemTreatment(MultiStageQueryEngine multiStageQueryEngine,	FoldedApplication program) {

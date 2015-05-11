@@ -1,25 +1,8 @@
 package uk.ac.ox.cs.pagoda.multistage.treatement;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.constraints.PredicateDependency;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
@@ -31,8 +14,8 @@ import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.SparqlHelper;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.store.TupleIterator;
+
+import java.util.*;
 
 public abstract class Pick4NegativeConcept implements Treatment {
 	
@@ -140,7 +123,8 @@ public abstract class Pick4NegativeConcept implements Treatment {
 					else headAtoms.add(tHeadAtom); 
 				}
 				else {
-					Utility.logError("There might be an error here... Can't happend!!!"); 
+					Utility.logError("There might be an error here... Can't happend!!!");
+					throw new Error("This condition should not happen!");
 				}
 			}
 			if (!tuples.isEmpty())

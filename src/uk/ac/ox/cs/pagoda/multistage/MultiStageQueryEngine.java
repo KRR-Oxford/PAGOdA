@@ -1,16 +1,18 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.util.Collection;
-
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
-import uk.ac.ox.cs.pagoda.multistage.treatement.*;
+import uk.ac.ox.cs.pagoda.multistage.treatement.Pick4NegativeConceptNaive;
+import uk.ac.ox.cs.pagoda.multistage.treatement.Pick4NegativeConceptQuerySpecific;
+import uk.ac.ox.cs.pagoda.multistage.treatement.Treatment;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.rules.Program;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+
+import java.util.Collection;
 
 public class MultiStageQueryEngine extends StageQueryEngine {
 
@@ -42,7 +44,7 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 		RestrictedApplication program = new RestrictedApplication(generalProgram, dProgram.getUpperBottomStrategy());
 		Treatment treatment = new Pick4NegativeConceptNaive(this, program);
 		int ret = materialise(program, treatment, gap);
-		treatment.dispose();
+		treatment.dispose(); // does nothing
 		return ret; 
 	}
 	

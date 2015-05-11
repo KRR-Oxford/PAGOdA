@@ -1,16 +1,16 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 import org.semanticweb.HermiT.model.AtLeast;
 import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.DLPredicate;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 public interface Approximator {
 
-	public Collection<DLClause> convert(DLClause clause, DLClause originalClause); 
+	Collection<DLClause> convert(DLClause clause, DLClause originalClause);
 	
 }
 

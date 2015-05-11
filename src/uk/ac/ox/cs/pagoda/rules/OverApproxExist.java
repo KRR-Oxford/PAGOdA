@@ -1,29 +1,10 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-
-import org.semanticweb.HermiT.model.AtLeast;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.AtLeastDataRange;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
-import org.semanticweb.HermiT.model.LiteralConcept;
-import org.semanticweb.HermiT.model.Role;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
+
+import java.util.*;
 
 public class OverApproxExist implements Approximator {
 
@@ -142,6 +123,7 @@ public class OverApproxExist implements Approximator {
 			AtomicConcept atomicConcept = null;
 			
 			if (concept instanceof AtomicNegationConcept) {
+				// is this already in MultiStageUpperProgram?
 				Atom atom1 = Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
 				Atom atom2 = Atom.create(atomicConcept = getNegationConcept(atomicConcept), X);
 				ret.add(DLClause.create(new Atom[0], new Atom[] {atom1, atom2})); 

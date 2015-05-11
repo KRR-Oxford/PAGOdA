@@ -1,21 +1,13 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.InverseRole;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.rules.Program;
 import uk.ac.ox.cs.pagoda.util.Timer;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 public class RestrictedApplication extends MultiStageUpperProgram {
 
@@ -34,13 +26,14 @@ public class RestrictedApplication extends MultiStageUpperProgram {
 		Collection<DLClause> allRules = new LinkedList<DLClause>(rules); 
 		allRules.addAll(constraints); 
 		for (DLClause clause: allRules) {
-			for (DLClause newClause: addAddtionalDatalogRules(clause, m_bottom, norm))
+			for (DLClause newClause: addAdditionalDatalogRules(clause, m_bottom, norm))
 				addDatalogRule(newClause);
 		}
 		allRules.clear();
 	}
-	
-	public static Collection<DLClause> addAddtionalDatalogRules(DLClause clause, BottomStrategy bottom, Normalisation norm) {
+
+	// It should be c-Skolemisation + shifting
+	public static Collection<DLClause> addAdditionalDatalogRules(DLClause clause, BottomStrategy bottom, Normalisation norm) {
 		LinkedList<DLClause> newClauses = new LinkedList<DLClause>(); 
 		Atom[] headAtoms = clause.getHeadAtoms(); 
 		Atom[] bodyAtoms = clause.getBodyAtoms(); 

@@ -44,7 +44,7 @@ public class MyQueryReasoner extends QueryReasoner {
 	
 	boolean equalityTag; 
 	boolean multiStageTag;
-	
+
 	public MyQueryReasoner() {
 		setup(true, true); 
 	}
@@ -210,14 +210,14 @@ public class MyQueryReasoner extends QueryReasoner {
 		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 
 		// TODO log correct partial answers
-		Utility.logDebug(toJson("upperBound1", queryRecord));
+//		Utility.logDebug(toJson("upperBound1", queryRecord));
 		if (!queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery[0])) {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[0], queryRecord.getAnswerVariables());
-			Utility.logDebug(toJson("upperBound2", queryRecord));
+//			Utility.logDebug(toJson("upperBound2", queryRecord));
 		}
 		if (!queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables()) {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[1], queryRecord.getDistinguishedVariables());
-			Utility.logDebug(toJson("upperBound3", queryRecord));
+//			Utility.logDebug(toJson("upperBound3", queryRecord));
 		}
 			
 		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
