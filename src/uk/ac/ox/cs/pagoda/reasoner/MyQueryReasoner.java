@@ -44,31 +44,36 @@ public class MyQueryReasoner extends QueryReasoner {
 	
 	boolean equalityTag; 
 	boolean multiStageTag;
-
-	public MyQueryReasoner() {
-		setup(true, true); 
-	}
+	TrackingRuleEncoder encoder;
+	Timer t = new Timer();
+	private Collection<String> predicatesWithGap = null;
+	private Boolean satisfiable;
+	private ConsistencyManager consistency = new ConsistencyManager(this);
 	
+	public MyQueryReasoner() {
+		setup(true, true);
+	}
+
 	public MyQueryReasoner(boolean multiStageTag, boolean considerEqualities) {
-		setup(multiStageTag, considerEqualities); 
+		setup(multiStageTag, considerEqualities);
 	}
 	
 	private BasicQueryEngine getUpperStore(String name, boolean checkValidity) {
 		if (multiStageTag)
-			return new MultiStageQueryEngine(name, checkValidity); 
+			return new MultiStageQueryEngine(name, checkValidity);
 //			return new TwoStageQueryEngine(name, checkValidity);
-		else 
-			return new BasicQueryEngine(name); 
+		else
+			return new BasicQueryEngine(name);
 	}
 	
 	public void setup(boolean multiStageTag, boolean considerEqualities) {
-		satisfiable = null; 
-		this.multiStageTag = multiStageTag; 
+		satisfiable = null;
+		this.multiStageTag = multiStageTag;
 		this.equalityTag = considerEqualities;
 
 		rlLowerStore = new BasicQueryEngine("rl-lower-bound");
 		elLowerStore = new KarmaQueryEngine("elho-lower-bound");
-		
+
 		trackingStore = getUpperStore("tracking", false);
 	}
 	
@@ -80,113 +85,108 @@ public class MyQueryReasoner extends QueryReasoner {
 		elLowerStore.importRDFData(name, datafile);
 		trackingStore.importRDFData(name, datafile);
 	}
-	
+
 	@Override
 	public void loadOntology(OWLOntology o) {
 		if (!equalityTag) {
 			EqualitiesEliminator eliminator = new EqualitiesEliminator(o);
 			o = eliminator.getOutputOntology();
 			eliminator.save();
-		}			
+		}
 
-		ontology = o; 
+		ontology = o;
 		program = new DatalogProgram(ontology, properties.getToClassify());
 //		program.getLower().save();
 //		program.getUpper().save();
 //		program.getGeneral().save();
-		
-		if (multiStageTag && !program.getGeneral().isHorn()) { 
+
+		if (multiStageTag && !program.getGeneral().isHorn()) {
 			lazyUpperStore =  getUpperStore("lazy-upper-bound", true); // new MultiStageQueryEngine("lazy-upper-bound", true); //
 		}
-		
+
+		// TODO add new upper store creation
+
 		importData(program.getAdditionalDataFile());
-	
+
 		elho_ontology = new ELHOProfile().getFragment(ontology);
 		elLowerStore.processOntology(elho_ontology);
 	}
-
-	private Collection<String> predicatesWithGap = null; 
 	
 	public Collection<String> getPredicatesWithGap() {
-		return predicatesWithGap; 
-	}	
-	
+		return predicatesWithGap;
+	}
+
 	@Override
 	public boolean preprocess() {
-		t.reset(); 
+		t.reset();
 		Utility.logInfo("Preprocessing ... checking satisfiability ... ");
 
-		String name = "data", datafile = importedData.toString(); 
+		String name = "data", datafile = importedData.toString();
 		rlLowerStore.importRDFData(name, datafile);
 		rlLowerStore.materialise("lower program", program.getLower().toString());
 //		program.getLower().save();
 		if (!consistency.checkRLLowerBound()) return false;
 		Utility.logInfo("The number of sameAs assertions in RL lower store: " + rlLowerStore.getSameAsNumber());
-		
+
 		String originalMarkProgram = OWLHelper.getOriginalMarkProgram(ontology);
-		
+
 		elLowerStore.importRDFData(name, datafile);
 		elLowerStore.materialise("saturate named individuals", originalMarkProgram);
 		elLowerStore.materialise("lower program", program.getLower().toString());
 		elLowerStore.initialiseKarma();
-		if (!consistency.checkELLowerBound()) return false; 			
+		if (!consistency.checkELLowerBound()) return false;
 
 		if (lazyUpperStore != null) {
 			lazyUpperStore.importRDFData(name, datafile);
 			lazyUpperStore.materialise("saturate named individuals", originalMarkProgram);
-			int tag = lazyUpperStore.materialiseRestrictedly(program, null);  
+			int tag = lazyUpperStore.materialiseRestrictedly(program, null);
 			if (tag != 1) {
 				lazyUpperStore.dispose();
 				lazyUpperStore = null;
 			}
-			if (tag == -1) return false; 
+			if (tag == -1) return false;
 		}
 		if (consistency.checkLazyUpper()) {
-			satisfiable = true; 
-			Utility.logInfo("time for satisfiability checking: " + t.duration()); 
+			satisfiable = true;
+			Utility.logInfo("time for satisfiability checking: " + t.duration());
 		}
-			
+
+		// TODO add new upper store preprocessing
+
 		trackingStore.importRDFData(name, datafile);
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);
-		
+
 //		materialiseFullUpper();
-		GapByStore4ID gap = new GapByStore4ID(trackingStore); 
+		GapByStore4ID gap = new GapByStore4ID(trackingStore);
 		trackingStore.materialiseFoldedly(program, gap);
-		predicatesWithGap = gap.getPredicatesWithGap(); 
+		predicatesWithGap = gap.getPredicatesWithGap();
 		gap.clear();
-		
+
 		if (program.getGeneral().isHorn())
 			encoder = new TrackingRuleEncoderWithGap(program.getUpper(), trackingStore);
-		else 
-			encoder = new TrackingRuleEncoderDisjVar1(program.getUpper(), trackingStore); 
-//			encoder = new TrackingRuleEncoderDisj1(program.getUpper(), trackingStore); 
-//			encoder = new TrackingRuleEncoderDisjVar2(program.getUpper(), trackingStore); 
-//			encoder = new TrackingRuleEncoderDisj2(program.getUpper(), trackingStore); 
-		
-		program.deleteABoxTurtleFile(); 
+		else
+			encoder = new TrackingRuleEncoderDisjVar1(program.getUpper(), trackingStore);
+//			encoder = new TrackingRuleEncoderDisj1(program.getUpper(), trackingStore);
+//			encoder = new TrackingRuleEncoderDisjVar2(program.getUpper(), trackingStore);
+//			encoder = new TrackingRuleEncoderDisj2(program.getUpper(), trackingStore);
+
+		program.deleteABoxTurtleFile();
 
 		if (!isConsistent())
-			return false; 
-		
+			return false;
+
 		consistency.extractBottomFragment();
-		return true; 
+		return true;
 	}
 	
-	private Boolean satisfiable;
-	private ConsistencyManager consistency = new ConsistencyManager(this); 
-	
-	TrackingRuleEncoder encoder;
-
 	@Override
 	public boolean isConsistent() {
 		if (satisfiable == null) {
-			satisfiable = consistency.check(); 		
+			satisfiable = consistency.check();
 			Utility.logInfo("time for satisfiability checking: " + t.duration());
 		}
-		return satisfiable; 
+		return satisfiable;
 	}
-	
-	Timer t = new Timer();
 
 	private OWLOntology relevantPart(QueryRecord queryRecord) {
 		AnswerTuples rlAnswer = null, elAnswer = null;
@@ -209,22 +209,29 @@ public class MyQueryReasoner extends QueryReasoner {
 		
 		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 
-		// TODO log correct partial answers
-//		Utility.logDebug(toJson("upperBound1", queryRecord));
 		if (!queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery[0])) {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[0], queryRecord.getAnswerVariables());
-//			Utility.logDebug(toJson("upperBound2", queryRecord));
 		}
 		if (!queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables()) {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[1], queryRecord.getDistinguishedVariables());
-//			Utility.logDebug(toJson("upperBound3", queryRecord));
 		}
-			
+
+		Utility.logDebug(toJsonKeyValuePair("upperBound1", queryRecord));
+
+		// TODO check whether it is harmful. In case is not, implement it properly
+		// BEGIN: trying to intersect
+		if (!queryRecord.isBottom() && lazyUpperStore != null) {
+			queryUpperBound(trackingStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+		}
+		// END: trying to intersect
+
 		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
 		if (queryRecord.processed()) {
 			queryRecord.setDifficulty(Step.UpperBound); 
 			return null;
 		}
+
+		// TODO add evaluation on new upper store
 		
 		t.reset();
 		try {
@@ -280,7 +287,7 @@ public class MyQueryReasoner extends QueryReasoner {
 
 //	int counter = 0; 
 
-	private String toJson(String key, Object value) {
+	private String toJsonKeyValuePair(String key, Object value) {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put(key, value);
 		return QueryRecord.GsonCreator.getInstance().toJson(map);

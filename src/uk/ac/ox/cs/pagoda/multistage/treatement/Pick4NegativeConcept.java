@@ -18,27 +18,26 @@ import uk.ac.ox.cs.pagoda.util.Utility;
 import java.util.*;
 
 public abstract class Pick4NegativeConcept implements Treatment {
-	
-	MultiStageQueryEngine engine; 
-	MultiStageUpperProgram program; 
-	RDFoxTripleManager tripleManager; 
+
+	public Set<Atom> addedGroundAtoms = new HashSet<Atom>();
+	MultiStageQueryEngine engine;
+	MultiStageUpperProgram program;
+	RDFoxTripleManager tripleManager;
 	PredicateDependency dependencyGraph;
-	boolean addGap = false; 
+	boolean addGap = false;
 	
 	public Pick4NegativeConcept(MultiStageQueryEngine store, MultiStageUpperProgram multiProgram) {
-		this.engine = store; 
+		this.engine = store;
 		this.program = multiProgram;
 		this.tripleManager = new RDFoxTripleManager(store.getDataStore(), true);
 	}
-	
+
 	void addTripleByID(Atom atom, Atom gapAtom, Map<Variable, Integer> assignment) {
-		int[] newTuple = tripleManager.getInstance(atom, assignment); 
+		int[] newTuple = tripleManager.getInstance(atom, assignment);
 		tripleManager.addTripleByID(newTuple);
-		if (addGap) 
+		if (addGap)
 			tripleManager.addTripleByID(tripleManager.getInstance(gapAtom, assignment));
 	}
-
-	public Set<Atom> addedGroundAtoms = new HashSet<Atom>(); 
 
 	protected boolean makeSatisfied(Violation violation, Comparator<Atom> comp) {
 		LinkedList<AnswerTupleID> tuples = violation.getTuples();
@@ -46,13 +45,7 @@ public abstract class Pick4NegativeConcept implements Treatment {
 		Map<Variable, Integer> assignment = new HashMap<Variable, Integer>();
 		
 		if (constraint.getHeadLength() > 1) {
-			Atom[] orderedAtoms = new Atom[constraint.getHeadLength()];
-			int index = 0; 
-			
-			for (Atom headAtom: constraint.getHeadAtoms()) {
-				orderedAtoms[index++] = headAtom;
-			}
-			
+			Atom[] orderedAtoms = Arrays.copyOf(constraint.getHeadAtoms(), constraint.getHeadLength());
 			Arrays.sort(orderedAtoms, comp);
 	
 			Set<AnswerTupleID> negTuples = new HashSet<AnswerTupleID>(); 
@@ -86,10 +79,9 @@ public abstract class Pick4NegativeConcept implements Treatment {
 				AnswerTupleID lastAdded = null; 
 				
 				for (Iterator<AnswerTupleID> iter = tuples.iterator(); iter.hasNext(); ) {
-					
-					AnswerTupleID tuple = iter.next(); 
-					if (negTuples.contains(MultiStageUpperProgram.project(tuple, violation.getVariables(), subVars))) ;
-					else {
+
+					AnswerTupleID tuple = iter.next();
+					if (!negTuples.contains(MultiStageUpperProgram.project(tuple, violation.getVariables(), subVars))) {
 						if (lastAdded == null || tComp.compare(lastAdded, tuple) != 0) {
 							lastAdded = tuple; 
 							tuple.getAssignment(violation.getVariables(), assignment);
@@ -103,29 +95,26 @@ public abstract class Pick4NegativeConcept implements Treatment {
 				if (tuples.isEmpty()) 
 					return true; 
 			}
-			
-			if (!tuples.isEmpty()) return false; 
-			
+			if (!tuples.isEmpty()) return false;
 		}
 		else {
-			Set<Atom> headAtoms = new HashSet<Atom>(); 
-			for (DLClause clause: program.convertExist(constraint, violation.getClause())) {
-				if (DLClauseHelper.hasSubsetBodyAtoms(clause, constraint)) {
-					Atom tHeadAtom = clause.getHeadAtom(0);
-					Atom tGapHeadAtom = addGap ? getGapAtom(tHeadAtom) : null; 
-					if (DLClauseHelper.isGround(tHeadAtom)) {
-						if (!addedGroundAtoms.contains(tHeadAtom)) {
-							program.addUpdatedPredicate(tHeadAtom.getDLPredicate());
-							addTripleByID(tHeadAtom, tGapHeadAtom, null);
-							addedGroundAtoms.add(tHeadAtom);
-						}
+			Set<Atom> headAtoms = new HashSet<Atom>();
+			for (DLClause clause : program.convertExist(constraint, violation.getClause(), violation.getTuples())) {
+
+				if (!DLClauseHelper.hasSubsetBodyAtoms(clause, constraint)) {
+					Utility.logError("There might be an error here... Cannot happen!!!");
+					throw new Error("This condition should not happen!!!");
+				}
+
+				Atom tHeadAtom = clause.getHeadAtom(0);
+				Atom tGapHeadAtom = addGap ? getGapAtom(tHeadAtom) : null;
+				if (DLClauseHelper.isGround(tHeadAtom)) {
+					if (!addedGroundAtoms.contains(tHeadAtom)) {
+						program.addUpdatedPredicate(tHeadAtom.getDLPredicate());
+						addTripleByID(tHeadAtom, tGapHeadAtom, null);
+						addedGroundAtoms.add(tHeadAtom);
 					}
-					else headAtoms.add(tHeadAtom); 
-				}
-				else {
-					Utility.logError("There might be an error here... Can't happend!!!");
-					throw new Error("This condition should not happen!");
-				}
+				} else headAtoms.add(tHeadAtom);
 			}
 			if (!tuples.isEmpty())
 				for (Atom atom: headAtoms)

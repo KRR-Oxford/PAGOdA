@@ -8,87 +8,67 @@ import java.util.*;
 
 public class OverApproxExist implements Approximator {
 
-	@Override
-	public Collection<DLClause> convert(DLClause clause, DLClause originalClause) {
-		Collection<DLClause> ret;
-		switch (clause.getHeadLength()) {
-		case 1:
-			return overApprox(clause.getHeadAtom(0), clause.getBodyAtoms(), originalClause);
-		case 0:
-			ret = new LinkedList<DLClause>();
-			ret.add(clause); 
-			return ret; 
-		default:
-			ret = new LinkedList<DLClause>();
-			for (Iterator<DLClause> iter = new DisjunctiveHeads(clause, originalClause); iter.hasNext(); )
-				ret.add(iter.next());
-			return ret;
-		}
-	}
-
+	public static final String negativeSuffix = "_neg";
+	public static final String skolemisedIndividualPrefix = Namespace.PAGODA_ANONY + "individual";
+	private static final Variable X = Variable.create("X");
+	private static int individualCounter = 0;
+	private static Map<DLClause, Integer> individualNumber = new HashMap<DLClause, Integer>();
+	
 	private static int noOfExistential(DLClause originalClause) {
-		int no = 0; 
+		int no = 0;
 		for (Atom atom: originalClause.getHeadAtoms())
 			if (atom.getDLPredicate() instanceof AtLeast)
-				no += ((AtLeast) atom.getDLPredicate()).getNumber(); 
-		return no; 
+				no += ((AtLeast) atom.getDLPredicate()).getNumber();
+		return no;
 	}
 
 	private static int indexOfExistential(Atom headAtom, DLClause originalClause) {
-		if (!(headAtom.getDLPredicate() instanceof AtLeast)) return -1; 
+		if (!(headAtom.getDLPredicate() instanceof AtLeast)) return -1;
 		AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate();
 		if (alc.getToConcept() instanceof AtomicConcept) {
-			AtomicConcept ac = (AtomicConcept) alc.getToConcept(); 
+			AtomicConcept ac = (AtomicConcept) alc.getToConcept();
 			if (ac.getIRI().endsWith(negativeSuffix)) {
 				alc = AtLeastConcept.create(alc.getNumber(), alc.getOnRole(), AtomicNegationConcept.create(getNegationConcept(ac)));
-				headAtom = Atom.create(alc, headAtom.getArgument(0)); 
+				headAtom = Atom.create(alc, headAtom.getArgument(0));
 			}
 		}
-		
-		int index = 0; 
-		for (Atom atom: originalClause.getHeadAtoms()) {
-			if (atom.equals(headAtom)) 
-				return index; 
-			if (atom.getDLPredicate() instanceof AtLeast)
-				index += ((AtLeast) atom.getDLPredicate()).getNumber(); 
-		}
-		return -1; 
-	}
 
-	private static final Variable X = Variable.create("X"); 
-	public static final String negativeSuffix = "_neg"; 
+		int index = 0;
+		for (Atom atom: originalClause.getHeadAtoms()) {
+			if (atom.equals(headAtom))
+				return index;
+			if (atom.getDLPredicate() instanceof AtLeast)
+				index += ((AtLeast) atom.getDLPredicate()).getNumber();
+		}
+		return -1;
+	}
 	
 	public static AtomicConcept getNegationConcept(DLPredicate p) {
 		if (p.equals(AtomicConcept.THING)) return AtomicConcept.NOTHING;
-		if (p.equals(AtomicConcept.NOTHING)) return AtomicConcept.THING; 
-		
+		if (p.equals(AtomicConcept.NOTHING)) return AtomicConcept.THING;
+
 		if (p instanceof AtomicConcept) {
 			String iri = ((AtomicConcept) p).getIRI();
-			if (iri.endsWith(negativeSuffix)) 
+			if (iri.endsWith(negativeSuffix))
 				iri = iri.substring(0, iri.length() - 4);
-			else 
-				iri += negativeSuffix; 
+			else
+				iri += negativeSuffix;
 
 			return AtomicConcept.create(iri);
 		}
 		if (p instanceof AtLeastConcept) {
 			// FIXME !!! here
-			return null; 
+			return null;
 		}
-		return null; 
-	}	
-	
-	public static final String skolemisedIndividualPrefix = Namespace.PAGODA_ANONY + "individual"; 
-	
-	private static int individualCounter = 0;
-	private static Map<DLClause, Integer> individualNumber = new HashMap<DLClause, Integer>();
-	
+		return null;
+	}
+
 	public static int getNumberOfSkolemisedIndividual() {
-		return individualCounter; 
+		return individualCounter;
 	}
 	
 	public static Individual getNewIndividual(DLClause originalClause, int offset) {
-		Individual ret; 
+		Individual ret;
 		if (individualNumber.containsKey(originalClause)) {
 			ret = Individual.create(skolemisedIndividualPrefix + (individualNumber.get(originalClause) + offset));
 		}
@@ -97,16 +77,34 @@ public class OverApproxExist implements Approximator {
 			ret = Individual.create(skolemisedIndividualPrefix + (individualCounter + offset));
 			individualCounter += noOfExistential(originalClause);
 		}
-		return ret;  
+		return ret;
 	}
 	
 	public static int indexOfSkolemisedIndividual(Atom atom) {
-		Term t; 
+		Term t;
 		for (int index = 0; index < atom.getArity(); ++index) {
 			t = atom.getArgument(index);
 			if (t instanceof Individual && ((Individual) t).getIRI().contains(skolemisedIndividualPrefix)) return index;
 		}
-		return -1; 
+		return -1;
+	}
+
+	@Override
+	public Collection<DLClause> convert(DLClause clause, DLClause originalClause) {
+		Collection<DLClause> ret;
+		switch (clause.getHeadLength()) {
+			case 1:
+				return overApprox(clause.getHeadAtom(0), clause.getBodyAtoms(), originalClause);
+			case 0:
+				ret = new LinkedList<DLClause>();
+				ret.add(clause);
+				return ret;
+			default:
+				ret = new LinkedList<DLClause>();
+				for (Iterator<DLClause> iter = new DisjunctiveHeads(clause, originalClause); iter.hasNext(); )
+					ret.add(iter.next());
+				return ret;
+		}
 	}
 	
 	public Collection<DLClause> overApprox(Atom headAtom, Atom[] bodyAtoms, DLClause originalClause) {
@@ -123,7 +121,7 @@ public class OverApproxExist implements Approximator {
 			AtomicConcept atomicConcept = null;
 			
 			if (concept instanceof AtomicNegationConcept) {
-				// is this already in MultiStageUpperProgram?
+				// TODO CHECK: is this already in MultiStageUpperProgram?
 				Atom atom1 = Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
 				Atom atom2 = Atom.create(atomicConcept = getNegationConcept(atomicConcept), X);
 				ret.add(DLClause.create(new Atom[0], new Atom[] {atom1, atom2})); 

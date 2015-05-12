@@ -69,11 +69,11 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 		// TODO to be removed ... 
 //		if (gap == null)
 //			program.save("output/multi.dlog");
-		
-		Collection<Violation> violations = null;
+
+		Collection<Violation> violations;
 		int iteration = 0;
-		Timer subTimer = new Timer(); 
-		boolean incrementally = false; 
+		Timer subTimer = new Timer();
+		boolean incrementally;
 		try {
 			while (true) {
 				long oldTripleCount = store.getTriplesCount();
@@ -106,7 +106,7 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 				
 				if (!isValid()) {
 					if (iteration == 1) {
-						Utility.logInfo("The ontology is incosistent.");
+						Utility.logInfo("The ontology is inconsistent.");
 						return -1; 
 					}
 					Utility.logInfo(name + " store FAILED for multi-stage materialisation in " + t.duration() + " seconds.");

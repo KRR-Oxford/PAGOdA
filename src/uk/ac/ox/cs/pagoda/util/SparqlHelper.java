@@ -1,49 +1,18 @@
 package uk.ac.ox.cs.pagoda.util;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicDataRange;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.Constant;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-
-import uk.ac.ox.cs.pagoda.MyPrefixes;
-import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementAssign;
-import com.hp.hpl.jena.sparql.syntax.ElementBind;
-import com.hp.hpl.jena.sparql.syntax.ElementData;
-import com.hp.hpl.jena.sparql.syntax.ElementDataset;
-import com.hp.hpl.jena.sparql.syntax.ElementExists;
-import com.hp.hpl.jena.sparql.syntax.ElementFilter;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementMinus;
-import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.sparql.syntax.ElementNotExists;
-import com.hp.hpl.jena.sparql.syntax.ElementOptional;
-import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementService;
-import com.hp.hpl.jena.sparql.syntax.ElementSubQuery;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementUnion;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
+import com.hp.hpl.jena.sparql.syntax.*;
+import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.pagoda.MyPrefixes;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SparqlHelper {
 
@@ -52,7 +21,7 @@ public class SparqlHelper {
 		for (int i = 0; i < atoms.length; ++i) {
 			atoms[i].getVariables(undistinguishedVars);
 		}
-		int xIndex = 1; 
+		int xIndex = 1;
 		while (undistinguishedVars.contains(Variable.create("X" + xIndex))) ++xIndex;
 		
 		for (String var: vars) 

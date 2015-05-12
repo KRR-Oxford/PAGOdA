@@ -1,13 +1,14 @@
-package uk.ac.ox.cs.pagoda.multistage;
+package uk.ac.ox.cs.pagoda.rules;
 
 import org.semanticweb.HermiT.model.DLClause;
+import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
 
 import java.util.Collection;
 
 /**
- * An approximator for existential rules.
- * */
-public interface ExistApproximator {
+ * It approximates rules according to a specific instantiation of the body.
+ */
+public interface TupleDependentApproximator {
 
     Collection<DLClause> convert(DLClause clause,
                                  DLClause originalClause,
