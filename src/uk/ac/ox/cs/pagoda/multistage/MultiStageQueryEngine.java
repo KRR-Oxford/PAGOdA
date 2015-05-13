@@ -55,6 +55,18 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 		treatment.dispose();
 		return ret; 
 	}
+
+	/**
+	 * delta-chase
+	 */
+	@Override
+	public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap) {
+		materialise("lower program", dProgram.getLower().toString());
+		Program generalProgram = dProgram.getGeneral();
+		LimitedSkolemisationApplication program = new LimitedSkolemisationApplication(generalProgram, dProgram.getUpperBottomStrategy());
+		Treatment treatment = new Pick4NegativeConceptNaive(this, program);
+		return materialise(program, treatment, gap);
+	}
 	
 	private int materialise(MultiStageUpperProgram program, Treatment treatment, GapByStore4ID gap) {
 		if (gap != null) 

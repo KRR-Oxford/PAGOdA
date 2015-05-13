@@ -18,8 +18,10 @@ public abstract class StageQueryEngine extends BasicQueryEngine {
 
 	public abstract void materialiseFoldedly(DatalogProgram dProgram, GapByStore4ID gap); 
 	
-	public abstract int materialiseRestrictedly(DatalogProgram dProgram, GapByStore4ID gap); 
-	
+	public abstract int materialiseRestrictedly(DatalogProgram dProgram, GapByStore4ID gap);
+
+	public abstract int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap);
+
 	public void dispose() {
 		super.dispose();
 	}

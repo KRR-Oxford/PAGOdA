@@ -1,7 +1,5 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
-import java.util.LinkedList;
-
 import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.model.DLClause;
@@ -9,7 +7,9 @@ import org.semanticweb.HermiT.model.Variable;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
@@ -21,9 +21,8 @@ import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.store.DataStore;
-import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
+
+import java.util.LinkedList;
 
 public class ConsistencyManager {
 
@@ -84,6 +83,23 @@ public class ConsistencyManager {
 			}
 		}
 		return false; 
+	}
+
+	boolean checkSkolemUpper() {
+		if (m_reasoner.limitedSkolemUpperStore != null) {
+			AnswerTuples tuples = null;
+			try {
+				tuples = m_reasoner.limitedSkolemUpperStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
+				if (!tuples.isValid()) {
+					Utility.logInfo("There are no contradictions derived in the limited-skolem upper bound materialisation.");
+					return satisfiability(t.duration());
+				}
+			}
+			finally {
+				if (tuples != null) tuples.dispose();
+			}
+		}
+		return false;
 	}
 	
 	boolean check() {
@@ -288,5 +304,6 @@ public class ConsistencyManager {
 	public QueryRecord[] getQueryRecords() {
 		return botQueryRecords; 
 	}
-	
+
+
 }

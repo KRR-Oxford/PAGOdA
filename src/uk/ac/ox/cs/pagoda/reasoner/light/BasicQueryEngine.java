@@ -1,29 +1,21 @@
 package uk.ac.ox.cs.pagoda.reasoner.light;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.semanticweb.HermiT.model.DLClause;
-
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
+import uk.ac.ox.cs.JRDFox.store.Parameters;
+import uk.ac.ox.cs.JRDFox.store.TripleStatus;
+import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.rules.Program;
-import uk.ac.ox.cs.pagoda.util.ConjunctiveQueryHelper;
-import uk.ac.ox.cs.pagoda.util.Namespace;
+import uk.ac.ox.cs.pagoda.util.*;
 import uk.ac.ox.cs.pagoda.util.Timer;
-import uk.ac.ox.cs.pagoda.util.UFS;
-import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.store.DataStore;
-import uk.ac.ox.cs.JRDFox.store.Parameters;
-import uk.ac.ox.cs.JRDFox.store.TripleStatus;
-import uk.ac.ox.cs.JRDFox.store.TupleIterator;
-import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
+
+import java.util.*;
 
 public class BasicQueryEngine extends RDFoxQueryEngine {
 
@@ -73,6 +65,10 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 			materialise("upper program", dProgram.getUpper().toString());
 		
 		return 1; 
+	}
+
+	public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap) {
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -163,8 +159,7 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 				instanceTuples = null; 
 				try {
 					instanceTuples = getDataStore().compileQuery("SELECT ?X ?Z WHERE { ?X " + predicate + " ?Z }", prefixes, parameters);
-					;
-					long totalCount = 0; 
+					long totalCount = 0;
 					for (long multi1 = instanceTuples.open(); multi1 != 0; multi1 = instanceTuples.getNext())
 						totalCount += instanceTuples.getMultiplicity();
 					number.add(predicate + " * " + totalCount); 

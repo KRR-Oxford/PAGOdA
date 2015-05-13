@@ -12,7 +12,7 @@ public class OverApproxExist implements Approximator {
 	public static final String negativeSuffix = "_neg";
 	private static final Variable X = Variable.create("X");
 
-	private static int indexOfExistential(Atom headAtom, DLClause originalClause) {
+	static int indexOfExistential(Atom headAtom, DLClause originalClause) {
 		if (!(headAtom.getDLPredicate() instanceof AtLeast)) return -1;
 		AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate();
 		if (alc.getToConcept() instanceof AtomicConcept) {

@@ -2,7 +2,6 @@ package uk.ac.ox.cs.pagoda.multistage;
 
 
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
-import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
 import uk.ac.ox.cs.pagoda.rules.Program;
 import uk.ac.ox.cs.pagoda.rules.approximators.LimitedSkolemisationApproximator;
 
@@ -12,6 +11,6 @@ public class LimitedSkolemisationApplication extends RestrictedApplication {
 
     public LimitedSkolemisationApplication(Program program, BottomStrategy upperBottom) {
         super(program, upperBottom);
-        m_approxExist = new LimitedSkolemisationApproximator(MAX_DEPTH, new ExistConstantApproximator());
+        m_approxExist = new LimitedSkolemisationApproximator(MAX_DEPTH);
     }
 }

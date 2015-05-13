@@ -49,7 +49,8 @@ public class MyQueryReasoner extends QueryReasoner {
 	private Collection<String> predicatesWithGap = null;
 	private Boolean satisfiable;
 	private ConsistencyManager consistency = new ConsistencyManager(this);
-	
+	BasicQueryEngine limitedSkolemUpperStore;
+
 	public MyQueryReasoner() {
 		setup(true, true);
 	}
@@ -102,9 +103,9 @@ public class MyQueryReasoner extends QueryReasoner {
 
 		if (multiStageTag && !program.getGeneral().isHorn()) {
 			lazyUpperStore =  getUpperStore("lazy-upper-bound", true); // new MultiStageQueryEngine("lazy-upper-bound", true); //
+			// TODO CHECK
+			limitedSkolemUpperStore =  getUpperStore("limited-skolem-upper-bound", true);
 		}
-
-		// TODO add new upper store creation
 
 		importData(program.getAdditionalDataFile());
 
@@ -151,7 +152,21 @@ public class MyQueryReasoner extends QueryReasoner {
 			Utility.logInfo("time for satisfiability checking: " + t.duration());
 		}
 
-		// TODO add new upper store preprocessing
+		// TODO check
+		if (limitedSkolemUpperStore != null) {
+			limitedSkolemUpperStore.importRDFData(name, datafile);
+			limitedSkolemUpperStore.materialise("saturate named individuals", originalMarkProgram);
+			int tag = limitedSkolemUpperStore.materialiseSkolemly(program, null);
+			if (tag != 1) {
+				limitedSkolemUpperStore.dispose();
+				limitedSkolemUpperStore = null;
+			}
+			if (tag == -1) return false;
+		}
+		if (consistency.checkSkolemUpper()) {
+			satisfiable = true;
+			Utility.logInfo("time for satisfiability checking: " + t.duration());
+		}
 
 		trackingStore.importRDFData(name, datafile);
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);
@@ -222,6 +237,9 @@ public class MyQueryReasoner extends QueryReasoner {
 		// BEGIN: trying to intersect
 		if (!queryRecord.isBottom() && lazyUpperStore != null) {
 			queryUpperBound(trackingStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+		}
+		if (!queryRecord.isBottom() && limitedSkolemUpperStore != null) {
+			queryUpperBound(limitedSkolemUpperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 		}
 		// END: trying to intersect
 

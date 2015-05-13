@@ -1,14 +1,8 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
-
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.turtle.TurtleParser;
-
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.model.Individual;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
@@ -16,6 +10,11 @@ import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Collection;
 
 public class TwoStageQueryEngine extends StageQueryEngine {
 	
@@ -62,6 +61,11 @@ public class TwoStageQueryEngine extends StageQueryEngine {
 	public int materialiseRestrictedly(DatalogProgram dProgram, GapByStore4ID gap) {
 		TwoStageApplication program = new RestrictedApplication2(this, dProgram, gap);
 		return program.materialise();
+	}
+
+	@Override
+	public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap) {
+		throw new UnsupportedOperationException("This method is not available in " + getClass());
 	}
 
 	public void materialise(String programText,	GapByStore4ID gap, boolean incrementally) {
