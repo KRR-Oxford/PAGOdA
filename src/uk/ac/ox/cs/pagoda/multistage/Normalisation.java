@@ -7,6 +7,7 @@ import uk.ac.ox.cs.pagoda.approx.Clause;
 import uk.ac.ox.cs.pagoda.approx.Clausifier;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+import uk.ac.ox.cs.pagoda.rules.approximators.SkolemTermsManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -102,7 +103,9 @@ public class Normalisation {
 			return ;
 		}
 		AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate();
-		AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0));
+		// TODO test
+//		AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0));
+		AtomicConcept ac = getRightAuxiliaryConcept(alc, SkolemTermsManager.getInstance().getFreshIndividual(clause, 0));
 		DLClause newClause;
 		m_normClauses.add(DLClause.create(new Atom[] {Atom.create(ac, headAtom.getArgument(0)) }, clause.getBodyAtoms()));
 		m_normClauses.add(newClause = DLClause.create(new Atom[] {Atom.create(alc, X)}, new Atom[] {Atom.create(ac, X)}));
@@ -140,7 +143,8 @@ public class Normalisation {
 					}
 				} else {
 					AtLeastConcept alc = toAtLeastConcept((AtLeast) headAtom.getDLPredicate());
-					AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0));
+//					AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0));
+					AtomicConcept ac = getRightAuxiliaryConcept(alc, SkolemTermsManager.getInstance().getFreshIndividual(clause, 0));
 					newHeadAtoms[index] = Atom.create(ac, headAtom.getArgument(0));
 					m_normClauses.add(newClause = DLClause.create(new Atom[] {Atom.create(alc, headAtom.getArgument(0))}, new Atom[] {newHeadAtoms[index]}));
 					exist2original.put(newClause, clause);

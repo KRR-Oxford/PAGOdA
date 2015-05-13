@@ -15,6 +15,7 @@ import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.SparqlHelper;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 
 import java.io.*;
 import java.util.*;
@@ -376,7 +377,7 @@ public abstract class MultiStageUpperProgram {
 		return m_bottom.process(m_approxExist.convert(clause, originalDLClause, null));
 	}
 
-	public Collection<DLClause> convertExist(DLClause clause, DLClause originalDLClause, List<AnswerTupleID> violationTuples) {
+	public Collection<DLClause> convertExist(DLClause clause, DLClause originalDLClause, Collection<Tuple<Individual>> violationTuples) {
 		return m_bottom.process(m_approxExist.convert(clause, originalDLClause, violationTuples));
 	}
 

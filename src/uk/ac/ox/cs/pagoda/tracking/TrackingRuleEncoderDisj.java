@@ -4,7 +4,7 @@ import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
-import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+import uk.ac.ox.cs.pagoda.rules.approximators.SkolemTermsManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
 import java.util.*;
@@ -22,8 +22,9 @@ public abstract class TrackingRuleEncoderDisj extends TrackingRuleEncoderWithGap
 	 */
 	protected void processDisjunctiveRules() {
 		Map<Atom, Collection<DLClause>> auxiliaryAtoms = new HashMap<Atom, Collection<DLClause>>(); 
-		Map<Individual, Collection<DLClause>> skolemisedAtoms = new HashMap<Individual, Collection<DLClause>>(); 
-		
+		Map<Individual, Collection<DLClause>> skolemisedAtoms = new HashMap<Individual, Collection<DLClause>>();
+		SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
+
 		for (Map.Entry<DLClause, Collection<DLClause>> entry: disjunctiveRules.entrySet()) {
 			DLClause original = entry.getKey();
 			Collection<DLClause> overClauses = entry.getValue(); 
@@ -33,7 +34,7 @@ public abstract class TrackingRuleEncoderDisj extends TrackingRuleEncoderWithGap
 				DLClause subClause = iter.next(); 
 				if (DLClauseHelper.hasSubsetBodyAtoms(subClause, original)) {
 					Atom headAtom = subClause.getHeadAtom(0);
-					if ((index = OverApproxExist.indexOfSkolemisedIndividual(headAtom)) != -1) {
+					if ((index = SkolemTermsManager.indexOfSkolemisedIndividual(headAtom)) != -1) {
 						Individual i = (Individual) headAtom.getArgument(index);
 						Collection<DLClause> clauses = skolemisedAtoms.get(i);
 						if (clauses == null) {
@@ -55,7 +56,7 @@ public abstract class TrackingRuleEncoderDisj extends TrackingRuleEncoderWithGap
 					Collection<DLClause> clauses = new HashSet<DLClause>();
 					Individual[] individuals = new Individual[alc.getNumber()]; 
 					for (int i = 0; i < alc.getNumber(); ++i) {
-						individuals[i] = OverApproxExist.getNewIndividual(original, i);
+						individuals[i] = termsManager.getFreshIndividual(original, i);
 						clauses.addAll(skolemisedAtoms.get(individuals[i])); 
 					}
 					auxiliaryAtoms.put(getAuxiliaryAtom(original, headAtom, individuals), clauses);

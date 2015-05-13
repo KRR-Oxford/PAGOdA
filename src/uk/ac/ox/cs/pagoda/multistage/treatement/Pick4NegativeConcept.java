@@ -14,6 +14,8 @@ import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.SparqlHelper;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
+import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
 import java.util.*;
 
@@ -99,7 +101,20 @@ public abstract class Pick4NegativeConcept implements Treatment {
 		}
 		else {
 			Set<Atom> headAtoms = new HashSet<Atom>();
-			for (DLClause clause : program.convertExist(constraint, violation.getClause(), violation.getTuples())) {
+
+			ArrayList<Tuple<Individual>> violationTuples = new ArrayList<>(violation.getTuples().size());
+			for (int i = 0; i < violation.getTuples().size(); i++) {
+				AnswerTupleID answerTupleID = violation.getTuples().get(i);
+				TupleBuilder<Individual> tupleBuilder = new TupleBuilder<>();
+				for (int j = 0; j < answerTupleID.getArity(); j++) {
+					String rawTerm = tripleManager.getRawTerm(answerTupleID.getTerm(j));
+					Individual individual = Individual.create(rawTerm.substring(1, rawTerm.length()-1));
+					tupleBuilder.add(individual);
+				}
+				violationTuples.add(tupleBuilder.create());
+			}
+
+			for (DLClause clause : program.convertExist(constraint, violation.getClause(), violationTuples)) {
 
 				if (!DLClauseHelper.hasSubsetBodyAtoms(clause, constraint)) {
 					Utility.logError("There might be an error here... Cannot happen!!!");

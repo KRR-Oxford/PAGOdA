@@ -7,7 +7,7 @@ import org.openrdf.model.impl.URIImpl;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
 import uk.ac.ox.cs.JRDFox.model.Individual;
-import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+import uk.ac.ox.cs.pagoda.rules.approximators.SkolemTermsManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
 import java.util.Collection;
@@ -58,9 +58,9 @@ public class IndividualCollector implements RDFHandler {
 
 	public Collection<Individual> getAllIndividuals() {
 		if (!addedSkolemised) {
-			int number = OverApproxExist.getNumberOfSkolemisedIndividual();
+			int number = SkolemTermsManager.getInstance().getNumberOfSkolemisedIndividual();
 			for (int i = 0; i < number; ++i)
-				individuals.add(Individual.create(OverApproxExist.skolemisedIndividualPrefix + i));
+				individuals.add(Individual.create(SkolemTermsManager.skolemisedIndividualPrefix + i));
 			addedSkolemised = true; 
 		}
 		return individuals; 

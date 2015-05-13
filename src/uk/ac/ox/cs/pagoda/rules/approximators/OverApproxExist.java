@@ -2,27 +2,15 @@ package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
-import uk.ac.ox.cs.pagoda.util.Namespace;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class OverApproxExist implements Approximator {
 
 	public static final String negativeSuffix = "_neg";
-	public static final String skolemisedIndividualPrefix = Namespace.PAGODA_ANONY + "individual";
 	private static final Variable X = Variable.create("X");
-	//DEBUG
-	public static Collection<String> createdIndividualIRIs = new HashSet<>();
-	private static int individualCounter = 0;
-	private static Map<DLClause, Integer> individualNumber = new HashMap<DLClause, Integer>();
-
-	private static int noOfExistential(DLClause originalClause) {
-		int no = 0;
-		for (Atom atom: originalClause.getHeadAtoms())
-			if (atom.getDLPredicate() instanceof AtLeast)
-				no += ((AtLeast) atom.getDLPredicate()).getNumber();
-		return no;
-	}
 
 	private static int indexOfExistential(Atom headAtom, DLClause originalClause) {
 		if (!(headAtom.getDLPredicate() instanceof AtLeast)) return -1;
@@ -63,36 +51,6 @@ public class OverApproxExist implements Approximator {
 			return null;
 		}
 		return null;
-	}
-
-	public static int getNumberOfSkolemisedIndividual() {
-		return individualCounter;
-	}
-	//DEBUG
-
-	public static Individual getNewIndividual(DLClause originalClause, int offset) {
-		Individual ret;
-		int individualID;
-		if (individualNumber.containsKey(originalClause)) {
-			individualID = individualNumber.get(originalClause) + offset;
-			ret = Individual.create(skolemisedIndividualPrefix + individualID);
-		}
-		else {
-			individualNumber.put(originalClause, individualCounter);
-			individualID = individualCounter + offset;
-			ret = Individual.create(skolemisedIndividualPrefix + individualID);
-			individualCounter += noOfExistential(originalClause);
-		}
-		return ret;
-	}
-	
-	public static int indexOfSkolemisedIndividual(Atom atom) {
-		Term t;
-		for (int index = 0; index < atom.getArity(); ++index) {
-			t = atom.getArgument(index);
-			if (t instanceof Individual && ((Individual) t).getIRI().contains(skolemisedIndividualPrefix)) return index;
-		}
-		return -1;
 	}
 
 	@Override
@@ -140,7 +98,8 @@ public class OverApproxExist implements Approximator {
 
 			int card = atLeastConcept.getNumber(); 
 			Individual[] individuals = new Individual[card];
-			for (int i = 0; i < card; ++i) individuals[i] = getNewIndividual(originalClause, offset + i);
+			SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
+			for (int i = 0; i < card; ++i) individuals[i] = termsManager.getFreshIndividual(originalClause, offset + i);
 			
 			for (int i = 0; i < card; ++i) {
 				if (atomicConcept != null)

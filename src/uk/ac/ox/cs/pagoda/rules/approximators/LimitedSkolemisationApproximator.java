@@ -1,8 +1,10 @@
 package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.DLClause;
+import org.semanticweb.HermiT.model.Individual;
 import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
 import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
+import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 
 import java.util.*;
 
@@ -33,7 +35,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     }
 
     @Override
-    public Collection<DLClause> convert(DLClause clause, DLClause originalClause, Collection<AnswerTupleID> violationTuples) {
+    public Collection<DLClause> convert(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         switch (clause.getHeadLength()) {
             case 1:
                 return overApprox(clause, originalClause, violationTuples);
@@ -48,26 +50,26 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
 
     }
 
-    private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<AnswerTupleID> violationTuples) {
+    private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         ArrayList<DLClause> result = new ArrayList<>();
 
-        for (AnswerTupleID violationTuple : violationTuples)
+        for (Tuple<Individual> violationTuple : violationTuples)
             if (getDepth(violationTuple) > maxTermDepth)
                 result.addAll(alternativeApproximator.convert(clause, originalClause, null));
             else
-                result.add(getInstantiatedSkolemisation(clause, originalClause, violationTuple));
+                result.add(getGroundSkolemisation(clause, originalClause, violationTuple));
 
         return result;
     }
 
 
-    private DLClause getInstantiatedSkolemisation(DLClause clause, DLClause originalClause, AnswerTupleID violationTuple) {
+    private DLClause getGroundSkolemisation(DLClause clause, DLClause originalClause, Tuple<Individual> violationTuple) {
         // TODO implement
         // filter the violation tuples appearing on both the sides of the rule
         return null;
     }
 
-    private int getDepth(AnswerTupleID violationTuple) {
+    private int getDepth(Tuple<Individual> violationTuple) {
         if (!mapIndividualsToDepth.containsKey(violationTuple)) return 0;
         return mapIndividualsToDepth.get(violationTuple);
     }
