@@ -1,4 +1,4 @@
-package uk.ac.ox.cs.pagoda.rules;
+package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.DLClause;
 import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;

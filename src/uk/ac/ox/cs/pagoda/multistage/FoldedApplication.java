@@ -1,13 +1,13 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 import org.semanticweb.HermiT.model.DLClause;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
-import uk.ac.ox.cs.pagoda.rules.OverApproxDisj;
 import uk.ac.ox.cs.pagoda.rules.Program;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxDisj;
 import uk.ac.ox.cs.pagoda.util.Timer;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 public class FoldedApplication extends MultiStageUpperProgram {
 

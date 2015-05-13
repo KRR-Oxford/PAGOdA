@@ -1,18 +1,7 @@
 package uk.ac.ox.cs.pagoda.multistage.treatement;
 
-import java.util.Comparator;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
+import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.pagoda.constraints.PredicateDependency;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
@@ -20,10 +9,11 @@ import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.multistage.RestrictedApplication;
 import uk.ac.ox.cs.pagoda.multistage.Violation;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import java.util.Comparator;
+import java.util.Set;
 
 public class Pick4NegativeConceptQuerySpecific extends Pick4NegativeConcept {
 

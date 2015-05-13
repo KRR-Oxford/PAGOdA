@@ -1,29 +1,13 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Inequality;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
 import uk.ac.ox.cs.pagoda.util.Namespace;
+
+import java.util.*;
 
 public abstract class TrackingRuleEncoderDisj extends TrackingRuleEncoderWithGap {
 

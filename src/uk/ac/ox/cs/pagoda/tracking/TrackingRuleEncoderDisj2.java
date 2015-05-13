@@ -1,24 +1,12 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
 
 public class TrackingRuleEncoderDisj2 extends TrackingRuleEncoderDisj {
 
@@ -56,7 +44,7 @@ public class TrackingRuleEncoderDisj2 extends TrackingRuleEncoderDisj {
 	
 	@Override
 	protected DLPredicate generateAuxiliaryRule(AtLeastConcept p, DLClause original, Individual[] individuals) {
-		DLPredicate ret = AtomicConcept.create(getTrackingPredicate(Normalisation.getAuxiliaryConcept4Disjunct((AtLeastConcept) p, individuals))); 
+		DLPredicate ret = AtomicConcept.create(getTrackingPredicate(Normalisation.getAuxiliaryConcept4Disjunct(p, individuals)));
 		Atom[] headAtom = new Atom[] {Atom.create(ret, X)};
 		
 		AtomicRole role = p.getOnRole() instanceof AtomicRole ? 

@@ -1,18 +1,16 @@
 package uk.ac.ox.cs.pagoda.rules;
 
+import org.semanticweb.HermiT.model.*;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLOntology;
+import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
+import uk.ac.ox.cs.pagoda.rules.approximators.Approximator;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
-import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 
 public class ExistentialToDisjunctive extends UpperProgram {
 	

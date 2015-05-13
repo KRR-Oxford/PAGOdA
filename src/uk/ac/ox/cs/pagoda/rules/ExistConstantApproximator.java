@@ -2,6 +2,8 @@ package uk.ac.ox.cs.pagoda.rules;
 
 import org.semanticweb.HermiT.model.DLClause;
 import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+import uk.ac.ox.cs.pagoda.rules.approximators.TupleDependentApproximator;
 
 import java.util.Collection;
 

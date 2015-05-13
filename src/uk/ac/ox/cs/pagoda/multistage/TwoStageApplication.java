@@ -1,26 +1,6 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.AtLeast;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.AtLeastDataRange;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
@@ -29,38 +9,36 @@ import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.Program;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.SparqlHelper;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
+import java.util.*;
+
 abstract class TwoStageApplication {
 
+	private static final String NAF_suffix = "_NAF";
 	protected TwoStageQueryEngine engine;
 	protected MyPrefixes prefixes = MyPrefixes.PAGOdAPrefixes;
-	private GapByStore4ID gap;
-	
-	Program lowerProgram;
-	
-	boolean m_incrementally = true; 
-
 	protected Set<DLClause> rules = new HashSet<DLClause>();
-	private StringBuilder datalogRuleText = new StringBuilder();
-
 	protected Collection<DLClause> constraints = new LinkedList<DLClause>();
 	protected BottomStrategy m_bottom;
-
 	protected Set<Atom> toGenerateNAFFacts = new HashSet<Atom>();
-
 	protected OverApproxExist overExist = new OverApproxExist();
-
+	Program lowerProgram;
+	boolean m_incrementally = true;
+	Set<Integer> allIndividuals = new HashSet<Integer>();
+	RDFoxTripleManager tripleManager;
+	private GapByStore4ID gap;
+	private StringBuilder datalogRuleText = new StringBuilder();
 	private Map<DLClause, DLClause> map = new HashMap<DLClause, DLClause>();
 
 	public TwoStageApplication(TwoStageQueryEngine engine, DatalogProgram program, GapByStore4ID gap) {
 		this.engine = engine;
 		tripleManager = new RDFoxTripleManager(engine.getDataStore(), m_incrementally);
-		this.gap = gap; 
+		this.gap = gap;
 		m_bottom = program.getUpperBottomStrategy();
 		lowerProgram = program.getLower();
 
@@ -123,7 +101,7 @@ abstract class TwoStageApplication {
 		for (DLClause clause: lowerProgram.getClauses())
 			if (!rules.contains(clause))
 				builder.append(RuleHelper.getText(clause));
-		
+
 		engine.materialise(builder.toString(), null, false);
 		addAuxiliaryRules();
 		addAuxiliaryNAFFacts();
@@ -150,7 +128,7 @@ abstract class TwoStageApplication {
 				e.printStackTrace();
 			} finally {
 				if (tuples != null)	tuples.dispose();
-				tuples = null; 
+				tuples = null;
 			}
 		}
 	}
@@ -170,9 +148,6 @@ abstract class TwoStageApplication {
 	}
 
 	protected abstract void addAuxiliaryRules();
-
-	Set<Integer> allIndividuals = new HashSet<Integer>();
-	RDFoxTripleManager tripleManager; 
 
 	private void addAuxiliaryNAFFacts() {
 
@@ -203,7 +178,7 @@ abstract class TwoStageApplication {
 			tuples = engine.internal_evaluate(SparqlHelper.getSPARQLQuery(
 					new Atom[] { Atom.create(p, X) }, "X"));
 			for (long multi = tuples.open(); multi != 0; multi = tuples.getNext()) {
-				ret.remove((int) tuples.getResourceID(0));
+				ret.remove(tuples.getResourceID(0));
 			}
 		} catch (JRDFStoreException e) {
 			// TODO Auto-generated catch block
@@ -215,8 +190,6 @@ abstract class TwoStageApplication {
 	}
 
 	protected abstract Collection<DLClause> getInitialClauses(Program program);
-
-	private static final String NAF_suffix = "_NAF";
 
 	protected Atom getNAFAtom(Atom atom) {
 		return getNAFAtom(atom, true);

@@ -1,33 +1,19 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.AtLeast;
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.DatatypeRestriction;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 
@@ -96,13 +82,13 @@ public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 			return Atom.create(getTrackingDLPredicate(AtomicConcept.create(Normalisation.getAuxiliaryConcept4Disjunct((AtLeastConcept) p))), headAtom.getArgument(0)); 
 		}
 		if (p instanceof AtomicConcept) 
-			return Atom.create(getTrackingDLPredicate((AtomicConcept) p), headAtom.getArgument(0)); 
+			return Atom.create(getTrackingDLPredicate(p), headAtom.getArgument(0));
 		if (p instanceof AtomicRole) 
-			return Atom.create(getTrackingDLPredicate((AtomicRole) p), headAtom.getArgument(0), headAtom.getArgument(1));
+			return Atom.create(getTrackingDLPredicate(p), headAtom.getArgument(0), headAtom.getArgument(1));
 		if (p instanceof Equality || p instanceof AnnotatedEquality) 
 			return Atom.create(getTrackingDLPredicate(Equality.INSTANCE), headAtom.getArgument(0), headAtom.getArgument(1)); 
 		if (p instanceof Inequality) 
-			return Atom.create(getTrackingDLPredicate((Inequality) p), headAtom.getArgument(0), headAtom.getArgument(1)); 
+			return Atom.create(getTrackingDLPredicate(p), headAtom.getArgument(0), headAtom.getArgument(1));
 
 		return null;
 	}
@@ -114,15 +100,15 @@ public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 			return Atom.create(getGapDLPredicate(AtomicConcept.create(Normalisation.getAuxiliaryConcept4Disjunct((AtLeastConcept) p))), headAtom.getArgument(0)); 
 		}
 		if (p instanceof AtomicConcept) 
-			return Atom.create(getGapDLPredicate((AtomicConcept) p), headAtom.getArgument(0)); 
+			return Atom.create(getGapDLPredicate(p), headAtom.getArgument(0));
 		if (p instanceof AtomicRole) 
-			return Atom.create(getGapDLPredicate((AtomicRole) p), headAtom.getArgument(0), headAtom.getArgument(1));
+			return Atom.create(getGapDLPredicate(p), headAtom.getArgument(0), headAtom.getArgument(1));
 		if (p instanceof Equality || p instanceof AnnotatedEquality) 
 			return Atom.create(getGapDLPredicate(Equality.INSTANCE), headAtom.getArgument(0), headAtom.getArgument(1)); 
 		if (p instanceof Inequality) 
-			return Atom.create(getGapDLPredicate((Inequality) p), headAtom.getArgument(0), headAtom.getArgument(1)); 
+			return Atom.create(getGapDLPredicate(p), headAtom.getArgument(0), headAtom.getArgument(1));
 		if (p instanceof DatatypeRestriction)
-			return Atom.create(getGapDLPredicate((DatatypeRestriction) p), headAtom.getArgument(0)); 
+			return Atom.create(getGapDLPredicate(p), headAtom.getArgument(0));
 		Utility.logError(p + " is not recognised.");
 		return null;
 	}

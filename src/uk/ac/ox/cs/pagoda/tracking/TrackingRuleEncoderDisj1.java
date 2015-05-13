@@ -1,26 +1,14 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import java.util.LinkedList;
-
-import org.semanticweb.HermiT.model.AtLeastConcept;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicNegationConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+
+import java.util.LinkedList;
 
 public class TrackingRuleEncoderDisj1 extends TrackingRuleEncoderDisj {
 

@@ -1,10 +1,12 @@
 package uk.ac.ox.cs.pagoda.rules;
 
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+
 public class DisjunctiveProgram extends UpperProgram {
 
 	@Override
 	protected void initApproximator() {
-		m_approx = new OverApproxExist(); 
+		m_approx = new OverApproxExist();
 	}
 	
 //	@Override

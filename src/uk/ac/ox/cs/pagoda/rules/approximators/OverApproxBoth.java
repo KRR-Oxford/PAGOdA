@@ -1,10 +1,10 @@
-package uk.ac.ox.cs.pagoda.rules;
-
-import java.util.Collection;
-import java.util.LinkedList;
+package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.AtLeastDataRange;
 import org.semanticweb.HermiT.model.DLClause;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 public class OverApproxBoth implements Approximator {
 	

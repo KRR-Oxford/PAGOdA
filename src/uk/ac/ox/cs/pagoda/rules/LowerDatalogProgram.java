@@ -10,6 +10,7 @@ import uk.ac.ox.cs.pagoda.constraints.UnaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.UpperUnaryBottom;
 import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.multistage.RestrictedApplication;
+import uk.ac.ox.cs.pagoda.rules.approximators.Approximator;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -106,7 +107,26 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 	
 	@Override
 	protected void initApproximator() {
-		m_approx = new IgnoreBoth(); 
+		m_approx = new IgnoreBoth();
+	}
+
+	private class IgnoreBoth implements Approximator {
+
+		@Override
+		public Collection<DLClause> convert(DLClause clause, DLClause originalClause) {
+			Collection<DLClause> ret = new LinkedList<DLClause>();
+
+			if (clause.getHeadLength() > 1) return ret;
+
+			if (clause.getHeadLength() > 0) {
+				DLPredicate predicate = clause.getHeadAtom(0).getDLPredicate();
+
+				if (predicate instanceof AtLeast) return ret;
+			}
+
+			ret.add(clause);
+			return ret;
+		}
 	}
 
 }
@@ -116,14 +136,12 @@ class ClassifyThread extends Thread {
 	IncrementalProgram m_program; 
 	Collection<DLClause> clauses = new LinkedList<DLClause>(); 
 	
-	Variable X = Variable.create("X"), Y = Variable.create("Y"); 
-	
+	Variable X = Variable.create("X"), Y = Variable.create("Y");
+	Reasoner hermitReasoner;
+	OWLOntology ontology;
 	ClassifyThread(IncrementalProgram program) {
 		m_program = program;
 	}
-	
-	Reasoner hermitReasoner;
-	OWLOntology ontology; 
 	
 	@Override
 	public void run() {
@@ -215,5 +233,4 @@ class ClassifyThread extends Thread {
 	private Atom getAtom(OWLClass c) {
 		return Atom.create(AtomicConcept.create(c.toStringID()), X);
 	}
-
 }

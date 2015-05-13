@@ -1,4 +1,4 @@
-package uk.ac.ox.cs.pagoda.rules;
+package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
@@ -88,7 +88,7 @@ public class OverApproxDisj implements Approximator {
 			arguments[i] = rename(atom.getArgument(i), unifier);
 		return Atom.create(atom.getDLPredicate(), arguments);
 	}
-	
+
 	public static Term rename(Term argument, Map<Variable, Term> unifier) {
 		Term newArg;
 		while ((newArg = unifier.get(argument)) != null) 

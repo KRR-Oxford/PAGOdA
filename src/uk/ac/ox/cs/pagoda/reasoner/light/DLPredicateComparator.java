@@ -1,9 +1,9 @@
 package uk.ac.ox.cs.pagoda.reasoner.light;
 
-import java.util.Comparator;
-
 import uk.ac.ox.cs.pagoda.multistage.Normalisation;
-import uk.ac.ox.cs.pagoda.rules.OverApproxExist;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
+
+import java.util.Comparator;
 
 public class DLPredicateComparator implements Comparator<String> {
 

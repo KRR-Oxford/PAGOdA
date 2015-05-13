@@ -1,5 +1,7 @@
 package uk.ac.ox.cs.pagoda.rules;
 
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxDisj;
+
 public class ExistentialProgram extends UpperProgram {
 
 //	@Override
@@ -12,7 +14,7 @@ public class ExistentialProgram extends UpperProgram {
 
 	@Override
 	protected void initApproximator() {
-		m_approx = new OverApproxDisj(); 		
+		m_approx = new OverApproxDisj();
 	}
 
 }

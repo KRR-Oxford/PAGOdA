@@ -1,11 +1,12 @@
 package uk.ac.ox.cs.pagoda.rules;
 
+import org.semanticweb.HermiT.model.DLClause;
+import org.semanticweb.HermiT.model.DLPredicate;
+import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxBoth;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
 
 
 public class UpperDatalogProgram extends UpperProgram {
@@ -22,7 +23,7 @@ public class UpperDatalogProgram extends UpperProgram {
 
 	@Override
 	protected void initApproximator() {
-		m_approx = new OverApproxBoth(); 		
+		m_approx = new OverApproxBoth();
 	}
 
 	public int getBottomNumber() {

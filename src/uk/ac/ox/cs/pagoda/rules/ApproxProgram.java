@@ -1,26 +1,21 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLSubPropertyChainOfAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
-
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
+import uk.ac.ox.cs.pagoda.rules.approximators.Approximator;
+
+import java.util.*;
 
 public abstract class ApproxProgram extends Program {
-	
+
+	protected Approximator m_approx = null;
 	/**
 	 * mapping from over-approximated DLClauses to DLClauses from the original ontology
 	 */
 	Map<DLClause, Object> correspondence = new HashMap<DLClause, Object>();
-	
-	protected Approximator m_approx = null; 
 	
 	protected ApproxProgram() { initApproximator(); }
 	
@@ -76,7 +71,7 @@ public abstract class ApproxProgram extends Program {
 
 	public OWLAxiom getEquivalentAxiom(DLClause clause) {
 		Object obj  = correspondence.get(clause);
-		while (obj != null && obj instanceof DLClause && !obj.equals(clause) && correspondence.containsKey((DLClause) obj))
+		while (obj != null && obj instanceof DLClause && !obj.equals(clause) && correspondence.containsKey(obj))
 			obj = correspondence.get(clause);
 		if (obj instanceof OWLAxiom) 
 			return (OWLAxiom) obj; 
@@ -98,14 +93,14 @@ public abstract class ApproxProgram extends Program {
 
 class ClauseSet extends HashSet<DLClause> {
 
-	public ClauseSet(DLClause first, DLClause second) {
-		add(first);  
-		add(second); 
-	}
-
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
+	public ClauseSet(DLClause first, DLClause second) {
+		add(first);
+		add(second);
+	}
+
 }

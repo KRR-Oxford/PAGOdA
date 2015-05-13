@@ -1,7 +1,8 @@
-package uk.ac.ox.cs.pagoda.rules;
+package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.DLClause;
 import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
+import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
 
 import java.util.*;
 
@@ -62,6 +63,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
 
     private DLClause getInstantiatedSkolemisation(DLClause clause, DLClause originalClause, AnswerTupleID violationTuple) {
         // TODO implement
+        // filter the violation tuples appearing on both the sides of the rule
         return null;
     }
 

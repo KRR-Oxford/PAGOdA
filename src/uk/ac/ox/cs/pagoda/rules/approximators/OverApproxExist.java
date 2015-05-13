@@ -1,4 +1,4 @@
-package uk.ac.ox.cs.pagoda.rules;
+package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
@@ -11,9 +11,11 @@ public class OverApproxExist implements Approximator {
 	public static final String negativeSuffix = "_neg";
 	public static final String skolemisedIndividualPrefix = Namespace.PAGODA_ANONY + "individual";
 	private static final Variable X = Variable.create("X");
+	//DEBUG
+	public static Collection<String> createdIndividualIRIs = new HashSet<>();
 	private static int individualCounter = 0;
 	private static Map<DLClause, Integer> individualNumber = new HashMap<DLClause, Integer>();
-	
+
 	private static int noOfExistential(DLClause originalClause) {
 		int no = 0;
 		for (Atom atom: originalClause.getHeadAtoms())
@@ -42,7 +44,7 @@ public class OverApproxExist implements Approximator {
 		}
 		return -1;
 	}
-	
+
 	public static AtomicConcept getNegationConcept(DLPredicate p) {
 		if (p.equals(AtomicConcept.THING)) return AtomicConcept.NOTHING;
 		if (p.equals(AtomicConcept.NOTHING)) return AtomicConcept.THING;
@@ -66,15 +68,19 @@ public class OverApproxExist implements Approximator {
 	public static int getNumberOfSkolemisedIndividual() {
 		return individualCounter;
 	}
-	
+	//DEBUG
+
 	public static Individual getNewIndividual(DLClause originalClause, int offset) {
 		Individual ret;
+		int individualID;
 		if (individualNumber.containsKey(originalClause)) {
-			ret = Individual.create(skolemisedIndividualPrefix + (individualNumber.get(originalClause) + offset));
+			individualID = individualNumber.get(originalClause) + offset;
+			ret = Individual.create(skolemisedIndividualPrefix + individualID);
 		}
 		else {
 			individualNumber.put(originalClause, individualCounter);
-			ret = Individual.create(skolemisedIndividualPrefix + (individualCounter + offset));
+			individualID = individualCounter + offset;
+			ret = Individual.create(skolemisedIndividualPrefix + individualID);
 			individualCounter += noOfExistential(originalClause);
 		}
 		return ret;
