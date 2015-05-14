@@ -73,6 +73,9 @@ public class ConsistencyManager {
 			AnswerTuples tuples = null; 
 			try {
 				tuples = m_reasoner.lazyUpperStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
+
+				Utility.logDebug("CheckLazyUpperBound: answerVars=" + fullQueryRecord.getAnswerVariables());
+
 				if (!tuples.isValid()) {
 					Utility.logInfo("There are no contradictions derived in the lazy upper bound materialisation."); 
 					return satisfiability(t.duration()); 

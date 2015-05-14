@@ -1,31 +1,17 @@
 package uk.ac.ox.cs.pagoda.reasoner.light;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.Constant;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-
-import uk.ac.ox.cs.pagoda.owl.OWLHelper;
-import uk.ac.ox.cs.pagoda.util.Namespace;
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.model.Datatype;
 import uk.ac.ox.cs.JRDFox.model.GroundTerm;
 import uk.ac.ox.cs.JRDFox.store.DataStore;
-import uk.ac.ox.cs.JRDFox.model.Datatype;
-import uk.ac.ox.cs.JRDFox.store.Dictionary;
 import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
+import uk.ac.ox.cs.JRDFox.store.Dictionary;
 import uk.ac.ox.cs.JRDFox.store.Resource;
+import uk.ac.ox.cs.pagoda.owl.OWLHelper;
+import uk.ac.ox.cs.pagoda.util.Namespace;
+
+import java.util.*;
 
 public class RDFoxTripleManager {
 	
@@ -183,10 +169,11 @@ public class RDFoxTripleManager {
 	int sizeLimit = 10000; 
 
 	private int getResourceID(Term arg, Map<Variable, Integer> assignment) {
-		while (termCache.size() > sizeLimit) 
-			termCache.remove(termList.poll()); 
+		// FIXME infinite loop
+//		while (termCache.size() > sizeLimit)
+//			termCache.remove(termList.poll());
 		
-		if (arg instanceof Variable) return assignment.get((Variable) arg); 
+		if (arg instanceof Variable) return assignment.get(arg);
 		Integer id = null; 
 		if ((id = termCache.get(arg)) != null)
 			return id; 

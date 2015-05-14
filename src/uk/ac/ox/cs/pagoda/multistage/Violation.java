@@ -1,8 +1,8 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
-import java.util.LinkedList;
-
 import org.semanticweb.HermiT.model.DLClause;
+
+import java.util.LinkedList;
 
 public class Violation {
 
@@ -41,6 +41,13 @@ public class Violation {
 	public String[] getVariables() {
 		return vars; 
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Violation{" +
+				"constraint=" + constraint +
+				", clause=" + clause +
+				", tuples=" + tuples +
+				'}';
+	}
 }

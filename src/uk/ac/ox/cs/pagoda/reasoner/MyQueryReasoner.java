@@ -33,7 +33,8 @@ public class MyQueryReasoner extends QueryReasoner {
 	DatalogProgram program; 
 
 	BasicQueryEngine rlLowerStore = null;
-	BasicQueryEngine lazyUpperStore = null;  
+	BasicQueryEngine lazyUpperStore = null;
+	BasicQueryEngine limitedSkolemUpperStore;
 //	boolean[] namedIndividuals_lazyUpper; 
 	
 	OWLOntology elho_ontology; 
@@ -49,7 +50,6 @@ public class MyQueryReasoner extends QueryReasoner {
 	private Collection<String> predicatesWithGap = null;
 	private Boolean satisfiable;
 	private ConsistencyManager consistency = new ConsistencyManager(this);
-	BasicQueryEngine limitedSkolemUpperStore;
 
 	public MyQueryReasoner() {
 		setup(true, true);
@@ -163,10 +163,11 @@ public class MyQueryReasoner extends QueryReasoner {
 			}
 			if (tag == -1) return false;
 		}
-		if (consistency.checkSkolemUpper()) {
-			satisfiable = true;
-			Utility.logInfo("time for satisfiability checking: " + t.duration());
-		}
+		// FIXME nullPointerException
+//		if (consistency.checkSkolemUpper()) {
+//			satisfiable = true;
+//			Utility.logInfo("time for satisfiability checking: " + t.duration());
+//		}
 
 		trackingStore.importRDFData(name, datafile);
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);

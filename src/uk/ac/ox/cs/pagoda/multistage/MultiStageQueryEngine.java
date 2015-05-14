@@ -143,6 +143,10 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 				subTimer.reset(); 
 				oldTripleCount = store.getTriplesCount(); 
 				for (Violation v : violations) {
+
+					Utility.logDebug("Dealing with violation: " + v.constraint);
+					Utility.logDebug("Number of violation tuples: " + v.size());
+
 					Timer localTimer = new Timer(); 
 					int number = v.size(); 
 					long vOldCounter = store.getTriplesCount();  
@@ -151,8 +155,8 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 						Utility.logInfo(name + " store FAILED for multi-stage materialisation in " + t.duration() + " seconds."); 
 						return 0; 
 					}
-					Utility.logDebug("Time to make the constraint being satisfied: " + localTimer.duration() + " " + number + " tuples for " + v.constraint); 
-					Utility.logDebug("tuple number: " + v.size() + " before: " + vOldCounter + " after: " + store.getTriplesCount() + " (" + (store.getTriplesCount() - vOldCounter) + " new) ." ); 
+					Utility.logDebug("Time to make the constraint being satisfied: " + localTimer.duration());
+					Utility.logDebug("Triples in the store: before=" + vOldCounter + ", after=" + store.getTriplesCount() + ", new=" + (store.getTriplesCount() - vOldCounter));
 				}
 				Utility.logDebug(name + " store after adding facts for violations: " + (tripleCount = store.getTriplesCount()) + " (" + (tripleCount - oldTripleCount) + " new)");
 				Utility.logDebug("Time to add triples for violations: " + subTimer.duration()); 

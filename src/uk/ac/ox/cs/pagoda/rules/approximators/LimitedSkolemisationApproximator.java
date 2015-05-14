@@ -79,9 +79,11 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         TupleBuilder<Individual> commonIndividualsBuilder = new TupleBuilder<>();
         for (int i = 0; i < commonVars.length; i++)
             commonIndividualsBuilder.add(violationTuple.get(i));
+        Tuple<Individual> commonIndividuals = commonIndividualsBuilder.create();
 
         Atom headAtom = clause.getHeadAtom(0);
-        Atom[] bodyAtoms = clause.getBodyAtoms();
+
+//        Atom[] bodyAtoms = clause.getBodyAtoms();
         int offset = OverApproxExist.indexOfExistential(headAtom, originalClause);
 
         // BEGIN: copy and paste
@@ -111,15 +113,15 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
             for (int i = 0; i < card; ++i)
                 individuals[i] = termsManager.getFreshIndividual(originalClause,
                                                                  offset + i,
-                                                                 commonIndividualsBuilder.create());
+                                                                 commonIndividuals);
 
             for (int i = 0; i < card; ++i) {
                 if (atomicConcept != null)
                     ret.add(DLClause.create(new Atom[] {Atom.create(atomicConcept, individuals[i])}, EMPTY_BODY));
 
                 Atom atom = role instanceof AtomicRole ?
-                        Atom.create((AtomicRole) role, X, individuals[i]) :
-                        Atom.create(((InverseRole) role).getInverseOf(), individuals[i], X);
+                        Atom.create((AtomicRole) role, commonIndividuals.get(0), individuals[i]) :
+                        Atom.create(((InverseRole) role).getInverseOf(), individuals[i], commonIndividuals.get(0));
 
                 ret.add(DLClause.create(new Atom[] {atom}, EMPTY_BODY));
             }
