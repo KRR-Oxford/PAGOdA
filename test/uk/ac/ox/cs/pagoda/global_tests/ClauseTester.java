@@ -1,15 +1,9 @@
-package uk.ac.ox.cs.pagoda.test_units;
+package uk.ac.ox.cs.pagoda.global_tests;
 
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.HermiT.model.*;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.approx.Clause;

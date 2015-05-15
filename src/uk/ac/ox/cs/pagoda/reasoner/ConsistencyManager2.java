@@ -2,7 +2,6 @@ package uk.ac.ox.cs.pagoda.reasoner;
 
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
@@ -31,8 +30,9 @@ public class ConsistencyManager2 extends ConsistencyManager {
 	@Override
 	boolean check() {
 //		if (!checkRLLowerBound()) return false; 
-//		if (!checkELLowerBound()) return false;  
-		if (checkLazyUpper()) return true; 
+//		if (!checkELLowerBound()) return false;
+		// TODO test
+		if (checkUpper(m_reasoner.lazyUpperStore) && checkUpper(m_reasoner.limitedSkolemUpperStore)) return true;
 		AnswerTuples iter = null; 
 		
 		try {

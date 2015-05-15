@@ -1,20 +1,22 @@
-package uk.ac.ox.cs.pagoda.reasoner.light; 
+package uk.ac.ox.cs.pagoda.reasoner.light;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
-
-import org.semanticweb.karma2.*; 
+import org.semanticweb.karma2.MyKarma;
 import org.semanticweb.karma2.clausifier.OntologyProcesser;
 import org.semanticweb.karma2.exception.IllegalInputOntologyException;
 import org.semanticweb.karma2.model.ConjunctiveQuery;
 import org.semanticweb.owlapi.model.OWLOntology;
-
-import uk.ac.ox.cs.pagoda.query.*; 
-import uk.ac.ox.cs.pagoda.util.ConjunctiveQueryHelper;
-import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.pagoda.query.AnswerTuple;
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.query.AnswerTuplesImp;
+import uk.ac.ox.cs.pagoda.util.ConjunctiveQueryHelper;
+import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
+import java.util.Set;
 
 public class KarmaQueryEngine extends RDFoxQueryEngine {
 	
@@ -29,8 +31,8 @@ public class KarmaQueryEngine extends RDFoxQueryEngine {
 //		int index = (new Random().nextInt() % Base + Base) % Base;
 //		karmaDataFile = "karma_data" + index + ".ttl"; 
 //		karmaRuleFile = "karma_rule" + index + ".dlog";
-		karmaDataFile = Utility.TempDirectory + "karma_data.ttl"; 
-		karmaRuleFile = Utility.TempDirectory + "karma_rule.dlog";
+		karmaDataFile = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "karma_data.ttl").toString();
+		karmaRuleFile =  Paths.get(Utility.getGlobalTempDirAbsolutePath(), "karma_rule.dlog").toString();
 		
 		reasoner = new MyKarma(); 
 	}

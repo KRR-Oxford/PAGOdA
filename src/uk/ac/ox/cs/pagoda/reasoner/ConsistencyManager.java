@@ -15,6 +15,7 @@ import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
+import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
 import uk.ac.ox.cs.pagoda.summary.HermitSummaryFilter;
 import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
@@ -54,7 +55,7 @@ public class ConsistencyManager {
 		
 		if (fullQueryRecord.getNoOfSoundAnswers() > 0) {
 			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple()); 
-			return unsatisfiability(t.duration());
+			return false;
 		}
 		return true; 
 	}
@@ -63,39 +64,20 @@ public class ConsistencyManager {
 		fullQueryRecord.updateLowerBoundAnswers(m_reasoner.elLowerStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()));
 		if (fullQueryRecord.getNoOfSoundAnswers() > 0) {
 			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple()); 
-			return unsatisfiability(t.duration());
+			return true;
 		}
 		return true; 
 	}
-	
-	boolean checkLazyUpper() {
-		if (m_reasoner.lazyUpperStore != null) {
-			AnswerTuples tuples = null; 
-			try {
-				tuples = m_reasoner.lazyUpperStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
 
-				Utility.logDebug("CheckLazyUpperBound: answerVars=" + fullQueryRecord.getAnswerVariables());
-
-				if (!tuples.isValid()) {
-					Utility.logInfo("There are no contradictions derived in the lazy upper bound materialisation."); 
-					return satisfiability(t.duration()); 
-				}
-			}
-			finally {
-				if (tuples != null) tuples.dispose();
-			}
-		}
-		return false; 
-	}
-
-	boolean checkSkolemUpper() {
-		if (m_reasoner.limitedSkolemUpperStore != null) {
+	boolean checkUpper(BasicQueryEngine upperStore) {
+		if (upperStore != null) {
 			AnswerTuples tuples = null;
 			try {
-				tuples = m_reasoner.limitedSkolemUpperStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
+				tuples = upperStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
 				if (!tuples.isValid()) {
-					Utility.logInfo("There are no contradictions derived in the limited-skolem upper bound materialisation.");
-					return satisfiability(t.duration());
+					Utility.logInfo("There are no contradictions derived in "+ upperStore.getName() +" materialisation.");
+					Utility.logDebug("The ontology and dataset is satisfiable.");
+					return true;
 				}
 			}
 			finally {
@@ -104,7 +86,11 @@ public class ConsistencyManager {
 		}
 		return false;
 	}
-	
+
+	void dispose() {
+		fullQueryRecord.dispose();
+	}
+
 	boolean check() {
 //		if (!checkRLLowerBound()) return false; 
 //		if (!checkELLowerBound()) return false;  
@@ -119,7 +105,7 @@ public class ConsistencyManager {
 		}
 		
 		if (fullQueryRecord.getNoOfCompleteAnswers() == 0)
-			return satisfiability(t.duration()); 
+			return true;
 		
 		extractBottomFragment();
 		
@@ -139,7 +125,7 @@ public class ConsistencyManager {
 			checker = new HermitSummaryFilter(r, true); // m_reasoner.factory.getSummarisedReasoner(r);
 			satisfiability = checker.isConsistent(); 
 			checker.dispose();
-			if (!satisfiability) return unsatisfiability(t.duration()); 
+			if (!satisfiability) return false;
 		}
 		
 //		Checker checker = m_reasoner.factory.getSummarisedReasoner(fullQueryRecord); 
@@ -147,20 +133,20 @@ public class ConsistencyManager {
 //		checker.dispose();
 //		if (!satisfiable) return unsatisfiability(t.duration()); 
 		
-		return satisfiability(t.duration()); 
-	}
-
-	protected boolean unsatisfiability(double duration) {
-		fullQueryRecord.dispose();
-		Utility.logDebug("The ontology and dataset is unsatisfiable."); 
-		return false;
-	}
-
-	protected boolean satisfiability(double duration) {
-		fullQueryRecord.dispose();
-		Utility.logDebug("The ontology and dataset is satisfiable."); 
 		return true;
 	}
+
+//	protected boolean unsatisfiability(double duration) {
+//		fullQueryRecord.dispose();
+//		Utility.logDebug("The ontology and dataset is unsatisfiable.");
+//		return false;
+//	}
+
+//	protected boolean satisfiability(double duration) {
+//		fullQueryRecord.dispose();
+//		Utility.logDebug("The ontology and dataset is satisfiable.");
+//		return true;
+//	}
 	
 	boolean fragmentExtracted = false; 
 

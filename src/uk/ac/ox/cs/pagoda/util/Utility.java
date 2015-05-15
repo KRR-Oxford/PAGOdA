@@ -5,9 +5,9 @@ import org.apache.log4j.Logger;
 import org.semanticweb.HermiT.model.Atom;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Utility {
@@ -21,8 +21,9 @@ public class Utility {
 	public static final String JAVA_FILE_SEPARATOR = "/";
 	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-	
-	public static final String TempDirectory = (new File("tmp" + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()))).getAbsolutePath() + FILE_SEPARATOR;
+
+	private static final String TEMP_DIR_PATH= "pagoda_tmp";
+	private static String tempDir;
 	
 	public static final int TEST = -1; 
 	public static final int FLY = 0;
@@ -30,6 +31,20 @@ public class Utility {
 	public static final int LUBM = 2;
 	public static final int AEO = 3;
 	public static final int WINE = 4;
+
+	public static String getGlobalTempDirAbsolutePath() {
+		if(tempDir == null) {
+			try {
+				Path path = Files.createTempDirectory(TEMP_DIR_PATH);
+				tempDir = path.toString();
+				new File(tempDir).deleteOnExit();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		return tempDir;
+	}
 
 	public static Set<Atom> toSet(Atom[] data)
 	{
@@ -228,19 +243,19 @@ public class Utility {
 			LOGS.error(getLogMessage(messages));
 	}
 	
-	public static void initialise() {
-		File tmp = new File(TempDirectory); 
-		if (!tmp.exists()) tmp.mkdirs(); 
-	}
-
-	public static void cleanup() {
-		File tmp = new File(TempDirectory);
-		if (tmp.exists()) {
-			for (File file: tmp.listFiles())
-				file.delete(); 
-			tmp.delete();
-		}
-	}
+//	public static void initialise() {
+//		File tmp = new File(TempDirectory);
+//		if (!tmp.exists()) tmp.mkdirs();
+//	}
+//
+//	public static void cleanup() {
+//		File tmp = new File(TempDirectory);
+//		if (tmp.exists()) {
+//			for (File file: tmp.listFiles())
+//				file.delete();
+//			tmp.delete();
+//		}
+//	}
 
 	public static String toFileIRI(String path) {
 		String iri; 

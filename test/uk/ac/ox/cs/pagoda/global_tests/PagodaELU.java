@@ -1,20 +1,20 @@
-package uk.ac.ox.cs.pagoda.test_units;
+package uk.ac.ox.cs.pagoda.global_tests;
 
 import org.junit.Test;
 import uk.ac.ox.cs.pagoda.tester.PagodaTester;
 import uk.ac.ox.cs.pagoda.util.TestUtil;
 
-public class PagodaRLU {
+public class PagodaELU {
 
-	@Test 
-	public void testRL() {
+	@Test void test() {
 		int number = 1;
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		PagodaTester.main(
 				TestUtil.combinePaths(ontoDir, "uobm/univ-bench-dl.owl"),
 				TestUtil.combinePaths(ontoDir, "uobm/data/uobm" + number + ".ttl"),
 				TestUtil.combinePaths(ontoDir, "uobm/queries/standard.sparql")
-		);
+		); 
 	}
-
+	
+	
 }

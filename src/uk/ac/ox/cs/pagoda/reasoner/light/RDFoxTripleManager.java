@@ -1,5 +1,8 @@
 package uk.ac.ox.cs.pagoda.reasoner.light;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.model.Datatype;
@@ -11,11 +14,20 @@ import uk.ac.ox.cs.JRDFox.store.Resource;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RDFoxTripleManager {
-	
-	UpdateType m_incrementally; 
+
+	private final Cache termsCache;
+	private static final int TERMS_CACHE_SIZE = 10000;
+	private static final int CACHE_TTL_DEFAULT = 0;
+	private static final int CACHE_TTI_DEFAULT = 0;
+	private static final boolean CACHE_ETERNAL = true;
+	private static final boolean CACHE_USE_DISK = false;
+
+	UpdateType m_incrementally;
 //	boolean m_incrementally; 
 
 	DataStore m_store;
@@ -24,7 +36,19 @@ public class RDFoxTripleManager {
 	
 	public RDFoxTripleManager(DataStore store, boolean incrementally) {
 		m_store = store;
-//		m_incrementally = incrementally; 
+//		m_incrementally = incrementally;
+
+		CacheManager cacheManager = CacheManager.getInstance();
+		String cacheName = "RDFoxTripleManager_" + store.hashCode();
+		if(! cacheManager.cacheExists(cacheName)) {
+			termsCache = new Cache(cacheName,
+								   TERMS_CACHE_SIZE, CACHE_USE_DISK, CACHE_ETERNAL,
+								   CACHE_TTL_DEFAULT, CACHE_TTI_DEFAULT);
+			cacheManager.addCache(termsCache);
+		}
+		else
+			termsCache = cacheManager.getCache(cacheName);
+
 		if (incrementally)
 			m_incrementally = UpdateType.ScheduleForAddition;
 		else 
@@ -164,29 +188,25 @@ public class RDFoxTripleManager {
 		return m_dict.resolveResources(lexicalForms, types)[0]; 
 	}
 	
-	Map<Term, Integer> termCache = new HashMap<Term, Integer>(); 
-	Queue<Term> termList = new LinkedList<Term>();
-	int sizeLimit = 10000; 
+//	Map<Term, Integer> termCache = new HashMap<Term, Integer>();
+//	Queue<Term> termQueue = new LinkedList<Term>();
 
 	private int getResourceID(Term arg, Map<Variable, Integer> assignment) {
-		// FIXME infinite loop
-//		while (termCache.size() > sizeLimit)
-//			termCache.remove(termList.poll());
-		
 		if (arg instanceof Variable) return assignment.get(arg);
-		Integer id = null; 
-		if ((id = termCache.get(arg)) != null)
-			return id; 
-		
+		int id = -1;
+		if(termsCache.isKeyInCache(arg))
+			return ((int) termsCache.get(arg).getObjectValue());
+
 //		if (arg instanceof Individual) {
 			try {
 				if (arg instanceof Individual)
-					termCache.put(arg, id = resolveResource(((Individual) arg).getIRI(), Datatype.IRI_REFERENCE.value())); 
+					termsCache.put(new Element(arg, id = resolveResource(((Individual) arg).getIRI(), Datatype.IRI_REFERENCE.value())));
 				else if (arg instanceof Constant)
-					termCache.put(arg, id = resolveResource(((Constant) arg).getLexicalForm(), getDatatypeID(((Constant) arg).getDatatypeURI()))); 
+					termsCache.put(new Element(arg, id = resolveResource(((Constant) arg).getLexicalForm(), getDatatypeID(((Constant) arg).getDatatypeURI()))));
 				
 			} catch (JRDFStoreException e) {
 				e.printStackTrace();
+				System.exit(1);
 			} 
 //		}
 			

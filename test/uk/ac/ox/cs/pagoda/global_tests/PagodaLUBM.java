@@ -1,4 +1,4 @@
-package uk.ac.ox.cs.pagoda.test_units;
+package uk.ac.ox.cs.pagoda.global_tests;
 
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.util.TestUtil;

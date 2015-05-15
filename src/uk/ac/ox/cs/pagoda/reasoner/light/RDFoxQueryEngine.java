@@ -1,8 +1,9 @@
 package uk.ac.ox.cs.pagoda.reasoner.light;
 
-import java.io.File;
-import java.util.Collection;
-
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.Prefixes;
+import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.JRDFox.store.DataStore.StoreType;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.reasoner.QueryEngine;
@@ -10,16 +11,19 @@ import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
 import uk.ac.ox.cs.pagoda.tracking.AnswerTuplesWriter;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.Prefixes;
-import uk.ac.ox.cs.JRDFox.store.DataStore;
-import uk.ac.ox.cs.JRDFox.store.DataStore.StoreType;
+
+import java.io.File;
+import java.util.Collection;
 
 public abstract class RDFoxQueryEngine implements QueryEngine {
 	
 	public static final int matNoOfThreads = Runtime.getRuntime().availableProcessors() * 2;
-	
-	protected String name; 
+
+	public String getName() {
+		return name;
+	}
+
+	protected String name;
 	protected Prefixes prefixes = MyPrefixes.PAGOdAPrefixes.getRDFoxPrefixes();
 
 	public RDFoxQueryEngine(String name) {

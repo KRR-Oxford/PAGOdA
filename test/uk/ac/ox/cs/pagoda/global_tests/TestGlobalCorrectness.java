@@ -1,4 +1,4 @@
-package uk.ac.ox.cs.pagoda.test_units;
+package uk.ac.ox.cs.pagoda.global_tests;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,6 +28,7 @@ public class TestGlobalCorrectness {
         try {
             Utility.setLogLevel(Level.DEBUG);
             Path computedAnswers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
+            new File(computedAnswers.toString()).deleteOnExit();
             PagodaTester.main(ontology.toString(), data.toString(), queries.toString(), computedAnswers.toString());
             assertSameContent(computedAnswers, givenAnswers);
         } catch (IOException e) {

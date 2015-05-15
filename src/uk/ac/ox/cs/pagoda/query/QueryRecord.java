@@ -69,7 +69,7 @@ public class QueryRecord {
 	}
 	
 	public boolean updateLowerBoundAnswers(AnswerTuples answerTuples) {
-		if (answerTuples == null) return false; 			
+		if (answerTuples == null) return false;
 		boolean update = false;
 		for (AnswerTuple tuple; answerTuples.isValid(); answerTuples.moveNext()) {
 			tuple = answerTuples.getTuple();
@@ -77,8 +77,12 @@ public class QueryRecord {
 				soundAnswerTuples.add(tuple);
 				if (gapAnswerTuples != null)
 					gapAnswerTuples.remove(tuple);
-				update = true; 
+				update = true;
 			}
+			// TODO could be wrong, but if possible add the check
+//			else if (! gapAnswerTuples.contains(tuple)) {
+//				throw new IllegalArgumentException("The lower bound answers must be contained in the upper ones!");
+//			}
 		}
 		Utility.logInfo("The number of answers in the lower bound: " + soundAnswerTuples.size()); 
 
@@ -103,14 +107,16 @@ public class QueryRecord {
 			for (; answerTuples.isValid(); answerTuples.moveNext()) {
 				++number; 
 			}
-			Utility.logInfo("The number of answers returned by the upper bound: " + number);
+			Utility.logInfo("The number of answers returned by an upper bound: " + number);
 			if (number <= soundAnswerTuples.size()) {
 				if (gapAnswerTuples != null) gapAnswerTuples.clear(); 
 				else gapAnswerTuples = new HashSet<AnswerTuple>();
 					
-				Utility.logInfo("The number of answers in the upper bound: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
+				Utility.logInfo("The number of upper bound answers: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
 				return false;
 			}
+			else if (number < soundAnswerTuples.size())
+				throw new IllegalArgumentException("The upper bound answers must contain all the lower bound ones!");
 			answerTuples.reset();
 		}
 			
@@ -362,8 +368,8 @@ public class QueryRecord {
 	}
 	
 	public enum Step {LowerBound, UpperBound, ELLowerBound, 
-		Fragment, FragmentRefinement, Summarisation, Dependency, FullReasoning};  
-	
+		Fragment, FragmentRefinement, Summarisation, Dependency, FullReasoning}
+
 	double[] timer;
 
 	public void addProcessingTime(Step step, double time) {

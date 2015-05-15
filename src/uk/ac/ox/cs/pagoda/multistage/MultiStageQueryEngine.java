@@ -133,8 +133,8 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 				subTimer.reset(); 
 				if ((violations = program.isIntegrated(this, incrementally)) == null || violations.size() == 0) {
 					store.clearRulesAndMakeFactsExplicit();
-					Utility.logDebug(name + " store after materialising " + programName + ": " + tripleCount + " (" + (tripleCount - tripleCountBeforeMat) + " new)");
-					Utility.logInfo(name + " store is DONE for multi-stage materialising in " + t.duration() + " seconds."); 
+					Utility.logInfo(name + " store after materialising " + programName + ": " + tripleCount + " (" + (tripleCount - tripleCountBeforeMat) + " new)");
+					Utility.logInfo(name + " store is DONE for multi-stage materialising in " + t.duration() + " seconds.");
 					return isValid() ? 1 : 0;
 				}
 				Utility.logDebug("Time to detect violations: " + subTimer.duration()); 

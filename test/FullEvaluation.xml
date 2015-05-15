@@ -5,13 +5,13 @@
 
     <test name="LightEvaluation">
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.test_units.LightEvaluation" />
+            <class name="uk.ac.ox.cs.pagoda.global_tests.LightEvaluation" />
         </classes>
     </test>
 
     <test name="CostEvaluation">
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.test_units.CostEvaluation" />
+            <class name="uk.ac.ox.cs.pagoda.global_tests.CostEvaluation" />
         </classes>
     </test>
 

@@ -1,63 +1,22 @@
 package uk.ac.ox.cs.pagoda.approx;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.DLOntology;
 import org.semanticweb.HermiT.structural.OWLClausification;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDataHasValue;
-import org.semanticweb.owlapi.model.OWLDataMaxCardinality;
-import org.semanticweb.owlapi.model.OWLDataMinCardinality;
-import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLDatatype;
-import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectComplementOf;
-import org.semanticweb.owlapi.model.OWLObjectHasValue;
-import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
-import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
-import org.semanticweb.owlapi.model.OWLObjectOneOf;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.profiles.OWL2RLProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileReport;
 import org.semanticweb.owlapi.profiles.OWLProfileViolation;
-
 import uk.ac.ox.cs.pagoda.constraints.NullaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.UnaryBottom;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.io.*;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class RLPlusOntology implements KnowledgeBase {
 	
@@ -111,7 +70,7 @@ public class RLPlusOntology implements KnowledgeBase {
 			if (!tOntoIRI.endsWith(originalExtension)) tOntoIRI += originalExtension;
 			
 			String rlOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-RL.owl" : tOntoIRI.replaceFirst(originalExtension, "-RL.owl");
-			String rlDocumentIRI = (outputPath = Utility.TempDirectory + "RL.owl");
+			String rlDocumentIRI = (outputPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "RL.owl").toString());
 			outputOntology = manager.createOntology(IRI.create(rlOntologyIRI));
 			manager.setOntologyDocumentIRI(outputOntology, IRI.create(Utility.toFileIRI(rlDocumentIRI)));
 			
@@ -119,8 +78,8 @@ public class RLPlusOntology implements KnowledgeBase {
 			tBoxOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-TBox.owl" : tOntoIRI.replaceFirst(originalExtension, "-TBox.owl"); 
 			aBoxOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-ABox.owl" : tOntoIRI.replaceFirst(originalExtension, "-ABox.owl");
 			
-			String tBoxDocumentIRI = (Utility.TempDirectory + "TBox.owl");
-			String aBoxDocumentIRI = (aBoxPath = Utility.TempDirectory + "ABox.owl");
+			String tBoxDocumentIRI = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "TBox.owl").toString();
+			String aBoxDocumentIRI = (aBoxPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "ABox.owl").toString());
 			tBox = manager.createOntology(IRI.create(tBoxOntologyIRI));
 			aBox = manager.createOntology(IRI.create(aBoxOntologyIRI));
 			manager.setOntologyDocumentIRI(tBox, IRI.create(Utility.toFileIRI(tBoxDocumentIRI)));
@@ -488,7 +447,7 @@ public class RLPlusOntology implements KnowledgeBase {
 						addedAxioms.add(factory.getOWLObjectPropertyRangeAxiom(r, tExp));
 				}
 				else if (botStrategy != BottomStrategy.TOREMOVE) {
-						OWLClass cls = (OWLClass) ((OWLObjectComplementOf) tExp).getComplementNNF();
+						OWLClass cls = (OWLClass) tExp.getComplementNNF();
 						OWLClass neg;
 						if ((neg = atomic2negation.get(cls)) == null) {
 							neg = getNewConcept(outputOntology, rlCounter);
@@ -632,6 +591,6 @@ public class RLPlusOntology implements KnowledgeBase {
 		corrFileName = path; 
 	}
 	
-	private static enum BottomStrategy { TOREMOVE, NULLARY, UNARY }
+	private enum BottomStrategy { TOREMOVE, NULLARY, UNARY }
 }
 

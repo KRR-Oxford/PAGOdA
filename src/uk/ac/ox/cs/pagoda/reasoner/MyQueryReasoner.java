@@ -50,6 +50,7 @@ public class MyQueryReasoner extends QueryReasoner {
 	private Collection<String> predicatesWithGap = null;
 	private Boolean satisfiable;
 	private ConsistencyManager consistency = new ConsistencyManager(this);
+	private boolean useUpperStores = false;
 
 	public MyQueryReasoner() {
 		setup(true, true);
@@ -101,9 +102,9 @@ public class MyQueryReasoner extends QueryReasoner {
 //		program.getUpper().save();
 //		program.getGeneral().save();
 
-		if (multiStageTag && !program.getGeneral().isHorn()) {
+		useUpperStores = multiStageTag && !program.getGeneral().isHorn();
+		if (useUpperStores) {
 			lazyUpperStore =  getUpperStore("lazy-upper-bound", true); // new MultiStageQueryEngine("lazy-upper-bound", true); //
-			// TODO CHECK
 			limitedSkolemUpperStore =  getUpperStore("limited-skolem-upper-bound", true);
 		}
 
@@ -120,7 +121,7 @@ public class MyQueryReasoner extends QueryReasoner {
 	@Override
 	public boolean preprocess() {
 		t.reset();
-		Utility.logInfo("Preprocessing ... checking satisfiability ... ");
+		Utility.logInfo("Preprocessing... checking satisfiability... ");
 
 		String name = "data", datafile = importedData.toString();
 		rlLowerStore.importRDFData(name, datafile);
@@ -147,12 +148,11 @@ public class MyQueryReasoner extends QueryReasoner {
 			}
 			if (tag == -1) return false;
 		}
-		if (consistency.checkLazyUpper()) {
+		if (consistency.checkUpper(lazyUpperStore)) {
 			satisfiable = true;
 			Utility.logInfo("time for satisfiability checking: " + t.duration());
 		}
 
-		// TODO check
 		if (limitedSkolemUpperStore != null) {
 			limitedSkolemUpperStore.importRDFData(name, datafile);
 			limitedSkolemUpperStore.materialise("saturate named individuals", originalMarkProgram);
@@ -163,16 +163,14 @@ public class MyQueryReasoner extends QueryReasoner {
 			}
 			if (tag == -1) return false;
 		}
-		// FIXME nullPointerException
-//		if (consistency.checkSkolemUpper()) {
-//			satisfiable = true;
-//			Utility.logInfo("time for satisfiability checking: " + t.duration());
-//		}
+		if (consistency.checkUpper(limitedSkolemUpperStore)) {
+			satisfiable = true;
+			Utility.logInfo("time for satisfiability checking: " + t.duration());
+		}
 
 		trackingStore.importRDFData(name, datafile);
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);
 
-//		materialiseFullUpper();
 		GapByStore4ID gap = new GapByStore4ID(trackingStore);
 		trackingStore.materialiseFoldedly(program, gap);
 		predicatesWithGap = gap.getPredicatesWithGap();
@@ -192,6 +190,7 @@ public class MyQueryReasoner extends QueryReasoner {
 			return false;
 
 		consistency.extractBottomFragment();
+		consistency.dispose();
 		return true;
 	}
 	
@@ -204,6 +203,9 @@ public class MyQueryReasoner extends QueryReasoner {
 		return satisfiable;
 	}
 
+	/**
+	 * Returns the relevant part of the ontology, while computing the bound answers.
+	 * */
 	private OWLOntology relevantPart(QueryRecord queryRecord) {
 		AnswerTuples rlAnswer = null, elAnswer = null;
 		
@@ -216,13 +218,13 @@ public class MyQueryReasoner extends QueryReasoner {
 			if (rlAnswer != null) rlAnswer.dispose();
 		}
 		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
-		rlAnswer = null;
 		
 		t.reset();
 		BasicQueryEngine upperStore = queryRecord.isBottom() || lazyUpperStore == null ? trackingStore : lazyUpperStore;  
 			
 		String[] extendedQuery = queryRecord.getExtendedQueryText(); 
-		
+
+		// TODO why the following???
 		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 
 		if (!queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery[0])) {
@@ -232,25 +234,21 @@ public class MyQueryReasoner extends QueryReasoner {
 			queryUpperBound(upperStore, queryRecord, extendedQuery[1], queryRecord.getDistinguishedVariables());
 		}
 
-		Utility.logDebug(toJsonKeyValuePair("upperBound1", queryRecord));
+//		Utility.logDebug(toJsonKeyValuePair("upperBound", queryRecord));
 
-		// TODO check whether it is harmful. In case is not, implement it properly
-		// BEGIN: trying to intersect
+		// TODO test intersection and new upper bound
 		if (!queryRecord.isBottom() && lazyUpperStore != null) {
 			queryUpperBound(trackingStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 		}
 		if (!queryRecord.isBottom() && limitedSkolemUpperStore != null) {
 			queryUpperBound(limitedSkolemUpperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 		}
-		// END: trying to intersect
 
 		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
 		if (queryRecord.processed()) {
 			queryRecord.setDifficulty(Step.UpperBound); 
 			return null;
 		}
-
-		// TODO add evaluation on new upper store
 		
 		t.reset();
 		try {
@@ -327,15 +325,15 @@ public class MyQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
-		OWLOntology knowledgebase = relevantPart(queryRecord);
+		OWLOntology knowledgeBase = relevantPart(queryRecord);
 		
-		if (knowledgebase == null) {
+		if (knowledgeBase == null) {
 			Utility.logDebug("Difficulty of this query: " + queryRecord.getDifficulty());
 			return ; 
 		}
 		
-		int aboxcount = knowledgebase.getABoxAxioms(true).size(); 
-		Utility.logDebug("ABox axioms: " + aboxcount + " TBox axioms: " + (knowledgebase.getAxiomCount() - aboxcount)); 
+		int aBoxCount = knowledgeBase.getABoxAxioms(true).size();
+		Utility.logDebug("ABox axioms: " + aBoxCount + " TBox axioms: " + (knowledgeBase.getAxiomCount() - aBoxCount));
 //		queryRecord.saveRelevantOntology("fragment_query" + queryRecord.getQueryID() + ".owl"); 
 		
 		Timer t = new Timer(); 

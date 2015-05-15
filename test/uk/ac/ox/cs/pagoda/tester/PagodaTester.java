@@ -94,11 +94,11 @@ public class PagodaTester {
 		if (args.length == 0) {
 //			args = new String[] {test_tbox, test_abox, test_query};
 //			args = new String[] {lubm_tbox, lubm_abox, lubm_query};
-			args = new String[] {uobm_tbox, uobm_abox, uobm_query, "/home/alessandro/Desktop/uobm1.ans"};
-//			args = new String[] {fly, "null", fly_query.replace(".sparql", "_pellet.sparql") };
+//			args = new String[] {uobm_tbox, uobm_abox, uobm_query};
+//			args = new String[] {fly, "null", fly_query};
 //			args = new String[] {dbpedia_tbox, dbpedia_abox, dbpedia_query};
 //			args = new String[] {travel_tbox, null, dbpedia_query274};
-//			args = new String[] {fly, null, fly_query};
+			args = new String[] {fly, fly_query};
 //			args = new String[] {npd_tbox, npd_abox, npd_query};
 //			args = new String[] {npd_bench_tbox, npd_bench_abox, npd_bench_query};
 //			args = new String[] {"../SemFacet/WebContent/WEB-INF/data/dbpedia.owl", "../SemFacet/WebContent/WEB-INF/data/dbpediaA.nt", null}; 
@@ -119,7 +119,7 @@ public class PagodaTester {
 //			args[2] = args[2].replace(".sparql", "_pellet.sparql");
 		}
 
-		Properties properties = new Properties("config/uobm.conf"); 
+		Properties properties = new Properties("config/uobm.properties");
 		
 		int index = 0; 
 		if (args.length > index) properties.setOntologyPath(args[index++]);   
@@ -157,7 +157,7 @@ public class PagodaTester {
 			if (pagoda != null) pagoda.dispose();
 		}
 
-		Utility.closeCurrentOut();
+//		Utility.closeCurrentOut();
 		
 		if (properties.getShellMode()) System.exit(0);
 	}

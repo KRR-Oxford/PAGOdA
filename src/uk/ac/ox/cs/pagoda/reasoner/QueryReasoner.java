@@ -25,8 +25,8 @@ public abstract class QueryReasoner {
 	private static boolean defaultMultiStages = true; 
 	private static boolean defaultEqualities = true; 
 
-	public static enum Type { Full, RLU, ELHOU };  
-	
+	public enum Type { Full, RLU, ELHOU }
+
 	public static QueryReasoner getInstance(Properties p) {
 		OWLOntology ontology = OWLHelper.loadOntology(p.getOntologyPath());
 		QueryReasoner pagoda = getInstance(ontology, p);
@@ -63,7 +63,7 @@ public abstract class QueryReasoner {
 	}
 	
 	public static QueryReasoner getInstance(Type type, OWLOntology o, boolean performMultiStages, boolean considerEqualities) {
-		Utility.initialise(); 
+//		Utility.initialise();
 		QueryReasoner reasoner; 
 		if (OWLHelper.isInOWL2RL(o)) reasoner = new RLQueryReasoner();
 		else if (OWLHelper.isInELHO(o)) reasoner = new ELHOQueryReasoner();
@@ -218,9 +218,10 @@ public abstract class QueryReasoner {
 			record.outputAnswerStatistics();
 			record.outputTimes();
 		}
-		// TODO it can handle one call only
-		// if you call twice, you will end up with a json file with multiple roots
+		/* TODO it can handle one call only
+		   if you call twice, you will end up with a json file with multiple roots */
 		if(answerWriter != null) gson.toJson(queryRecords, answerWriter);
+//		queryRecords.stream().forEach(record -> Utility.logDebug(gson.toJson(record)));
 		queryRecords.stream().forEach(record -> record.dispose());
 	}
 	
@@ -232,7 +233,7 @@ public abstract class QueryReasoner {
 				e.printStackTrace();
 			}
 		}
-		Utility.cleanup();
+//		Utility.cleanup();
 	}  
 
 	private QueryManager m_queryManager = new QueryManager(); 

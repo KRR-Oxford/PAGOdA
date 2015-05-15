@@ -5,13 +5,13 @@
 
     <test name="PagodaUOBM">
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.test_units.PagodaUOBM" />
+            <class name="uk.ac.ox.cs.pagoda.global_tests.PagodaUOBM" />
         </classes>
     </test>
 
     <test name="PagodaLUBM">
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.test_units.PagodaLUBM" />
+            <class name="uk.ac.ox.cs.pagoda.global_tests.PagodaLUBM" />
         </classes>
     </test>
 

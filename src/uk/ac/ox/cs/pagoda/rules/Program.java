@@ -1,39 +1,10 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.semanticweb.HermiT.Configuration;
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicDataRange;
-import org.semanticweb.HermiT.model.AtomicNegationDataRange;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.ConstantEnumeration;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLOntology;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.InverseRole;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.HermiT.model.*;
 import org.semanticweb.HermiT.structural.OWLClausification;
 import org.semanticweb.owlapi.model.*;
-
+import org.semanticweb.simpleETL.SimpleETL;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.approx.KnowledgeBase;
 import uk.ac.ox.cs.pagoda.approx.RLPlusOntology;
@@ -44,7 +15,8 @@ import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
-import org.semanticweb.simpleETL.SimpleETL;
+import java.io.*;
+import java.util.*;
 
 public abstract class Program implements KnowledgeBase {
 	
@@ -377,7 +349,7 @@ public abstract class Program implements KnowledgeBase {
 	}
 	
 	public final String getDirectory() {
-		return Utility.TempDirectory; 
+		return Utility.getGlobalTempDirAbsolutePath();
 	}
 	
 	public void deleteABoxTurtleFile() {
