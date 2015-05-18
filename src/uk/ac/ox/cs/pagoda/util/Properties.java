@@ -30,9 +30,9 @@ public class Properties {
 	public boolean getToCallHermiT() { return toCallHermiT; }
 	public void setToCallHermiT(boolean flag) { toCallHermiT = flag; }
 	
-	public static boolean ShellModeDefault = false;
+	public static boolean shellModeDefault = false;
 	
-	boolean shellMode = ShellModeDefault; 
+	boolean shellMode = shellModeDefault;
 	public boolean getShellMode() { return shellMode; }
 	public void setShellMode(boolean flag) { shellMode = flag; }
 	

@@ -22,6 +22,7 @@ public class SkolemTermsManager {
     private int dependenciesCounter = 0;
 
     // replace with hashcode. in case of collision you get only a different upper bound model.
+    // or, better, use perfect hashing (i.e. devise an ad-hoc hash function without collisions)
     private Map<Tuple<Individual>, Integer> mapDependencyToId = new HashMap<>();
 
     /**

@@ -5,8 +5,8 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
@@ -19,14 +19,15 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  */
 public class TestUtil {
 
-    public static final String CONFIG_FILE = "config/test.properties";
+    public static final String CONFIG_FILE = "test.properties";
 
     private static boolean isConfigLoaded = false;
     private static Properties config;
 
     public static Properties getConfig() {
         if(!isConfigLoaded) {
-            try (FileInputStream in = new FileInputStream(CONFIG_FILE)) {
+            try (InputStream in = TestUtil.class.getClassLoader()
+                            .getResourceAsStream(CONFIG_FILE)) {
                 config = new java.util.Properties();
                 config.load(in);
                 in.close();

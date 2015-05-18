@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 
+// TODO clean APIs
 public abstract class QueryReasoner {
 	
 //	protected boolean forSemFacet = false;

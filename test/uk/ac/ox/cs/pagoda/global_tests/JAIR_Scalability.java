@@ -84,7 +84,7 @@ public class JAIR_Scalability {
 	}
 	
 	public static void main(String... args) throws IOException {
-		Properties.ShellModeDefault = true; 
+		Properties.shellModeDefault = true;
 		new JAIR_Scalability().testUniProt(50, false);
 	}
 
