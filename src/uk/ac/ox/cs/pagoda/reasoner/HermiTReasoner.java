@@ -1,32 +1,22 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
+import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.owlapi.model.*;
+import uk.ac.ox.cs.JRDFox.model.Individual;
+import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
+import uk.ac.ox.cs.pagoda.owl.OWLHelper;
+import uk.ac.ox.cs.pagoda.owl.QueryRoller;
+import uk.ac.ox.cs.pagoda.query.*;
+import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
+import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
+import uk.ac.ox.cs.pagoda.util.Utility;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.semanticweb.HermiT.Reasoner;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-
-import uk.ac.ox.cs.JRDFox.model.Individual;
-import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
-import uk.ac.ox.cs.pagoda.owl.OWLHelper;
-import uk.ac.ox.cs.pagoda.owl.QueryRoller;
-import uk.ac.ox.cs.pagoda.query.AnswerTuple;
-import uk.ac.ox.cs.pagoda.query.AnswerTuples;
-import uk.ac.ox.cs.pagoda.query.AnswerTuplesImp;
-import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
-import uk.ac.ox.cs.pagoda.query.QueryRecord;
-import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
-import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
-import uk.ac.ox.cs.pagoda.util.Utility;
-
-public class HermiTReasoner extends QueryReasoner {
+class HermiTReasoner extends QueryReasoner {
 	
 	Reasoner hermit;
 	
@@ -54,15 +44,8 @@ public class HermiTReasoner extends QueryReasoner {
 		OWLOntology tbox = onto;
 		try {
 			onto = OWLHelper.getImportedOntology(tbox, importedData.toString().split(ImportDataFileSeparator));
-			importedOntologyPath = OWLHelper.getOntologyPath(onto); 
-		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (OWLOntologyStorageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			importedOntologyPath = OWLHelper.getOntologyPath(onto);
+		} catch(OWLOntologyCreationException | OWLOntologyStorageException | IOException e) {
 			e.printStackTrace();
 		}
 		

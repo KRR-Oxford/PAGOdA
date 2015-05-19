@@ -2,7 +2,6 @@ package uk.ac.ox.cs.pagoda.reasoner;
 
 import org.semanticweb.karma2.profile.ELHOProfile;
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.constraints.UnaryBottom;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
@@ -12,7 +11,7 @@ import uk.ac.ox.cs.pagoda.rules.LowerDatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
-public class ELHOQueryReasoner extends QueryReasoner {
+class ELHOQueryReasoner extends QueryReasoner {
 
 	LowerDatalogProgram program; 
 	

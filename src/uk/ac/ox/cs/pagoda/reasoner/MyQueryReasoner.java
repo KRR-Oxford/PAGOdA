@@ -25,7 +25,7 @@ import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class MyQueryReasoner extends QueryReasoner {
+class MyQueryReasoner extends QueryReasoner {
 
 	OWLOntology ontology;
 	DatalogProgram program;

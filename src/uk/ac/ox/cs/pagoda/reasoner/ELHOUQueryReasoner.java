@@ -14,7 +14,7 @@ import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
-public class ELHOUQueryReasoner extends QueryReasoner {
+class ELHOUQueryReasoner extends QueryReasoner {
 
 	DatalogProgram program; 
 	

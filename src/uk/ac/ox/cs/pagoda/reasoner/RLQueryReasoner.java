@@ -10,17 +10,16 @@ import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.LowerDatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
 
-public class RLQueryReasoner extends QueryReasoner {
+class RLQueryReasoner extends QueryReasoner {
 	
 	RDFoxQueryEngine rlLowerStore = null;
 
-	LowerDatalogProgram program; 
+	LowerDatalogProgram program;
+	Timer t = new Timer();
 	
 	public RLQueryReasoner() {
-		rlLowerStore = new BasicQueryEngine("rl"); 
+		rlLowerStore = new BasicQueryEngine("rl");
 	}
-	
-	Timer t = new Timer(); 
 	
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
@@ -56,10 +55,8 @@ public class RLQueryReasoner extends QueryReasoner {
 	public boolean preprocess() {
 		rlLowerStore.importRDFData("data", importedData.toString());
 		rlLowerStore.materialise("lower program", program.toString());
-		
-		if (!isConsistent())  
-			return false; 
-		return true; 
+
+		return isConsistent();
 	}
 
 	@Override

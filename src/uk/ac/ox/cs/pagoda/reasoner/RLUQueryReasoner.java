@@ -1,7 +1,6 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
 import uk.ac.ox.cs.pagoda.owl.EqualitiesEliminator;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
@@ -12,25 +11,24 @@ import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
-public class RLUQueryReasoner extends QueryReasoner {
+class RLUQueryReasoner extends QueryReasoner {
 
 	DatalogProgram program; 
 	
 	BasicQueryEngine rlLowerStore, rlUpperStore;
 	
-	boolean multiStageTag, equalityTag; 
+	boolean multiStageTag, equalityTag;
+	Timer t = new Timer();
 	
 	public RLUQueryReasoner(boolean multiStageTag, boolean considerEqualities) {
 		this.multiStageTag = multiStageTag;
-		this.equalityTag = considerEqualities; 
-		rlLowerStore = new BasicQueryEngine("rl-lower-bound"); 
-		if (!multiStageTag) 
-			rlUpperStore = new BasicQueryEngine("rl-upper-bound"); 
-		else  
-			rlUpperStore = new MultiStageQueryEngine("rl-upper-bound", false); 
+		this.equalityTag = considerEqualities;
+		rlLowerStore = new BasicQueryEngine("rl-lower-bound");
+		if(!multiStageTag)
+			rlUpperStore = new BasicQueryEngine("rl-upper-bound");
+		else
+			rlUpperStore = new MultiStageQueryEngine("rl-upper-bound", false);
 	}
-	
-	Timer t = new Timer();
 	
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
@@ -100,11 +98,9 @@ public class RLUQueryReasoner extends QueryReasoner {
 		
 		rlUpperStore.importRDFData("data", datafile);
 		rlUpperStore.materialiseRestrictedly(program, null);
-		
-		if (!isConsistent()) 
-			return false; 
 
-		return true; 
+		return isConsistent();
+
 	}
 
 	@Override

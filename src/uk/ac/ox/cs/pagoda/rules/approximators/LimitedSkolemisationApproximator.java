@@ -1,13 +1,14 @@
 package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
-import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageUpperProgram;
 import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Approximates existential rules through a limited form of Skolemisation.
@@ -24,7 +25,6 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     private final int maxTermDepth;
     private final TupleDependentApproximator alternativeApproximator;
     private final SkolemTermsManager skolemTermsManager;
-    private Map<AnswerTupleID, Integer> mapIndividualsToDepth;
 
     public LimitedSkolemisationApproximator(int maxTermDepth) {
         this(maxTermDepth, new ExistConstantApproximator());
@@ -33,7 +33,6 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     public LimitedSkolemisationApproximator(int maxTermDepth, TupleDependentApproximator alternativeApproximator) {
         this.maxTermDepth = maxTermDepth;
         this.alternativeApproximator = alternativeApproximator;
-        this.mapIndividualsToDepth = new HashMap<>();
         this.skolemTermsManager = SkolemTermsManager.getInstance();
     }
 
@@ -144,7 +143,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     public int getMaxDepth(Tuple<Individual> violationTuple) {
         int maxDepth = 0;
         for (Individual individual : violationTuple)
-            maxDepth = Integer.max(maxDepth, skolemTermsManager.getDepth(individual));
+            maxDepth = Integer.max(maxDepth, skolemTermsManager.getDepthOf(individual));
 
         return maxDepth;
     }
