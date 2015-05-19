@@ -20,11 +20,10 @@ import java.util.*;
 public class LimitedSkolemisationApproximator implements TupleDependentApproximator {
 
     private static final Atom[] EMPTY_BODY = new Atom[0];
-
+    private static final Variable X = Variable.create("X");
     private final int maxTermDepth;
     private final TupleDependentApproximator alternativeApproximator;
     private final SkolemTermsManager skolemTermsManager;
-
     private Map<AnswerTupleID, Integer> mapIndividualsToDepth;
 
     public LimitedSkolemisationApproximator(int maxTermDepth) {
@@ -67,8 +66,6 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         return result;
     }
 
-    private static final Variable X = Variable.create("X");
-
     private Collection<DLClause> getGroundSkolemisation(DLClause clause,
                                                         DLClause originalClause,
                                                         Tuple<Individual> violationTuple) {
@@ -78,8 +75,8 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         // TODO check: strong assumption, the first tuples are the common ones
         TupleBuilder<Individual> commonIndividualsBuilder = new TupleBuilder<>();
         for (int i = 0; i < commonVars.length; i++)
-            commonIndividualsBuilder.add(violationTuple.get(i));
-        Tuple<Individual> commonIndividuals = commonIndividualsBuilder.create();
+            commonIndividualsBuilder.append(violationTuple.get(i));
+        Tuple<Individual> commonIndividuals = commonIndividualsBuilder.build();
 
         Atom headAtom = clause.getHeadAtom(0);
 

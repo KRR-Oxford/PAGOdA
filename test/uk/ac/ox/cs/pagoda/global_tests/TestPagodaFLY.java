@@ -8,7 +8,7 @@ public class TestPagodaFLY {
 
 	public static final String ANSWER_PATH = "~/TestPagodaFLY.json";
 
-	@Test
+	@Test(groups = {"light"})
 	public void just_execute() {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		Pagoda pagoda = Pagoda.builder()
@@ -22,7 +22,7 @@ public class TestPagodaFLY {
 	}
 
 	@Test
-	public void test() {
+	public void answersCorrectness() {
 		// TODO implement
 	}
 }

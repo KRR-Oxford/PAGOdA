@@ -109,9 +109,9 @@ public abstract class Pick4NegativeConcept implements Treatment {
 				for (int j = 0; j < answerTupleID.getArity(); j++) {
 					String rawTerm = tripleManager.getRawTerm(answerTupleID.getTerm(j));
 					Individual individual = Individual.create(rawTerm.substring(1, rawTerm.length()-1));
-					tupleBuilder.add(individual);
+					tupleBuilder.append(individual);
 				}
-				violationTuples.add(tupleBuilder.create());
+				violationTuples.add(tupleBuilder.build());
 			}
 
 			for (DLClause clause : program.convertExist(constraint, violation.getClause(), violationTuples)) {

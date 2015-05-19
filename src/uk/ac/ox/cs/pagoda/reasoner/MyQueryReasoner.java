@@ -20,28 +20,25 @@ import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 
 import java.util.Collection;
 import java.util.HashMap;
 
 public class MyQueryReasoner extends QueryReasoner {
 
-	OWLOntology ontology; 
+	OWLOntology ontology;
+	DatalogProgram program;
 
 //	String additonalDataFile; 
-	
-	DatalogProgram program; 
-
 	BasicQueryEngine rlLowerStore = null;
 	BasicQueryEngine lazyUpperStore = null;
 	BasicQueryEngine limitedSkolemUpperStore;
-//	boolean[] namedIndividuals_lazyUpper; 
-	
 	OWLOntology elho_ontology;
+//	boolean[] namedIndividuals_lazyUpper; 
 	KarmaQueryEngine elLowerStore = null;
-	
 	BasicQueryEngine trackingStore = null;
-//	boolean[] namedIndividuals_tracking; 
+	//	boolean[] namedIndividuals_tracking;
 	TrackingRuleEncoder encoder;
 	private boolean equalityTag;
 	private boolean multiStageTag;
@@ -53,7 +50,6 @@ public class MyQueryReasoner extends QueryReasoner {
 	public MyQueryReasoner() {
 		setup(true, true);
 	}
-
 	public MyQueryReasoner(boolean multiStageTag, boolean considerEqualities) {
 		setup(multiStageTag, considerEqualities);
 	}
@@ -65,7 +61,7 @@ public class MyQueryReasoner extends QueryReasoner {
 		else
 			return new BasicQueryEngine(name);
 	}
-	
+
 	public void setup(boolean multiStageTag, boolean considerEqualities) {
 		satisfiable = SatisfiabilityStatus.UNCHECKED;
 		this.multiStageTag = multiStageTag;
@@ -115,7 +111,7 @@ public class MyQueryReasoner extends QueryReasoner {
 	public Collection<String> getPredicatesWithGap() {
 		return predicatesWithGap;
 	}
-	
+
 	@Override
 	public boolean preprocess() {
 		t.reset();
@@ -192,18 +188,40 @@ public class MyQueryReasoner extends QueryReasoner {
 
 		return true;
 	}
-
+	
 	@Override
 	public boolean isConsistent() {
 		if(satisfiable == SatisfiabilityStatus.UNCHECKED) {
 			satisfiable = consistency.check() ? SatisfiabilityStatus.SATISFIABLE : SatisfiabilityStatus.UNSATISFIABLE;
 			Utility.logInfo("time for satisfiability checking: " + t.duration());
 		}
-		return satisfiable == SatisfiabilityStatus.SATISFIABLE ? true : false;
+		return satisfiable == SatisfiabilityStatus.SATISFIABLE;
+	}
+
+	// TODO why the following???
+	private void queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord, Tuple<String> extendedQuery) {
+
+//		Utility.logInfo("1");
+//		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+//
+//		boolean conditionA = !queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery.get(0));
+//		boolean conditionB = !queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables();
+//
+//		if(conditionA ^ conditionB)
+//			throw new Error("It really happened! I thought it was impossible");
+//
+//		if (conditionA) {
+//			Utility.logInfo("2");
+		queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
+//		}
+//		if (conditionB) {
+//			Utility.logInfo("3");
+//			queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
+//		}
 	}
 
 	/**
-	 * Returns the relevant part of the ontology, while computing the bound answers.
+	 * Returns the part of the ontology relevant for Hermit, while computing the bound answers.
 	 * */
 	private OWLOntology relevantPart(QueryRecord queryRecord) {
 		AnswerTuples rlAnswer = null, elAnswer = null;
@@ -219,28 +237,23 @@ public class MyQueryReasoner extends QueryReasoner {
 		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
 
 		t.reset();
-		BasicQueryEngine upperStore = queryRecord.isBottom() || lazyUpperStore == null ? trackingStore : lazyUpperStore;
 
-		String[] extendedQuery = queryRecord.getExtendedQueryText();
+		Tuple<String> extendedQueryTexts = queryRecord.getExtendedQueryText();
 
-		// TODO why the following???
-		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+//		BasicQueryEngine upperStore;
+//		if(queryRecord.isBottom()) upperStore = trackingStore;
+//		upperStore = queryRecord.isBottom() || lazyUpperStore == null ? trackingStore : lazyUpperStore;
 
-		if (!queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery[0])) {
-			queryUpperBound(upperStore, queryRecord, extendedQuery[0], queryRecord.getAnswerVariables());
-		}
-		if (!queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables()) {
-			queryUpperBound(upperStore, queryRecord, extendedQuery[1], queryRecord.getDistinguishedVariables());
-		}
+		// TODO
+//		if(queryRecord.isBottom() || (lazyUpperStore == null && limitedSkolemUpperStore == null))
+//			queryUpperStore(trackingStore, queryRecord, extendedQueryTexts);
+//		else {
 
-//		Utility.logDebug(toJsonKeyValuePair("upperBound", queryRecord));
-
-		// TODO test intersection and new upper bound
-		if (!queryRecord.isBottom() && lazyUpperStore != null) {
-			queryUpperBound(trackingStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-		}
-		if (!queryRecord.isBottom() && limitedSkolemUpperStore != null) {
-			queryUpperBound(limitedSkolemUpperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+		queryUpperStore(trackingStore, queryRecord, extendedQueryTexts);
+		if(!(queryRecord.isBottom() || (lazyUpperStore == null && limitedSkolemUpperStore == null))) {
+			if(lazyUpperStore != null) queryUpperStore(lazyUpperStore, queryRecord, extendedQueryTexts);
+			if(limitedSkolemUpperStore != null)
+				queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts);
 		}
 
 		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
@@ -251,7 +264,8 @@ public class MyQueryReasoner extends QueryReasoner {
 
 		t.reset();
 		try {
-			elAnswer = elLowerStore.evaluate(extendedQuery[0], queryRecord.getAnswerVariables(), queryRecord.getLowerBoundAnswers());
+			elAnswer = elLowerStore.evaluate(extendedQueryTexts.get(0), queryRecord.getAnswerVariables(),
+											 queryRecord.getLowerBoundAnswers());
 			Utility.logDebug(t.duration());
 			queryRecord.updateLowerBoundAnswers(elAnswer);
 		} finally {
@@ -268,7 +282,7 @@ public class MyQueryReasoner extends QueryReasoner {
 
 		QueryTracker tracker = new QueryTracker(encoder, rlLowerStore, queryRecord);
 
-		OWLOntology knowledgebase;
+		OWLOntology knowledgeBase;
 		t.reset();
 //		if (program.getGeneral().isHorn()) {
 //			knowledgebase = tracker.extract(lazyUpperStore, consistency.getQueryRecords(), true);
@@ -276,14 +290,14 @@ public class MyQueryReasoner extends QueryReasoner {
 //			return knowledgebase;
 //		}
 //		else {
-			knowledgebase = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
+		knowledgeBase = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
 			queryRecord.addProcessingTime(Step.Fragment, t.duration());
 //		}
 
-		if(knowledgebase.isEmpty() || queryRecord.isBottom())
-			return knowledgebase;
+		if(knowledgeBase.isEmpty() || queryRecord.isBottom())
+			return knowledgeBase;
 
-		if(program.getGeneral().isHorn()) return knowledgebase;
+		if(program.getGeneral().isHorn()) return knowledgeBase;
 
 //		t.reset();
 //		if (queryRecord.isHorn() && lazyUpperStore != null) {
@@ -298,7 +312,7 @@ public class MyQueryReasoner extends QueryReasoner {
 //		if (knowledgebase == null)
 //			queryRecord.setDifficulty(Step.FragmentRefinement);
 
-		return knowledgebase;
+		return knowledgeBase;
 	}
 
 	private String toJsonKeyValuePair(String key, Object value) {
@@ -306,8 +320,6 @@ public class MyQueryReasoner extends QueryReasoner {
 		map.put(key, value);
 		return QueryRecord.GsonCreator.getInstance().toJson(map);
 	}
-
-//	int counter = 0; 
 
 	private void queryUpperBound(BasicQueryEngine upperStore, QueryRecord queryRecord, String queryText, String[] answerVariables) {
 		AnswerTuples rlAnswer = null;
@@ -317,10 +329,12 @@ public class MyQueryReasoner extends QueryReasoner {
 			Utility.logDebug(t.duration());
 			queryRecord.updateUpperBoundAnswers(rlAnswer);
 		} finally {
-			if (rlAnswer != null) rlAnswer.dispose();
+			if(rlAnswer != null) rlAnswer.dispose();
 			rlAnswer = null;
 		}
 	}
+
+//	int counter = 0; 
 
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
@@ -349,6 +363,7 @@ public class MyQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void evaluateUpper(QueryRecord queryRecord) {
+		// TODO add new upper store
 		AnswerTuples rlAnswer = null;
 		boolean useFull = queryRecord.isBottom() || lazyUpperStore == null;
 		try {
@@ -359,7 +374,7 @@ public class MyQueryReasoner extends QueryReasoner {
 			if(rlAnswer != null) rlAnswer.dispose();
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		if (encoder != null) encoder.dispose();
@@ -367,6 +382,7 @@ public class MyQueryReasoner extends QueryReasoner {
 		if (lazyUpperStore != null) lazyUpperStore.dispose();
 		if (elLowerStore != null) elLowerStore.dispose();
 		if (trackingStore != null) trackingStore.dispose();
+		if(limitedSkolemUpperStore != null) limitedSkolemUpperStore.dispose();
 		super.dispose();
 	}
 

@@ -2,7 +2,6 @@ package uk.ac.ox.cs.pagoda.reasoner;
 
 import org.semanticweb.karma2.profile.ELHOProfile;
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
 import uk.ac.ox.cs.pagoda.owl.EqualitiesEliminator;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
@@ -26,59 +25,60 @@ public class ELHOUQueryReasoner extends QueryReasoner {
 	KarmaQueryEngine elLowerStore = null; 
 	
 	boolean multiStageTag, equalityTag;
-	
+	String originalMarkProgram;
+	private Timer t = new Timer();
+
 	public ELHOUQueryReasoner(boolean multiStageTag, boolean considerEqualities) {
 		this.multiStageTag = multiStageTag;
 		this.equalityTag = considerEqualities;
 		rlLowerStore = new BasicQueryEngine("rl-lower-bound");
 		elLowerStore = new KarmaQueryEngine("el-lower-bound");
-		
-		if (!multiStageTag) 
-			rlUpperStore = new BasicQueryEngine("rl-upper-bound"); 
-		else  
-			rlUpperStore = new MultiStageQueryEngine("rl-upper-bound", false); 
+
+		if(!multiStageTag)
+			rlUpperStore = new BasicQueryEngine("rl-upper-bound");
+		else
+			rlUpperStore = new MultiStageQueryEngine("rl-upper-bound", false);
 	}
-	
-	private Timer t = new Timer(); 
 
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
 		AnswerTuples rlAnswer = null;
 		t.reset();
 		try {
-			rlAnswer = rlLowerStore.evaluate(queryRecord.getQueryText(), queryRecord.getAnswerVariables()); 
+			rlAnswer = rlLowerStore.evaluate(queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 			queryRecord.updateLowerBoundAnswers(rlAnswer);
 		} finally {
-			if (rlAnswer != null) rlAnswer.dispose(); 
+			if(rlAnswer != null) rlAnswer.dispose();
 		}
 		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
-		
-		String extendedQueryText = queryRecord.getExtendedQueryText()[0];
+
+		String extendedQueryText = queryRecord.getExtendedQueryText().get(0);
 		String[] toQuery = queryRecord.getQueryText().equals(extendedQueryText) ?
-				new String[] {queryRecord.getQueryText()} : 
+				new String[]{queryRecord.getQueryText()} :
 				new String[] {queryRecord.getQueryText(), extendedQueryText};
-				
+
 		for (String queryText: toQuery) {
-			rlAnswer = null; 
+			rlAnswer = null;
 			t.reset();
 			try {
-				rlAnswer = rlUpperStore.evaluate(queryText, queryRecord.getAnswerVariables()); 
+				rlAnswer = rlUpperStore.evaluate(queryText, queryRecord.getAnswerVariables());
 				queryRecord.updateUpperBoundAnswers(rlAnswer);
 			} finally {
-				if (rlAnswer != null) rlAnswer.dispose(); 
+				if(rlAnswer != null) rlAnswer.dispose();
 			}
 			queryRecord.addProcessingTime(Step.UpperBound, t.duration());
-			
+
 			if (queryRecord.processed()) {
 				queryRecord.setDifficulty(Step.UpperBound);
-				return ; 
+				return;
 			}
 		}
-		
+
 		AnswerTuples elAnswer = null;
-		t.reset(); 
+		t.reset();
 		try {
-			elAnswer = elLowerStore.evaluate(extendedQueryText, queryRecord.getAnswerVariables(), queryRecord.getLowerBoundAnswers()); 
+			elAnswer =
+					elLowerStore.evaluate(extendedQueryText, queryRecord.getAnswerVariables(), queryRecord.getLowerBoundAnswers());
 			queryRecord.updateLowerBoundAnswers(elAnswer);
 		} finally {
 			if (elAnswer != null) elAnswer.dispose();
@@ -88,19 +88,19 @@ public class ELHOUQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void evaluateUpper(QueryRecord queryRecord) {
-		AnswerTuples rlAnswer = null; 
+		AnswerTuples rlAnswer = null;
 		try {
-			rlAnswer = rlUpperStore.evaluate(queryRecord.getQueryText(), queryRecord.getAnswerVariables()); 
+			rlAnswer = rlUpperStore.evaluate(queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 			queryRecord.updateUpperBoundAnswers(rlAnswer, true);
 		} finally {
-			if (rlAnswer != null) rlAnswer.dispose(); 
+			if(rlAnswer != null) rlAnswer.dispose();
 		}
 	}
 
 	@Override
 	public void dispose() {
 		if (elLowerStore != null) elLowerStore.dispose();
-		if (rlUpperStore != null) rlUpperStore.dispose();		
+		if(rlUpperStore != null) rlUpperStore.dispose();
 		super.dispose();
 	}
 
@@ -110,19 +110,17 @@ public class ELHOUQueryReasoner extends QueryReasoner {
 			EqualitiesEliminator eliminator = new EqualitiesEliminator(o);
 			o = eliminator.getOutputOntology();
 			eliminator.save();
-		}			
+		}
 
-		OWLOntology ontology = o; 
-		program = new DatalogProgram(ontology, properties.getToClassify()); 
-		
+		OWLOntology ontology = o;
+		program = new DatalogProgram(ontology, properties.getToClassify());
+
 		importData(program.getAdditionalDataFile());
-		
+
 		elho_ontology = new ELHOProfile().getFragment(ontology);
 		elLowerStore.processOntology(elho_ontology);
 		originalMarkProgram = OWLHelper.getOriginalMarkProgram(ontology);
 	}
-	
-	String originalMarkProgram;  
 
 	@Override
 	public boolean preprocess() {

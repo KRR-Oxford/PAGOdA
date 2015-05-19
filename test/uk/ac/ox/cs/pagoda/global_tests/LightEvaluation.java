@@ -11,8 +11,8 @@ public class LightEvaluation {
 	public void evaluation() throws IOException {
 		new TestPagodaUOBM().answersCorrectness(1);
 		new TestPagodaLUBM().answersCorrecntess(100);
-		new TestPagodaFLY().test();
-		new TestPagodaDBPedia().test();
+		new TestPagodaFLY().answersCorrectness();
+		new TestPagodaDBPedia().answersCorrectness();
 		new TestPagodaNPD().testNPDwithoutDataType();
 	}
 }

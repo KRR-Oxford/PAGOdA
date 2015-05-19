@@ -10,12 +10,12 @@ public class TupleBuilder<T> {
 
     private boolean building = true;
 
-    public boolean add(T t) {
+    public boolean append(T t) {
         if(building) tuple.elements.add(t);
         return building;
     }
 
-    public Tuple<T> create() {
+    public Tuple<T> build() {
         if(building) {
             building = false;
             return tuple;

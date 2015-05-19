@@ -26,7 +26,7 @@ public class TestPagodaDBPedia {
 	}
 
 	@Test
-	public void test() {
+	public void answersCorrectness() {
 		// TODO implement
 	}
 

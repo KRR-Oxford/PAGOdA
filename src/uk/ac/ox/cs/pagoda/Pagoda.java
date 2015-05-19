@@ -30,6 +30,7 @@ public class Pagoda implements Runnable {
 
     public static void main(String... args) {
 
+        // TODO treat the mandatory options as simple args
         Options options = new Options();
         options.addOption(Option.builder(OPTION_ONTOLOGY)
                                 .argName(OPTION_ONTOLOGY)
