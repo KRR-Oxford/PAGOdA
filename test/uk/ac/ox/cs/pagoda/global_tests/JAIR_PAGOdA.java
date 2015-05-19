@@ -8,16 +8,24 @@ import java.io.IOException;
 
 public class JAIR_PAGOdA {
 
+	public static void main(String... args) {
+		try {
+			new JAIR_PAGOdA().lubm1();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Test
 	public void lubm1() throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		String[] args = new String[] {
 				TestUtil.combinePaths(ontoDir, "lubm/univ-bench.owl"),
 				TestUtil.combinePaths(ontoDir, "lubm/data/lubm1.ttl"),
-				TestUtil.combinePaths(ontoDir, "lubm/queries/test.sparql")
+				TestUtil.combinePaths(ontoDir, "lubm/queries/answersCorrectness.sparql")
 		};
 		PagodaTester.main(args);
-		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/lubm1/pagoda");
+		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/lubm1/pagoda");
 	}
 
 	@Test
@@ -29,7 +37,7 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "lubm/queries/test_pellet.sparql")
 		};
 		PagodaTester.main(args);
-		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/lubm1/pagoda_conj");
+		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/lubm1/pagoda_conj");
 	}
 
 	@Test
@@ -40,7 +48,7 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "lubm/data/lubm1.ttl"),
 				TestUtil.combinePaths(ontoDir, "lubm/queries/atomic_lubm.sparql")
 				);
-		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/lubm1/pagoda_rolledUp");
+		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/lubm1/pagoda_rolledUp");
 	}
 
 	@Test
@@ -52,7 +60,7 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "uobm/queries/standard.sparql")
 		};
 		PagodaTester.main(args);
-		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/uobm1/pagoda");
+		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uobm1/pagoda");
 	}
 
 	@Test
@@ -64,7 +72,7 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "uobm/queries/standard_pellet.sparql")
 		};
 		PagodaTester.main(args);
-		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/uobm1/pagoda_conj");
+		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uobm1/pagoda_conj");
 	}
 
 	@Test
@@ -76,7 +84,7 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "uobm/queries/atomic_uobm.sparql")
 		};
 		PagodaTester.main(args);
-//		TestUtil.copyFile(("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/uobm1/pagoda_rolledUp");
+//		TestUtil.copyFile(("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uobm1/pagoda_rolledUp");
 	}
 
 	@Test
@@ -88,7 +96,7 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "fly/queries/fly_pellet.sparql")
 		};
 		PagodaTester.main(args);
-//		TestUtil.copyFile(("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/fly/pagoda");
+//		TestUtil.copyFile(("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/fly/pagoda");
 	}
 
 	@Test
@@ -100,9 +108,8 @@ public class JAIR_PAGOdA {
 				TestUtil.combinePaths(ontoDir, "fly/queries/fly_pellet.sparql")
 		};
 		PagodaTester.main(args);
-		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/fly/pagoda_conj");
+		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/fly/pagoda_conj");
 	}
-
 
 	public void fly_rolledUp() {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
@@ -112,7 +119,7 @@ public class JAIR_PAGOdA {
 				null,
 				TestUtil.combinePaths(ontoDir, "fly/queries/fly_atomic.sparql")
 		);
-//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/fly/pagoda_rolledUp");
+//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/fly/pagoda_rolledUp");
 	}
 
 	public void dbpedia() {
@@ -124,7 +131,7 @@ public class JAIR_PAGOdA {
 				"dbpedia.ans"
 		);
 
-//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/dbpedia/pagoda");
+//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/dbpedia/pagoda");
 	}
 
 	public void npd() {
@@ -136,7 +143,7 @@ public class JAIR_PAGOdA {
 				, "npd.ans"
 		);
 
-//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/npd/pagoda");
+//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/npd/pagoda");
 	}
 
 	public void reactome() throws IOException {
@@ -151,7 +158,7 @@ public class JAIR_PAGOdA {
 		);
 		TestUtil.copyFile("log4j.log", "output/jair/pagoda_reactome.example");
 
-//		TestUtil.copyFile(("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/reactome/pagoda_10p");
+//		TestUtil.copyFile(("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/reactome/pagoda_10p");
 	}
 
 	public void chembl() throws IOException {
@@ -164,7 +171,7 @@ public class JAIR_PAGOdA {
 				, "pagoda_chembl.ans"
 		);
 		TestUtil.copyFile("log4j.log", "output/jair/pagoda_chembl.example");
-//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/chembl/pagoda_1p");
+//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/chembl/pagoda_1p");
 	}
 
 	public void uniprot() throws IOException {
@@ -178,16 +185,7 @@ public class JAIR_PAGOdA {
 				, "pagoda_uniprot.ans"
 		);
 		TestUtil.copyFile("log4j.log", "output/jair/pagoda_uniprot.example");
-//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/test-share/results_new/uniprot/pagoda_1p");
-	}
-
-	
-	public static void main(String... args) {
-		try {
-			new JAIR_PAGOdA().lubm1();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		TestUtil.copyFile("output/log4j.log", "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uniprot/pagoda_1p");
 	}
 
 }

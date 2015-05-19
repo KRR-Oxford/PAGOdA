@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+@Deprecated
 public class Statistics {
 	
 	double satCheckTime; 

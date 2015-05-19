@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="HeavyTests">
+
+    <test name="heavy">
+        <groups>
+            <run>
+                <include name="heavy"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>
+            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaLUBM"/>
+        </classes>
+    </test>
+</suite>

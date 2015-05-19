@@ -3,4 +3,5 @@
 /backup/
 /tmp/
 /testcase/
-/log4j.log
+/*.log
+/*.pdf

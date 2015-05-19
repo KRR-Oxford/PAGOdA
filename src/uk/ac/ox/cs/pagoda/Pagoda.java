@@ -9,7 +9,7 @@ import uk.ac.ox.cs.pagoda.util.Utility;
 import java.nio.file.Path;
 
 /**
- * The main class
+ * Executable command line user interface.
  */
 public class Pagoda implements Runnable {
 
@@ -19,37 +19,7 @@ public class Pagoda implements Runnable {
     private static final String OPTION_ANSWER = "a";
     private static final String OPTION_CLASSIFY = "c";
     private static final String OPTION_HERMIT = "f";
-
-    public static void main(String... args) {
-
-        Options options = new Options();
-        options.addOption(Option.builder(OPTION_ONTOLOGY).argName(OPTION_ONTOLOGY).required().hasArg().desc("The ontology path").build());
-        options.addOption(Option.builder(OPTION_DATA).argName(OPTION_DATA).hasArg().desc("The data path").build());
-        options.addOption(Option.builder(OPTION_QUERY).argName(OPTION_QUERY).required().hasArg().desc("The query path").build());
-        options.addOption(Option.builder(OPTION_ANSWER).argName(OPTION_ANSWER).hasArg().desc("The answer path").build());
-        options.addOption(Option.builder(OPTION_CLASSIFY).argName(OPTION_CLASSIFY).desc("Tell whether to classify").type(Boolean.class).build());
-        options.addOption(Option.builder(OPTION_HERMIT).argName(OPTION_HERMIT).desc("Tell whether to call Hermit").type(Boolean.class).build());
-
-        CommandLineParser parser = new DefaultParser();
-        try {
-            CommandLine cmd = parser.parse( options, args );
-            PagodaBuilder pagodaBuilder = Pagoda.builder()
-                                                .ontology(cmd.getOptionValue(OPTION_ONTOLOGY))
-                                                .query(cmd.getOptionValue(OPTION_QUERY));
-            if(cmd.hasOption(OPTION_DATA)) pagodaBuilder.data(cmd.getOptionValue(OPTION_DATA));
-            if(cmd.hasOption(OPTION_ANSWER))  pagodaBuilder.answer(cmd.getOptionValue(OPTION_ANSWER));
-            if(cmd.hasOption(OPTION_CLASSIFY)) pagodaBuilder.classify(Boolean.parseBoolean(cmd.getOptionValue(OPTION_CLASSIFY)));
-            if(cmd.hasOption(OPTION_HERMIT)) pagodaBuilder.hermit(Boolean.parseBoolean(cmd.getOptionValue(OPTION_HERMIT)));
-
-            pagodaBuilder.build().run();
-        }
-        catch( ParseException exp ) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("PAGOdA", options);
-            Utility.logError("Parsing failed.  Reason: " + exp.getMessage());
-            System.exit(0);
-        }
-    }
+    private final Properties properties;
 
     /**
      * Do not use it
@@ -58,7 +28,59 @@ public class Pagoda implements Runnable {
         properties = new Properties();
     }
 
-    private final Properties properties;
+    public static void main(String... args) {
+
+        Options options = new Options();
+        options.addOption(Option.builder(OPTION_ONTOLOGY)
+                                .argName(OPTION_ONTOLOGY)
+                                .required()
+                                .hasArg()
+                                .desc("The ontology path")
+                                .build());
+        options.addOption(Option.builder(OPTION_DATA).argName(OPTION_DATA).hasArg().desc("The data path").build());
+        options.addOption(Option.builder(OPTION_QUERY)
+                                .argName(OPTION_QUERY)
+                                .required()
+                                .hasArg()
+                                .desc("The query path")
+                                .build());
+        options.addOption(Option.builder(OPTION_ANSWER)
+                                .argName(OPTION_ANSWER)
+                                .hasArg()
+                                .desc("The answer path")
+                                .build());
+        options.addOption(Option.builder(OPTION_CLASSIFY)
+                                .argName(OPTION_CLASSIFY)
+                                .desc("Tell whether to classify")
+                                .type(Boolean.class)
+                                .build());
+        options.addOption(Option.builder(OPTION_HERMIT)
+                                .argName(OPTION_HERMIT)
+                                .desc("Tell whether to call Hermit")
+                                .type(Boolean.class)
+                                .build());
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            CommandLine cmd = parser.parse(options, args);
+            PagodaBuilder pagodaBuilder = Pagoda.builder()
+                                                .ontology(cmd.getOptionValue(OPTION_ONTOLOGY))
+                                                .query(cmd.getOptionValue(OPTION_QUERY));
+            if(cmd.hasOption(OPTION_DATA)) pagodaBuilder.data(cmd.getOptionValue(OPTION_DATA));
+            if(cmd.hasOption(OPTION_ANSWER)) pagodaBuilder.answer(cmd.getOptionValue(OPTION_ANSWER));
+            if(cmd.hasOption(OPTION_CLASSIFY))
+                pagodaBuilder.classify(Boolean.parseBoolean(cmd.getOptionValue(OPTION_CLASSIFY)));
+            if(cmd.hasOption(OPTION_HERMIT))
+                pagodaBuilder.hermit(Boolean.parseBoolean(cmd.getOptionValue(OPTION_HERMIT)));
+
+            pagodaBuilder.build().run();
+        } catch(ParseException exp) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("PAGOdA", options);
+            Utility.logError("Parsing failed.  Reason: " + exp.getMessage());
+            System.exit(0);
+        }
+    }
 
     /**
      * Get a builder.

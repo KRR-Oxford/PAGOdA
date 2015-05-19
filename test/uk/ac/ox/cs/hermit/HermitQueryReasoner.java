@@ -1,42 +1,20 @@
 package uk.ac.ox.cs.hermit;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDatatype;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.Node;
-
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.owl.QueryRoller;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.util.Timer;
+
+import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.*;
 
 public class HermitQueryReasoner {
 
@@ -48,11 +26,13 @@ public class HermitQueryReasoner {
 //			args = new String[] {"/media/krr-nas-share/Yujiao/ontologies/npd/npd-all-minus-datatype.owl", "/media/krr-nas-share/Yujiao/ontologies/npd/data/npd-data-dump-minus-datatype-new.ttl", "/users/yzhou/ontologies/npd/queries/atomic.sparql"};
 //			args = new String[] {"/media/krr-nas-share/Yujiao/ontologies/npd/npd-all.owl", "/media/krr-nas-share/Yujiao/ontologies/npd/data/npd-data-dump-processed.ttl", "/users/yzhou/ontologies/npd/queries/atomic.sparql"};
 //			args = new String[] {PagodaTester.dbpedia_tbox, PagodaTester.dbpedia_abox, PagodaTester.dbpedia_query};
-//			args = new String[] {"/users/yzhou/ontologies/test/unsatisfiable.owl", null, "/users/yzhou/ontologies/test/unsatisfiable_queries.sparql"}; 
+//			args = new String[] {"/users/yzhou/ontologies/answersCorrectness/unsatisfiable.owl", null, "/users/yzhou/ontologies/answersCorrectness/unsatisfiable_queries.sparql"};
 
-//			args = new String[] {"/media/krr-nas-share/Yujiao/ontologies/bio2rdf/chembl/cco-processed-noDPR-noDPD.ttl", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/chembl/graph sampling/sample_100.nt", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/chembl/queries/atomic_one_filtered.sparql", "../test-share/results/chembl/hermit_1p"};
-			args = new String[] {"/users/yzhou/temp/uniprot_debug/core-processed-noDis.owl", "/users/yzhou/temp/uniprot_debug/sample_1_removed.nt", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/uniprot/queries/atomic_one.sparql", "../test-share/results/uniprot/hermit_1p"}; 		}
-//			args = new String[] {"imported.owl", "", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/uniprot/queries/atomic_one.sparql", "../test-share/results/uniprot/hermit_1p"}; 		}
+//			args = new String[] {"/media/krr-nas-share/Yujiao/ontologies/bio2rdf/chembl/cco-processed-noDPR-noDPD.ttl", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/chembl/graph sampling/sample_100.nt", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/chembl/queries/atomic_one_filtered.sparql", "../answersCorrectness-share/results/chembl/hermit_1p"};
+			args =
+					new String[]{"/users/yzhou/temp/uniprot_debug/core-processed-noDis.owl", "/users/yzhou/temp/uniprot_debug/sample_1_removed.nt", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/uniprot/queries/atomic_one.sparql", "../answersCorrectness-share/results/uniprot/hermit_1p"};
+		}
+//			args = new String[] {"imported.owl", "", "/media/krr-nas-share/Yujiao/ontologies/bio2rdf/uniprot/queries/atomic_one.sparql", "../answersCorrectness-share/results/uniprot/hermit_1p"}; 		}
 		
 		
 		PrintStream ps = args.length < 4 ? null : new PrintStream(new File(args[3])); 
@@ -60,8 +40,8 @@ public class HermitQueryReasoner {
 			if (args[i] == null || args[i].equalsIgnoreCase("null")) args[i] = ""; 
 			System.out.println("Argument " + i + ": " + args[i]); 
 		}
-		
-//		PrintStream ps = null; // new PrintStream(new File("../test-share/results/reactome/ "));
+
+//		PrintStream ps = null; // new PrintStream(new File("../answersCorrectness-share/results/reactome/ "));
 		if (ps != null) System.setOut(ps);
 		
 		Timer t = new Timer(); 

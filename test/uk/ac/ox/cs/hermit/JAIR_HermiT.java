@@ -11,8 +11,8 @@ public class JAIR_HermiT {
 		String[] args = new String[] {
 				TestUtil.combinePaths(ontoDir, "lubm/univ-bench.owl"),
 				TestUtil.combinePaths(ontoDir, "lubm/data/lubm1_owl"),
-			  	TestUtil.combinePaths(ontoDir, "lubm/queries/test.sparql")
-//				, "/home/yzhou/java-workspace/test-share/results_new/lubm1/hermit"
+				TestUtil.combinePaths(ontoDir, "lubm/queries/answersCorrectness.sparql")
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/lubm1/hermit"
 		};
 		HermitQueryReasoner.main(args);
 	}
@@ -24,7 +24,7 @@ public class JAIR_HermiT {
 				"/home/yzhou/backup/20141212/univ-bench-queries.owl",
 				TestUtil.combinePaths(ontoDir, "lubm/data/lubm1_owl"),
 				TestUtil.combinePaths(ontoDir, "lubm/queries/atomic_lubm.sparql")
-//				, "/home/yzhou/java-workspace/test-share/results_new/lubm1/hermit_rolledUp"
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/lubm1/hermit_rolledUp"
 		};
 		HermitQueryReasoner.main(args);
 	}
@@ -37,7 +37,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "uobm/data/uobm1_owl_withDeclaration"),
 				TestUtil.combinePaths(ontoDir, "uobm/queries/standard.sparql")
 //				, "hermit_uobm1.out"
-//				, "/home/yzhou/java-workspace/test-share/results_new/uobm1/hermit"
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uobm1/hermit"
 		};
 		HermitQueryReasoner.main(args);
 	}
@@ -50,7 +50,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "uobm/data/uobm1_owl_withDeclaration"),
 				TestUtil.combinePaths(ontoDir, "uobm/queries/atomic_uobm.sparql")
 				, "hermit_uobm1_rolledUp.out"
-//				, "/home/yzhou/java-workspace/test-share/results_new/uobm1/hermit_rolledUp"
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uobm1/hermit_rolledUp"
 		};
 		HermitQueryReasoner.main(args);
 	}
@@ -75,7 +75,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "npd/data/npd-data-dump-minus-datatype-new.ttl"),
 				TestUtil.combinePaths(ontoDir, "npd/queries/atomic_ground.sparql")
 				, "hermit_npd.out"
-//				, "/home/yzhou/java-workspace/test-share/results_new/npd/hermit"
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/npd/hermit"
 		); 
 	}
 
@@ -86,7 +86,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "dbpedia/integratedOntology-all-in-one-minus-datatype.owl"),
 				TestUtil.combinePaths(ontoDir, "dbpedia/data/dbpedia-minus-datatype-new.ttl"),
 				TestUtil.combinePaths(ontoDir, "dbpedia/queries/atomic_ground.sparql")
-				, "/home/yzhou/java-workspace/test-share/results_new/dbpedia/hermit"
+				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/dbpedia/hermit"
 		);
 	}
 
@@ -97,7 +97,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "bio2rdf/reactome/biopax-level3-processed.owl"),
 				TestUtil.combinePaths(ontoDir, "bio2rdf/reactome/graph sampling/reactome_sample_10.ttl"),
 				TestUtil.combinePaths(ontoDir, "bio2rdf/reactome/queries/atomic_ground.sparql")
-				, "/home/yzhou/java-workspace/test-share/results_new/reactome/hermit_10p"
+				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/reactome/hermit_10p"
 		); 
 	}
 
@@ -110,7 +110,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "bio2rdf/chembl/graph sampling/sample_1.nt"),
 				TestUtil.combinePaths(ontoDir, "bio2rdf/chembl/queries/atomic_ground.sparql")
 				, "hermit_chembl.out"
-//				, "/home/yzhou/java-workspace/test-share/results_new/chembl/hermit_1p"
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/chembl/hermit_1p"
 		); 
 	}
 
@@ -122,7 +122,7 @@ public class JAIR_HermiT {
 				TestUtil.combinePaths(ontoDir, "bio2rdf/uniprot/graph sampling/sample_1.nt"),
 				TestUtil.combinePaths(ontoDir, "bio2rdf/uniprot/queries/atomic_ground.sparql")
 				, "hermit_uniprot.out"
-//				, "/home/yzhou/java-workspace/test-share/results_new/uniprot/hermit_1p"
+//				, "/home/yzhou/java-workspace/answersCorrectness-share/results_new/uniprot/hermit_1p"
 		); 
 	}
 

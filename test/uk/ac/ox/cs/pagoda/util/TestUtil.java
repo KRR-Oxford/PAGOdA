@@ -26,8 +26,7 @@ public class TestUtil {
 
     public static Properties getConfig() {
         if(!isConfigLoaded) {
-            try (InputStream in = TestUtil.class.getClassLoader()
-                            .getResourceAsStream(CONFIG_FILE)) {
+            try(InputStream in = TestUtil.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
                 config = new java.util.Properties();
                 config.load(in);
                 in.close();
