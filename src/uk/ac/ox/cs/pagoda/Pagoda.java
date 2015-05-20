@@ -2,7 +2,7 @@ package uk.ac.ox.cs.pagoda;
 
 import org.apache.commons.cli.*;
 import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
-import uk.ac.ox.cs.pagoda.util.Properties;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -19,13 +19,13 @@ public class Pagoda implements Runnable {
     private static final String OPTION_ANSWER = "a";
     private static final String OPTION_CLASSIFY = "c";
     private static final String OPTION_HERMIT = "f";
-    private final Properties properties;
+    private final PagodaProperties properties;
 
     /**
      * Do not use it
      * */
     private Pagoda() {
-        properties = new Properties();
+        properties = new PagodaProperties();
     }
 
     public static void main(String... args) {

@@ -198,26 +198,31 @@ class MyQueryReasoner extends QueryReasoner {
 		return satisfiable == SatisfiabilityStatus.SATISFIABLE;
 	}
 
-	// TODO why the following???
-	private void queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord, Tuple<String> extendedQuery) {
+	/**
+	 * It deals with blanks nodes differently from variables
+	 * according to SPARQL semantics for OWL2 Entailment Regime.
+	 * <p>
+	 * In particular variables are matched only against named individuals,
+	 * and blank nodes against named and anonymous individuals.
+	 */
+	private boolean queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord,
+									Tuple<String> extendedQuery, Step step) {
 
-//		Utility.logInfo("1");
-//		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-//
-//		boolean conditionA = !queryRecord.processed() && !queryRecord.getQueryText().equals(extendedQuery.get(0));
-//		boolean conditionB = !queryRecord.processed() && queryRecord.hasNonAnsDistinguishedVariables();
-//
-//		if(conditionA ^ conditionB)
-//			throw new Error("It really happened! I thought it was impossible");
-//
-//		if (conditionA) {
-//			Utility.logInfo("2");
-		queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
-//		}
-//		if (conditionB) {
-//			Utility.logInfo("3");
-//			queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
-//		}
+		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+
+		if(queryRecord.hasNonAnsDistinguishedVariables()) {
+			if(!queryRecord.processed())
+				queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
+			if(!queryRecord.processed())
+				queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
+		}
+
+		queryRecord.addProcessingTime(step, t.duration());
+		if(queryRecord.processed()) {
+			queryRecord.setDifficulty(step);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -234,7 +239,7 @@ class MyQueryReasoner extends QueryReasoner {
 		} finally {
 			if (rlAnswer != null) rlAnswer.dispose();
 		}
-		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
+		queryRecord.addProcessingTime(Step.LOWER_BOUND, t.duration());
 
 		t.reset();
 
@@ -249,17 +254,14 @@ class MyQueryReasoner extends QueryReasoner {
 //			queryUpperStore(trackingStore, queryRecord, extendedQueryTexts);
 //		else {
 
-		queryUpperStore(trackingStore, queryRecord, extendedQueryTexts);
-		if(!(queryRecord.isBottom() || (lazyUpperStore == null && limitedSkolemUpperStore == null))) {
-			if(lazyUpperStore != null) queryUpperStore(lazyUpperStore, queryRecord, extendedQueryTexts);
-			if(limitedSkolemUpperStore != null)
-				queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts);
-		}
-
-		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
-		if (queryRecord.processed()) {
-			queryRecord.setDifficulty(Step.UpperBound);
+		if(queryUpperStore(trackingStore, queryRecord, extendedQueryTexts, Step.SIMPLE_UPPER_BOUND))
 			return null;
+
+		if(!queryRecord.isBottom()) {
+			if(lazyUpperStore != null && queryUpperStore(lazyUpperStore, queryRecord, extendedQueryTexts, Step.LAZY_UPPER_BOUND))
+				return null;
+			if(limitedSkolemUpperStore != null && queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts, Step.L_SKOLEM_UPPER_BOUND))
+				return null;
 		}
 
 		t.reset();
@@ -271,10 +273,10 @@ class MyQueryReasoner extends QueryReasoner {
 		} finally {
 			if (elAnswer != null) elAnswer.dispose();
 		}
-		queryRecord.addProcessingTime(Step.ELLowerBound, t.duration());
+		queryRecord.addProcessingTime(Step.EL_LOWER_BOUND, t.duration());
 
 		if (queryRecord.processed()) {
-			queryRecord.setDifficulty(Step.ELLowerBound);
+			queryRecord.setDifficulty(Step.EL_LOWER_BOUND);
 			return null;
 		}
 
@@ -291,7 +293,7 @@ class MyQueryReasoner extends QueryReasoner {
 //		}
 //		else {
 		knowledgeBase = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
-			queryRecord.addProcessingTime(Step.Fragment, t.duration());
+		queryRecord.addProcessingTime(Step.FRAGMENT, t.duration());
 //		}
 
 		if(knowledgeBase.isEmpty() || queryRecord.isBottom())
@@ -307,10 +309,10 @@ class MyQueryReasoner extends QueryReasoner {
 //			knowledgebase = iterativeRefinement.extractWithFullABox(importedData.toString(), program.getUpperBottomStrategy());
 //		}
 //
-//		queryRecord.addProcessingTime(Step.FragmentRefinement, t.duration());
+//		queryRecord.addProcessingTime(Step.FRAGMENT_REFINEMENT, t.duration());
 //
 //		if (knowledgebase == null)
-//			queryRecord.setDifficulty(Step.FragmentRefinement);
+//			queryRecord.setDifficulty(Step.FRAGMENT_REFINEMENT);
 
 		return knowledgeBase;
 	}

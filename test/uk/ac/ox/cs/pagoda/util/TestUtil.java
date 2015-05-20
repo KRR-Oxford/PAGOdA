@@ -7,7 +7,9 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -60,6 +62,13 @@ public class TestUtil {
             }
         }
         return null;
+    }
+
+    public static Path getAnswersFilePath(String name) {
+        URL givenAnswersURL = TestUtil.class.getClassLoader()
+                                            .getResource(name);
+        if(givenAnswersURL == null) throw new RuntimeException("Missing answers file:" + name);
+        return Paths.get(givenAnswersURL.getPath());
     }
 
 }

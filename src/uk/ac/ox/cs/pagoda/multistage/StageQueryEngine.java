@@ -8,16 +8,17 @@ import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
 public abstract class StageQueryEngine extends BasicQueryEngine {
-	
-	protected boolean checkValidity; 
-	
+
+	protected boolean checkValidity;
+	Boolean validMaterialisation = null;
+
 	public StageQueryEngine(String name, boolean checkValidity) {
 		super(name);
-		this.checkValidity = checkValidity; 
+		this.checkValidity = checkValidity;
 	}
 
-	public abstract void materialiseFoldedly(DatalogProgram dProgram, GapByStore4ID gap); 
-	
+	public abstract void materialiseFoldedly(DatalogProgram dProgram, GapByStore4ID gap);
+
 	public abstract int materialiseRestrictedly(DatalogProgram dProgram, GapByStore4ID gap);
 
 	public abstract int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap);
@@ -25,8 +26,6 @@ public abstract class StageQueryEngine extends BasicQueryEngine {
 	public void dispose() {
 		super.dispose();
 	}
-	
-	Boolean validMaterialisation = null; 
 
 	public boolean isValid() {
 		if (!checkValidity) return true; 
@@ -45,9 +44,9 @@ public abstract class StageQueryEngine extends BasicQueryEngine {
 		}
 
 		if (validMaterialisation)
-			Utility.logInfo("The lazy-upper-bound store is valid."); 
-		else 
-			Utility.logInfo("The lazy-upper-bound store is not valid."); 
+			Utility.logInfo("The " + name + " store is valid.");
+		else
+			Utility.logInfo("The " + name + " store is not valid.");
 		return validMaterialisation;
 	}
 

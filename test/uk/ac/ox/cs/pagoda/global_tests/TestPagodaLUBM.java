@@ -11,50 +11,27 @@ import java.nio.file.Paths;
 
 public class TestPagodaLUBM {
 
-	/**
-	 * Just execute on LUBM 100
-	 */
-	public static void main(String... args) {
-		new TestPagodaLUBM().justExecute_100();
-	}
-
-	public void answersCorrecntess(int number) throws IOException {
+	public void answersCorrectness(int number) throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
-		Path computedAnswers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
-		new File(computedAnswers.toString()).deleteOnExit();
+		Path answers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
+		new File(answers.toString()).deleteOnExit();
+		Path givenAnswers = TestUtil.getAnswersFilePath("answers/pagoda-lubm" + number + ".json");
 
 		Pagoda pagoda = Pagoda.builder()
 							  .ontology(Paths.get(ontoDir, "lubm/univ-bench.owl"))
 							  .data(Paths.get(ontoDir, "lubm/data/lubm" + number + ".ttl"))
 							  .query(Paths.get(ontoDir, "lubm/queries/test.sparql"))
-							  .answer(computedAnswers)
+							  .answer(answers)
 							  .classify(true)
 							  .hermit(true)
 							  .build();
-		pagoda.run();
 
-		Path givenAnswers = Paths.get(ontoDir, "lubm/lubm" + number + ".json");
-		CheckAnswers.assertSameAnswers(computedAnswers, givenAnswers);
+		pagoda.run();
+		CheckAnswers.assertSameAnswers(answers, givenAnswers);
 	}
 
 	@Test(groups = {"light"})
 	public void answersCorrectness_1() throws IOException {
-		answersCorrecntess(1);
-	}
-
-	/**
-	 * Just execute on LUBM 100
-	 * */
-	public void justExecute_100() {
-		int number = 100;
-		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
-		Pagoda pagoda = Pagoda.builder()
-							  .ontology(Paths.get(ontoDir, "lubm/univ-bench.owl"))
-							  .data(Paths.get(ontoDir, "lubm/data/lubm" + number + ".ttl"))
-							  .query(Paths.get(ontoDir, "lubm/queries/answersCorrectness.sparql"))
-							  .classify(true)
-							  .hermit(true)
-							  .build();
-		pagoda.run();
+		answersCorrectness(1);
 	}
 }

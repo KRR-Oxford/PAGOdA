@@ -50,7 +50,7 @@ class ELHOUQueryReasoner extends QueryReasoner {
 		} finally {
 			if(rlAnswer != null) rlAnswer.dispose();
 		}
-		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
+		queryRecord.addProcessingTime(Step.LOWER_BOUND, t.duration());
 
 		String extendedQueryText = queryRecord.getExtendedQueryText().get(0);
 		String[] toQuery = queryRecord.getQueryText().equals(extendedQueryText) ?
@@ -66,10 +66,10 @@ class ELHOUQueryReasoner extends QueryReasoner {
 			} finally {
 				if(rlAnswer != null) rlAnswer.dispose();
 			}
-			queryRecord.addProcessingTime(Step.UpperBound, t.duration());
+			queryRecord.addProcessingTime(Step.UPPER_BOUND, t.duration());
 
 			if (queryRecord.processed()) {
-				queryRecord.setDifficulty(Step.UpperBound);
+				queryRecord.setDifficulty(Step.UPPER_BOUND);
 				return;
 			}
 		}
@@ -83,7 +83,7 @@ class ELHOUQueryReasoner extends QueryReasoner {
 		} finally {
 			if (elAnswer != null) elAnswer.dispose();
 		}
-		queryRecord.addProcessingTime(Step.ELLowerBound, t.duration());
+		queryRecord.addProcessingTime(Step.EL_LOWER_BOUND, t.duration());
 	}
 
 	@Override

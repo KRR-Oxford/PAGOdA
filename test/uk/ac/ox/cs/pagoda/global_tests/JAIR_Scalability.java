@@ -2,7 +2,7 @@ package uk.ac.ox.cs.pagoda.global_tests;
 
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.tester.PagodaTester;
-import uk.ac.ox.cs.pagoda.util.Properties;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.TestUtil;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class JAIR_Scalability {
 	private static final String date = "_0123";
 
 	public static void main(String... args) throws IOException {
-		Properties.shellModeDefault = true;
+		PagodaProperties.shellModeDefault = true;
 		new JAIR_Scalability().testUniProt(50, false);
 	}
 	

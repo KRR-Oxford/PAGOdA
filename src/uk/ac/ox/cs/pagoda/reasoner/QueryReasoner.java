@@ -6,7 +6,7 @@ import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryManager;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
-import uk.ac.ox.cs.pagoda.util.Properties;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -26,11 +26,11 @@ public abstract class QueryReasoner {
 	public boolean fullReasoner = this instanceof MyQueryReasoner;
 	protected StringBuilder importedData = new StringBuilder();
 //	protected boolean forSemFacet = false;
-	Properties properties;
+PagodaProperties properties;
 	BufferedWriter answerWriter = null;
 	private QueryManager m_queryManager = new QueryManager();
-	
-	public static QueryReasoner getInstance(Properties p) {
+
+	public static QueryReasoner getInstance(PagodaProperties p) {
 		OWLOntology ontology = OWLHelper.loadOntology(p.getOntologyPath());
 		QueryReasoner pagoda = getInstance(ontology, p);
 		pagoda.properties = p;
@@ -49,11 +49,11 @@ public abstract class QueryReasoner {
 
 	public static QueryReasoner getInstance(OWLOntology o) {
 		QueryReasoner pagoda = getInstance(Type.Full, o, DEFAULT_MULTI_STAGES, DEFAULT_EQUALITIES);
-		pagoda.properties = new Properties();
+		pagoda.properties = new PagodaProperties();
 		return pagoda;
 	}
 
-	private static QueryReasoner getInstance(OWLOntology o, Properties p) {
+	private static QueryReasoner getInstance(OWLOntology o, PagodaProperties p) {
 		return getInstance(Type.Full, o, DEFAULT_MULTI_STAGES, DEFAULT_EQUALITIES);
 	}
 

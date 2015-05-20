@@ -10,9 +10,9 @@
         </groups>
 
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>
-            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaLUBM"/>
-            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaFLY"/>-->
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>-->
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaLUBM"/>-->
+            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaFLY"/>
         </classes>
     </test>
 </suite>

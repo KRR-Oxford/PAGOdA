@@ -1,0 +1,79 @@
+[
+  {
+    "queryText": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX obo: <http://purl.obolibrary.org/obo/> SELECT distinct ?X WHERE { ?X rdf:type obo:FBbt_00005106 . ?X obo:RO_0002131 ?Y . ?Y rdf:type obo:FBbt_00007401 }",
+    "answerVariables": [
+      "X"
+    ],
+    "queryID": 1,
+    "answers": []
+  },
+  {
+    "queryText": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX obo: <http://purl.obolibrary.org/obo/> PREFIX FBbt: <http://purl.obolibrary.org/obo/FBbt#> SELECT distinct ?X WHERE { ?X rdf:type obo:FBbt_00005106 . ?X obo:RO_0002131 ?Y . ?Y rdf:type obo:FBbt_00007401 . ?X FBbt:develops_from ?Z . ?Z rdf:type obo:FBbt_00067346 }",
+    "answerVariables": [
+      "X"
+    ],
+    "queryID": 2,
+    "answers": []
+  },
+  {
+    "queryText": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX obo: <http://purl.obolibrary.org/obo/> SELECT distinct ?X WHERE { ?X rdf:type obo:FBbt_00100388 }",
+    "answerVariables": [
+      "X"
+    ],
+    "queryID": 3,
+    "answers": [
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100696>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100030>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100700>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100566>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100314>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100332>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100436>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100443>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100051>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100372>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100480>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100462>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100195>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100103>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100251>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100225>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100527>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100164>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100008>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100722>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100383>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100186>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100177>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100206>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100446>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100224>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100706>",
+      "<http://www.virtualflybrain.org/ontologies/individuals/VFB_00100360>"
+    ]
+  },
+  {
+    "queryText": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX obo: <http://purl.obolibrary.org/obo/> SELECT distinct ?X WHERE { ?X rdf:type obo:FBbt_00007173 . ?X obo:RO_0002131 ?Y . ?Y rdf:type obo:FBbt_00003924 }",
+    "answerVariables": [
+      "X"
+    ],
+    "queryID": 4,
+    "answers": []
+  },
+  {
+    "queryText": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX obo: <http://purl.obolibrary.org/obo/> SELECT distinct ?X WHERE { ?X obo:RO_0002131 ?Y . ?Y rdf:type obo:FBbt_00005801 }",
+    "answerVariables": [
+      "X"
+    ],
+    "queryID": 5,
+    "answers": []
+  },
+  {
+    "queryText": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX obo: <http://purl.obolibrary.org/obo/> SELECT distinct ?X WHERE { ?X obo:RO_0002130 ?Y . ?Y rdf:type obo:FBbt_00007053 }",
+    "answerVariables": [
+      "X"
+    ],
+    "queryID": 6,
+    "answers": []
+  }
+]

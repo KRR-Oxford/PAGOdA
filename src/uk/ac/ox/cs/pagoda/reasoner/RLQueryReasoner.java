@@ -31,8 +31,8 @@ class RLQueryReasoner extends QueryReasoner {
 		} finally {
 			if (rlAnswer != null) rlAnswer.dispose();
 		}
-		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
-		queryRecord.setDifficulty(Step.LowerBound);
+		queryRecord.addProcessingTime(Step.LOWER_BOUND, t.duration());
+		queryRecord.setDifficulty(Step.LOWER_BOUND);
 		queryRecord.markAsProcessed();
 	}
 

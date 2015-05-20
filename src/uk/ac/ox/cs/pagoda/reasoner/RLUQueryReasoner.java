@@ -41,7 +41,7 @@ class RLUQueryReasoner extends QueryReasoner {
 		} finally {
 			if (ans != null) ans.dispose();
 		}
-		queryRecord.addProcessingTime(Step.LowerBound, t.duration());
+		queryRecord.addProcessingTime(Step.LOWER_BOUND, t.duration());
 		
 		ans = null; 
 		t.reset(); 
@@ -52,10 +52,10 @@ class RLUQueryReasoner extends QueryReasoner {
 		} finally {
 			if (ans != null) ans.dispose();
 		}
-		queryRecord.addProcessingTime(Step.UpperBound, t.duration());
+		queryRecord.addProcessingTime(Step.UPPER_BOUND, t.duration());
 		
 		if (queryRecord.processed())
-			queryRecord.setDifficulty(Step.UpperBound);
+			queryRecord.setDifficulty(Step.UPPER_BOUND);
 	}
 	
 	@Override

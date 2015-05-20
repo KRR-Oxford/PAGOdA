@@ -34,9 +34,9 @@ class ELHOQueryReasoner extends QueryReasoner {
 		} finally {
 			if (elAnswer != null) elAnswer.dispose();
 		}
-		queryRecord.addProcessingTime(Step.ELLowerBound, t.duration());
-		
-		queryRecord.setDifficulty(Step.ELLowerBound);
+		queryRecord.addProcessingTime(Step.EL_LOWER_BOUND, t.duration());
+
+		queryRecord.setDifficulty(Step.EL_LOWER_BOUND);
 		queryRecord.markAsProcessed();
 	}
 

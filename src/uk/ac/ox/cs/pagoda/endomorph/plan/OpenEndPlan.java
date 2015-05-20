@@ -1,13 +1,7 @@
 package uk.ac.ox.cs.pagoda.endomorph.plan;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
-import uk.ac.ox.cs.pagoda.endomorph.*;
+import uk.ac.ox.cs.pagoda.endomorph.Clique;
+import uk.ac.ox.cs.pagoda.endomorph.DependencyGraph;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.query.QueryRecord.Step;
@@ -15,6 +9,8 @@ import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.summary.NodeTuple;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.util.*;
 
 public class OpenEndPlan implements CheckPlan {
 	
@@ -91,7 +87,7 @@ public class OpenEndPlan implements CheckPlan {
 			}
 		
 		m_record.addLowerBoundAnswers(validAnswers);
-		m_record.addProcessingTime(Step.FullReasoning, t.duration());
+		m_record.addProcessingTime(Step.FULL_REASONING, t.duration());
 		return count; 		
 	}
 

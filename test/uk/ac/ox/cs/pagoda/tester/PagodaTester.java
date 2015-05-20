@@ -3,7 +3,7 @@ package uk.ac.ox.cs.pagoda.tester;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
-import uk.ac.ox.cs.pagoda.util.Properties;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -136,7 +136,7 @@ public class PagodaTester {
 //			args[2] = args[2].replace(".sparql", "_pellet.sparql");
 		}
 
-		Properties properties = new Properties("config/uobm.properties");
+		PagodaProperties properties = new PagodaProperties("config/uobm.properties");
 
 		int index = 0;
 		if(args.length > index) properties.setOntologyPath(args[index++]);
