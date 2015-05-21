@@ -3,5 +3,6 @@
 /backup/
 /tmp/
 /testcase/
-/*.log
+/*.log*
 /*.pdf
+test_reports

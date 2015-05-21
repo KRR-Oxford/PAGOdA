@@ -22,6 +22,7 @@ public class QueryRecord {
 	
 	public static final String botQueryText = "SELECT ?X WHERE { ?X <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Nothing> }";
 	public static final String SEPARATOR = "----------------------------------------";
+	private static final String RDF_TYPE = "a"; //"rdf:type"; //RDF.type.toString();
 	boolean processed = false;
 	String stringQueryID = null;
 	OWLOntology relevantOntology = null;
@@ -39,17 +40,17 @@ public class QueryRecord {
 
 	private QueryRecord() {
 	}
-	
-	public QueryRecord(QueryManager manager, String text, int id, int subID) {
-		m_manager = manager;
-		resetInfo(text, id, subID);
-		resetTimer();
-	}
 
 //	private boolean containsAuxPredicate(String str) {
 //		return  str.contains(Namespace.PAGODA_AUX) || str.contains("_AUX") || str.contains("owl#Nothing") ||
 //				str.contains("internal:def"); 
 //	}
+
+	public QueryRecord(QueryManager manager, String text, int id, int subID) {
+		m_manager = manager;
+		resetInfo(text, id, subID);
+		resetTimer();
+	}
 
 	public static Collection<String> collectQueryTexts(Collection<QueryRecord> queryRecords) {
 		Collection<String> texts = new LinkedList<String>();
@@ -126,56 +127,33 @@ public class QueryRecord {
 
 		RDFoxAnswerTuples rdfoxAnswerTuples = (RDFoxAnswerTuples) answerTuples;
 
-//		if(soundAnswerTuples.size() > 0) {
-//			int number = 0;
-//			for(; rdfoxAnswerTuples.isValid(); rdfoxAnswerTuples.moveNext()) {
-//				++number;
-//			}
-//			Utility.logInfo("The number of answers returned by an upper bound: " + number);
-//			if(number == soundAnswerTuples.size()) {
-//				if(gapAnswerTuples != null) gapAnswerTuples.clear();
-//				else gapAnswerTuples = new HashSet<AnswerTuple>();
-//
-//				Utility.logInfo("The number of upper bound answers: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
-//				return false;
-//			} else if(number < soundAnswerTuples.size())
-//				throw new IllegalArgumentException("The upper bound answers must contain all the lower bound ones!");
-//			rdfoxAnswerTuples.reset();
-//		}
-
-//		boolean justCheck = (rdfoxAnswerTuples.getArity() < getDistinguishedVariables().length);
-//		boolean justCheck = (rdfoxAnswerTuples.getArity() != getDistinguishedVariables().length);
-//		if(justCheck) throw new Error("justCheck!");
-		boolean justCheck = false;
-
 		Set<AnswerTuple> candidateGapAnswerTuples = new HashSet<AnswerTuple>();
-		AnswerTuple tuple, extendedTuple;
+		AnswerTuple tuple;
 		for(; rdfoxAnswerTuples.isValid(); rdfoxAnswerTuples.moveNext()) {
-			extendedTuple = rdfoxAnswerTuples.getTuple();
-			if(isBottom() || !extendedTuple.hasAnonymousIndividual()) {
-				tuple = AnswerTuple.create(extendedTuple, getAnswerVariables().length);
-				if((!toCheckAux || !tuple.hasAuxPredicate()) && !soundAnswerTuples.contains(tuple)) {
-					if(!toCheckAux && justCheck) return false;
-					// TODO check
-					candidateGapAnswerTuples.add(extendedTuple);
-//					candidateGapAnswerTuples.add(tuple);
-				}
-			}
+			tuple = rdfoxAnswerTuples.getTuple();
+			if(isBottom() || !tuple.hasAnonymousIndividual())
+				if((!toCheckAux || !tuple.hasAuxPredicate()) && !soundAnswerTuples.contains(tuple))
+					candidateGapAnswerTuples.add(tuple);
 		}
 
 		/*** START: debugging ***/
 		if(PagodaProperties.isDebuggingMode()) {
-			Set<AnswerTuple> projectedAnswerTuples = new HashSet<>();
+			if(rdfoxAnswerTuples.getArity() != getAnswerVariables().length)
+				throw new IllegalArgumentException(
+						"The arity of answers (" + rdfoxAnswerTuples.getArity() + ") " +
+								"is different from the number of answer variables (" +
+								getAnswerVariables().length + ")");
+
+			Set<AnswerTuple> namedAnswerTuples = new HashSet<>();
 			rdfoxAnswerTuples.reset();
 			for(; rdfoxAnswerTuples.isValid(); rdfoxAnswerTuples.moveNext()) {
-				extendedTuple = rdfoxAnswerTuples.getTuple();
-				if(isBottom() || !extendedTuple.hasAnonymousIndividual()) {
-					tuple = AnswerTuple.create(extendedTuple, getAnswerVariables().length);
-					projectedAnswerTuples.add(tuple);
-				}
+				tuple = rdfoxAnswerTuples.getTuple();
+//				if(isBottom() || !tuple.hasAnonymousIndividual()) {
+				namedAnswerTuples.add(tuple);
+//				}
 			}
 			HashSet<AnswerTuple> difference = new HashSet<>(soundAnswerTuples);
-			difference.removeAll(projectedAnswerTuples);
+			difference.removeAll(namedAnswerTuples);
 			if(!difference.isEmpty())
 				throw new IllegalArgumentException("The upper bound does not contain the lower bound!");
 		}
@@ -218,7 +196,7 @@ public class QueryRecord {
 		if(gapAnswerTuples != null && gapAnswerTuples.isEmpty()) processed = true;
 		return processed;
 	}
-	
+
 	public String[] getDistinguishedVariables() {
 		return answerVariables[1];
 	}
@@ -238,7 +216,7 @@ public class QueryRecord {
 	public String getQueryID() {
 		return stringQueryID;
 	}
-	
+
 	public AnswerTuples getGapAnswers() {
 		return new AnswerTuplesImp(answerVariables[0], gapAnswerTuples);
 	}
@@ -355,7 +333,7 @@ public class QueryRecord {
 	public void setRelevantOntology(OWLOntology knowledgebase) {
 		relevantOntology = knowledgebase;
 	}
-	
+
 	public void saveRelevantOntology(String filename) {
 		if(relevantOntology == null) return;
 		OWLOntologyManager manager = relevantOntology.getOWLOntologyManager();
@@ -394,7 +372,7 @@ public class QueryRecord {
 				Utility.logError("The answer (" + answer + ") cannot be added, because it is not in the upper bound.");
 			gapAnswerTuples.remove(answer);
 
-			answer = AnswerTuple.create(answer, answerVariables[0].length);
+			answer = AnswerTuple.getInstance(answer, answerVariables[0].length);
 //			if (soundAnswerTuples.contains(answer))
 //				Utility.logError("The answer (" + answer + ") cannot be added, because it is in the lower bound.");
 			soundAnswerTuples.add(answer);
@@ -412,7 +390,7 @@ public class QueryRecord {
 	public int getArity() {
 		return answerVariables[0].length;
 	}
-	
+
 	public void addRelevantClauses(DLClause clause) {
 		relevantClauses.add(clause);
 	}
@@ -477,10 +455,10 @@ public class QueryRecord {
 	}
 	
 	public void updateSubID() {
-		++subID; 
+		++subID;
 		stringQueryID = String.valueOf(queryID) + "_" + subID;
 	}
-	
+
 	public DLClause getClause() {
 		if (queryClause != null)
 			return queryClause;
@@ -498,7 +476,7 @@ public class QueryRecord {
 	public int getSubID() {
 		return subID;
 	}
-	
+
 	public boolean hasSameGapAnswers(QueryRecord that) {
 		return gapAnswerTuples.containsAll(that.gapAnswerTuples) && that.gapAnswerTuples.containsAll(gapAnswerTuples);
 	}
@@ -539,8 +517,9 @@ public class QueryRecord {
 		return false;
 	}
 
+	// TODO remove fully extended query
 	public Tuple<String> getExtendedQueryText() {
-//		String[] ret = new String[2];
+//		String[] ret = new String[2];s
 		int index = queryText.toUpperCase().indexOf(" WHERE");
 		String extendedSelect = queryText.substring(0, index);
 		String extendedWhere= queryText.substring(index + 1), fullyExtendedWhere = queryText.substring(index + 1);
@@ -564,10 +543,18 @@ public class QueryRecord {
 //		if (answerVariables[0] != answerVariables[1]) {
 			for (int i = answerVariables[0].length; i < answerVariables[1].length; ++i) {
 //			for (int i = 0; i < answerVariables[1].length; ++i) {
-				fullyExtra.append(" . ?").append(answerVariables[1][i]).append(" a <").append(Namespace.PAGODA_ORIGINAL).append(">");
+				fullyExtra.append(" . ?")
+						  .append(answerVariables[1][i])
+						  .append(" " + RDF_TYPE + " <")
+						  .append(Namespace.PAGODA_ORIGINAL)
+						  .append(">");
 				if ((list = links.get(answerVariables[1][i])) == null || list.size() < 2) ;
 				else {
-					extra.append(" . ?").append(answerVariables[1][i]).append(" a <").append(Namespace.PAGODA_ORIGINAL).append(">");
+					extra.append(" . ?")
+						 .append(answerVariables[1][i])
+						 .append(" " + RDF_TYPE + " <")
+						 .append(Namespace.PAGODA_ORIGINAL)
+						 .append(">");
 				}
 			}
 

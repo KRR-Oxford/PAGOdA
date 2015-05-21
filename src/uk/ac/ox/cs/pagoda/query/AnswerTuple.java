@@ -50,7 +50,10 @@ public class AnswerTuple {
 		for(int i = 0; i < arity; ++i) m_tuple[i] = sup.m_tuple[i];
 	}
 
-	public static AnswerTuple create(AnswerTuple extendedTuple, int length) {
+	/**
+	 * It returns the first argument if its arity equals length, a new AnswerTuple otherwise.
+	 */
+	public static AnswerTuple getInstance(AnswerTuple extendedTuple, int length) {
 		if(length == extendedTuple.getArity()) return extendedTuple;
 		else return new AnswerTuple(extendedTuple, length);
 	}

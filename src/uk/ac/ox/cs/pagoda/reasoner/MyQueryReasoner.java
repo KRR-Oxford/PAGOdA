@@ -208,14 +208,10 @@ class MyQueryReasoner extends QueryReasoner {
 	private boolean queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord,
 									Tuple<String> extendedQuery, Step step) {
 
-		queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-
-		if(queryRecord.hasNonAnsDistinguishedVariables()) {
-			if(!queryRecord.processed())
-				queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
-			if(!queryRecord.processed())
-				queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
-		}
+		if(queryRecord.hasNonAnsDistinguishedVariables())
+			queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
+		else
+			queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 
 		queryRecord.addProcessingTime(step, t.duration());
 		if(queryRecord.processed()) {
@@ -245,28 +241,23 @@ class MyQueryReasoner extends QueryReasoner {
 
 		Tuple<String> extendedQueryTexts = queryRecord.getExtendedQueryText();
 
-//		BasicQueryEngine upperStore;
-//		if(queryRecord.isBottom()) upperStore = trackingStore;
-//		upperStore = queryRecord.isBottom() || lazyUpperStore == null ? trackingStore : lazyUpperStore;
-
-		// TODO
-//		if(queryRecord.isBottom() || (lazyUpperStore == null && limitedSkolemUpperStore == null))
-//			queryUpperStore(trackingStore, queryRecord, extendedQueryTexts);
-//		else {
-
+		Utility.logDebug("Tracking store");
 		if(queryUpperStore(trackingStore, queryRecord, extendedQueryTexts, Step.SIMPLE_UPPER_BOUND))
 			return null;
 
 		if(!queryRecord.isBottom()) {
+			Utility.logDebug("Lazy store");
 			if(lazyUpperStore != null && queryUpperStore(lazyUpperStore, queryRecord, extendedQueryTexts, Step.LAZY_UPPER_BOUND))
 				return null;
+			Utility.logDebug("Skolem store");
 			if(limitedSkolemUpperStore != null && queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts, Step.L_SKOLEM_UPPER_BOUND))
 				return null;
 		}
 
 		t.reset();
 		try {
-			elAnswer = elLowerStore.evaluate(extendedQueryTexts.get(0), queryRecord.getAnswerVariables(),
+			elAnswer = elLowerStore.evaluate(extendedQueryTexts.get(0),
+											 queryRecord.getAnswerVariables(),
 											 queryRecord.getLowerBoundAnswers());
 			Utility.logDebug(t.duration());
 			queryRecord.updateLowerBoundAnswers(elAnswer);
