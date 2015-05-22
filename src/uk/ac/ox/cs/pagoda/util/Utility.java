@@ -26,7 +26,7 @@ import org.semanticweb.HermiT.model.Atom;
 
 public class Utility {
 	
-	private static final Logger LOGS = null; // Logger.getLogger(""); 
+	private static final Logger LOGS = Logger.getLogger(""); // null; //  
 	
 	public static final String JAVA_FILE_SEPARATOR = "/";
 	public static final String FILE_SEPARATOR = System.getProperty("file.separator");

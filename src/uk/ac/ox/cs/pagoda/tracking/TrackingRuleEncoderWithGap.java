@@ -2,6 +2,7 @@ package uk.ac.ox.cs.pagoda.tracking;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.semanticweb.HermiT.model.AnnotatedEquality;
 import org.semanticweb.HermiT.model.Atom;
@@ -10,6 +11,7 @@ import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.Equality;
 import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -44,8 +46,10 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 			equalityRelatedClauses.add(DLClause.create(headAtom, bodyAtom)); 
 		}
 		
-		Variable Y = Variable.create("Y"); 
-		for (OWLObjectProperty prop: onto.getObjectPropertiesInSignature(true)) {
+		Variable Y = Variable.create("Y");
+		Set<OWLObjectProperty> setOfProperties = onto.getObjectPropertiesInSignature(true); 
+		setOfProperties.add(onto.getOWLOntologyManager().getOWLDataFactory().getOWLObjectProperty(IRI.create(Namespace.INEQUALITY)));
+		for (OWLObjectProperty prop: setOfProperties) {
 			String propIRI = prop.getIRI().toString();
 			binaryPredicates.add(propIRI); 
 			AtomicRole trackingRole = AtomicRole.create(propIRI + "_tn"); 

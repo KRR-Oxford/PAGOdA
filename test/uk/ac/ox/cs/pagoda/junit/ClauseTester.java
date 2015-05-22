@@ -8,6 +8,7 @@ import org.semanticweb.HermiT.model.AtomicConcept;
 import org.semanticweb.HermiT.model.AtomicRole;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.Equality;
+import org.semanticweb.HermiT.model.Individual;
 import org.semanticweb.HermiT.model.Variable;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -17,7 +18,31 @@ import uk.ac.ox.cs.pagoda.approx.Clause;
 import uk.ac.ox.cs.pagoda.approx.Clausifier;
 
 public class ClauseTester {
+	
+	public void test_clause(Atom[] headAtoms, Atom[] bodyAtoms) {
+		OWLOntologyManager m = OWLManager.createOWLOntologyManager(); 
+		OWLOntology emptyOntology = null; 
+		try {
+			emptyOntology = m.createOntology(); 
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("failed to create a new ontology"); 
+		}
+		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
+		System.out.println(c.toString()); 
+	}
 
+	@Test 
+	public void test_nominal() {
+		Variable x = Variable.create("X"); 
+		AtomicRole r = AtomicRole.create("r");
+		Individual o = Individual.create("o"); 
+		Atom[] bodyAtoms = new Atom[] { Atom.create(r, x, o) }; 
+		AtomicConcept A = AtomicConcept.create("A");
+		Atom[] headAtoms = new Atom[] { Atom.create(A, x) };
+		test_clause(headAtoms, bodyAtoms);
+	}
+	
 	@Test
 	public void test_simple() {
 		Variable x = Variable.create("X"), y1 = Variable.create("y1"), y2 = Variable.create("y2");
