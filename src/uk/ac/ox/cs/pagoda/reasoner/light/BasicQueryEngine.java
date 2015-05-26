@@ -309,8 +309,8 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
 	
 	private UFS<String> equalityGroups = null; 
 	
-	public UFS<String> getEqualityGroups() {
-		if (equalityGroups != null) return equalityGroups; 
+	public UFS<String> getEqualityGroups(boolean reuse) {
+		if (reuse && equalityGroups != null) return equalityGroups; 
 
 		equalityGroups = new UFS<String>(); 
 		

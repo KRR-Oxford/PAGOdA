@@ -145,7 +145,8 @@ public class MyQueryReasoner extends QueryReasoner {
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);
 		
 //		materialiseFullUpper();
-		GapByStore4ID gap = new GapByStore4ID(trackingStore); 
+//		GapByStore4ID gap = new GapByStore4ID(trackingStore); 
+		GapByStore4ID gap = new GapByStore4ID2(trackingStore, rlLowerStore); 
 		trackingStore.materialiseFoldedly(program, gap);
 		predicatesWithGap = gap.getPredicatesWithGap(); 
 		gap.clear();

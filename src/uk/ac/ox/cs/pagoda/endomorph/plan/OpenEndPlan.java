@@ -1,7 +1,6 @@
 package uk.ac.ox.cs.pagoda.endomorph.plan;
 
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -23,35 +22,39 @@ public class OpenEndPlan implements CheckPlan {
 	Checker checker; 
 	DependencyGraph dGraph; 
 	QueryRecord m_record; 
+	int m_answerArity; 
 
 	public OpenEndPlan(Checker checker, DependencyGraph dGraph, QueryRecord record) {
 		this.checker = checker; 
 		this.dGraph = dGraph;
-		m_record = record; 
+		m_record = record;
+		m_answerArity = record.getAnswerVariables().length;
 	}
+	
+	Set<Clique> validated = new HashSet<Clique>(); 
+	Set<Clique> falsified = new HashSet<Clique>(); 
+	Set<AnswerTuple> passedAnswers = new HashSet<AnswerTuple>();
 	
 	@Override
 	public int check() {
-		Deque<Clique> topo = new LinkedList<Clique>(dGraph.getTopologicalOrder());
+		LinkedList<Clique> topo = new LinkedList<Clique>(dGraph.getTopologicalOrder());
 		Utility.logInfo("Entrances: " + dGraph.getEntrances().size() + " Exists: " + dGraph.getExits().size()); 
-		Set<Clique> validated = new HashSet<Clique>(); 
-		Set<Clique> falsified = new HashSet<Clique>(); 
 
 		boolean flag = true;
 		Clique clique; 
 		Timer t = new Timer(); 
 		
-
-		AnswerTuple answerTuple; 
+		AnswerTuple answerTuple;
 		while (!topo.isEmpty()) { 
 			if (flag) {
-				clique = topo.removeFirst(); 
+				clique = topo.removeFirst();
+				if (redundant(clique)) continue; 
 				if (validated.contains(clique)) continue; 
 				if (falsified.contains(clique)) { flag = false; continue; }
 				Utility.logDebug("start checking front ... " + (answerTuple = clique.getRepresentative().getAnswerTuple())); 
 				if (checker.check(answerTuple)) {
 					Utility.logDebug(answerTuple.toString() + " is verified.");
-					setMarkCascadely(clique, validated, dGraph.getOutGoingEdges()); 
+					setMarkCascadelyValidated(clique); 
 				}
 				else {
 					falsified.add(clique);
@@ -64,10 +67,10 @@ public class OpenEndPlan implements CheckPlan {
 				if (validated.contains(clique)) { flag = true; continue; }
 				Utility.logDebug("start checking back ... " + (answerTuple = clique.getRepresentative().getAnswerTuple())); 
 				if (!checker.check(answerTuple)) 
-					setMarkCascadely(clique, falsified, dGraph.getInComingEdges()); 
+					setMarkCascadelyFasified(clique); 
 				else {
 					Utility.logDebug(answerTuple.toString() + " is verified.");
-					validated.add(clique);
+					addProjections(clique); 
 					flag = true; 
 				}
 			}
@@ -80,9 +83,8 @@ public class OpenEndPlan implements CheckPlan {
 		Collection<AnswerTuple> validAnswers = new LinkedList<AnswerTuple>(); 
 		for (Clique c: dGraph.getTopologicalOrder()) 
 			if (validated.contains(c)) {
-				count += c.getNodeTuples().size() + 1;
-				validAnswers.add(c.getRepresentative().getAnswerTuple()); 
-				
+				count += c.getNodeTuples().size();
+//				validAnswers.add(c.getRepresentative().getAnswerTuple()); 
 				for (NodeTuple nodeTuple: c.getNodeTuples()) {
 					ans = nodeTuple.getAnswerTuple(); 
 					validAnswers.add(ans);
@@ -95,12 +97,35 @@ public class OpenEndPlan implements CheckPlan {
 		return count; 		
 	}
 
-	private void setMarkCascadely(Clique clique, Set<Clique> marked, Map<Clique, Collection<Clique>> edges) {
-		marked.add(clique); 
+	private boolean redundant(Clique clique) {
+		for (NodeTuple nodeTuple: clique.getNodeTuples())
+			if (!passedAnswers.contains(AnswerTuple.create(nodeTuple.getAnswerTuple(), m_answerArity))) 
+				return false; 
+		return true;
+	}
+
+	private void addProjections(Clique clique) {
+		for (NodeTuple nodeTuple: clique.getNodeTuples()) 
+			passedAnswers.add(AnswerTuple.create(nodeTuple.getAnswerTuple(), m_answerArity)); 
+	}
+
+	private void setMarkCascadelyValidated(Clique clique) { 
+		validated.add(clique);
+		addProjections(clique);
+		Map<Clique, Collection<Clique>> edges = dGraph.getOutGoingEdges(); 
 		if (edges.containsKey(clique))
 			for (Clique c: edges.get(clique))
-				if (!marked.contains(c)) 
-					setMarkCascadely(c, marked, edges);
+				if (!validated.contains(c)) 
+					setMarkCascadelyValidated(c);
+	}
+
+	private void setMarkCascadelyFasified(Clique clique) { 
+			falsified.add(clique);
+		Map<Clique, Collection<Clique>> edges = dGraph.getInComingEdges(); 
+		if (edges.containsKey(clique))
+			for (Clique c: edges.get(clique))
+				if (!falsified.contains(c)) 
+					setMarkCascadelyFasified(c);
 	}
 
 }

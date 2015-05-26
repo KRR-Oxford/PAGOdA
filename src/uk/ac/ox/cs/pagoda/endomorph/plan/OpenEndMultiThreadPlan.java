@@ -69,7 +69,7 @@ public class OpenEndMultiThreadPlan implements CheckPlan {
 		int count = 0; 
 		for (Clique c: dGraph.getTopologicalOrder()) {
 			if (validated.contains(c))
-				count += c.getNodeTuples().size() + 1; 
+				count += c.getNodeTuples().size(); 
 		}
 		return count; 		
 	}

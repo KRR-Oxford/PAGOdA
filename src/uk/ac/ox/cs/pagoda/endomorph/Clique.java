@@ -13,6 +13,7 @@ public class Clique {
 	public Clique(NodeTuple u) {
 		nodeTuples = new HashSet<NodeTuple>(); 
 		representative = u;
+		nodeTuples.add(u);
 	}
 
 	public boolean addNodeTuple(NodeTuple nodeTuple) {

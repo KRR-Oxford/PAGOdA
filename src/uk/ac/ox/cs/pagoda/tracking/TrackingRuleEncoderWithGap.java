@@ -1,6 +1,7 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -37,7 +38,8 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 		AtomicRole trackingSameAs = AtomicRole.create(Namespace.EQUALITY + "_tn");  
 		OWLOntology onto = program.getOntology();
 		Atom[] headAtom = new Atom[] {Atom.create(trackingSameAs, X, X)}, bodyAtom; 
-		for (OWLClass cls: onto.getClassesInSignature(true)) {
+		for (OWLOntology o: onto.getImportsClosure())
+		for (OWLClass cls: o.getClassesInSignature()) {
 			String clsIRI = cls.getIRI().toString();
 			unaryPredicates.add(clsIRI); 
 			bodyAtom = new Atom[] {
@@ -47,7 +49,10 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 		}
 		
 		Variable Y = Variable.create("Y");
-		Set<OWLObjectProperty> setOfProperties = onto.getObjectPropertiesInSignature(true); 
+		Set<OWLObjectProperty> setOfProperties = new HashSet<OWLObjectProperty>();
+		for (OWLOntology o: onto.getImportsClosure())
+			for (OWLObjectProperty prop: o.getObjectPropertiesInSignature())
+				setOfProperties.add(prop); 
 		setOfProperties.add(onto.getOWLOntologyManager().getOWLDataFactory().getOWLObjectProperty(IRI.create(Namespace.INEQUALITY)));
 		for (OWLObjectProperty prop: setOfProperties) {
 			String propIRI = prop.getIRI().toString();

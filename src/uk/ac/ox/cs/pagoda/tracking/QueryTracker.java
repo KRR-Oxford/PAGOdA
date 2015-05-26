@@ -54,7 +54,7 @@ public class QueryTracker {
 		m_record = queryRecord;
 
 		m_manager = m_encoder.getOntology().getOWLOntologyManager();
-		equalityGroups = m_dataStore.getEqualityGroups(); 
+		equalityGroups = m_dataStore.getEqualityGroups(true); 
 
 	}
 

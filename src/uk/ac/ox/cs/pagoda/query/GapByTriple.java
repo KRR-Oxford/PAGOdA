@@ -164,11 +164,6 @@ public class GapByTriple extends GapTupleIterator<String> {
 	}
 	
 	@Override
-	public boolean isValid() {
-		return true;
-	}
-
-	@Override
 	public void clear() {
 		iterator.dispose();		
 	}

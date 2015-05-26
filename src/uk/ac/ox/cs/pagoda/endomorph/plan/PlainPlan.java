@@ -22,7 +22,7 @@ public class PlainPlan implements CheckPlan {
 		int count = 0; 
 		for (Clique clique: toCheck)
 			if (checker.check(clique.getRepresentative().getAnswerTuple())) {
-				count += clique.getNodeTuples().size() + 1; 
+				count += clique.getNodeTuples().size(); 
 				for (NodeTuple nodeTuple: clique.getNodeTuples()) 
 					Utility.logDebug(nodeTuple.getAnswerTuple().toString());
 			}

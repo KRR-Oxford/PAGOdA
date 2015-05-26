@@ -17,8 +17,6 @@ public abstract class GapTupleIterator<T> implements Iterator<T> {
 	
 	public void compile(String programText) throws JRDFStoreException {}
 	
-	public abstract boolean isValid();
-	
 	public abstract void save(String file); 
 	
 	public abstract void addBackTo() throws JRDFStoreException;
@@ -26,5 +24,5 @@ public abstract class GapTupleIterator<T> implements Iterator<T> {
 	public abstract void addTo(DataStore store) throws JRDFStoreException;
 	
 	public abstract void clear();
-
+	
 }
