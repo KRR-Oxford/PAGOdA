@@ -30,11 +30,11 @@ public class QueryRecord {
 	double[] timer;
 	int subID;
 	DLClause queryClause = null;
+	int queryID = -1;
+	Set<AnswerTuple> soundAnswerTuples = new HashSet<AnswerTuple>();
 	private Step difficulty;
 	private String queryText;
-	private int queryID = -1;
 	private String[][] answerVariables = null;
-	private Set<AnswerTuple> soundAnswerTuples = new HashSet<AnswerTuple>();
 	private Set<AnswerTuple> gapAnswerTuples = null;
 	private QueryManager m_manager;
 

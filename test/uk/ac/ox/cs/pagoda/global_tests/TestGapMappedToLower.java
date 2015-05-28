@@ -1,18 +1,9 @@
-package uk.ac.ox.cs.pagoda.junit;
+package uk.ac.ox.cs.pagoda.global_tests;
 
 import junit.framework.Assert;
-
-import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-
+import org.semanticweb.owlapi.model.*;
+import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;

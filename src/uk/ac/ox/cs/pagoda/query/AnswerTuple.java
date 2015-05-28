@@ -156,7 +156,8 @@ public class AnswerTuple {
 		public AnswerTuple deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
 			String tuplesString = json.getAsJsonPrimitive().getAsString();
-			StringTokenizer tokenizer = new StringTokenizer(SEPARATOR);
+//			StringTokenizer tokenizer = new StringTokenizer(tuplesString, SEPARATOR);
+			StringTokenizer tokenizer = new StringTokenizer(tuplesString);
 			GroundTerm[] terms = new GroundTerm[tokenizer.countTokens()];
 
 			// TODO test parsing

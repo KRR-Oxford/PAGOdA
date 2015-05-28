@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.global_tests;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.Pagoda;
+import uk.ac.ox.cs.pagoda.query.CheckAnswers;
 import uk.ac.ox.cs.pagoda.util.TestUtil;
 
 import java.io.File;
