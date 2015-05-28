@@ -1,24 +1,20 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.HermiT.model.*;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
-import uk.ac.ox.cs.pagoda.query.*; 
+import uk.ac.ox.cs.pagoda.query.GapTupleIterator;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Namespace;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 	
@@ -34,8 +30,9 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 		Variable X = Variable.create("X"); 
 		AtomicRole trackingSameAs = AtomicRole.create(Namespace.EQUALITY + "_tn");  
 		OWLOntology onto = program.getOntology();
-		Atom[] headAtom = new Atom[] {Atom.create(trackingSameAs, X, X)}, bodyAtom; 
-		for (OWLClass cls: onto.getClassesInSignature(true)) {
+		Atom[] headAtom = new Atom[]{Atom.create(trackingSameAs, X, X)}, bodyAtom;
+		for(OWLOntology o : onto.getImportsClosure())
+			for(OWLClass cls : o.getClassesInSignature()) {
 			String clsIRI = cls.getIRI().toString();
 			unaryPredicates.add(clsIRI); 
 			bodyAtom = new Atom[] {
@@ -43,9 +40,16 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 					Atom.create(AtomicConcept.create(GapTupleIterator.getGapPredicate(clsIRI)), X)}; 
 			equalityRelatedClauses.add(DLClause.create(headAtom, bodyAtom)); 
 		}
-		
-		Variable Y = Variable.create("Y"); 
-		for (OWLObjectProperty prop: onto.getObjectPropertiesInSignature(true)) {
+
+		Variable Y = Variable.create("Y");
+		Set<OWLObjectProperty> setOfProperties = new HashSet<OWLObjectProperty>();
+		for(OWLOntology o : onto.getImportsClosure())
+			for(OWLObjectProperty prop : o.getObjectPropertiesInSignature())
+				setOfProperties.add(prop);
+		setOfProperties.add(onto.getOWLOntologyManager()
+								.getOWLDataFactory()
+								.getOWLObjectProperty(IRI.create(Namespace.INEQUALITY)));
+		for(OWLObjectProperty prop : setOfProperties) {
 			String propIRI = prop.getIRI().toString();
 			binaryPredicates.add(propIRI); 
 			AtomicRole trackingRole = AtomicRole.create(propIRI + "_tn"); 

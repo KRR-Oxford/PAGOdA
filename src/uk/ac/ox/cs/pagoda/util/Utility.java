@@ -12,25 +12,30 @@ import java.util.*;
 
 public class Utility {
 	
-	private static Logger LOGS;
-	static {
-		LOGS = Logger.getLogger("PAGOdA");
-		LOGS.setLevel(Level.INFO);
-	}
-	
 	public static final String JAVA_FILE_SEPARATOR = "/";
 	public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
-	private static final String TEMP_DIR_PATH= "pagoda_tmp";
-	private static String tempDir;
-	
-	public static final int TEST = -1; 
+	public static final int TEST = -1;
 	public static final int FLY = 0;
 	public static final int UOBM = 1;
 	public static final int LUBM = 2;
 	public static final int AEO = 3;
 	public static final int WINE = 4;
+	private static final String TEMP_DIR_PATH = "pagoda_tmp";
+	static Stack<PrintStream> outs = new Stack<PrintStream>();
+	private static Logger LOGS;
+	private static String tempDir;
+	private static int asciiX = (int) 'X';
+	private static StringBuilder logMessage = new StringBuilder();
+
+	static {
+		LOGS = Logger.getLogger("PAGOdA");
+		LOGS.setLevel(Level.DEBUG);
+	}
+
+	static {
+		outs.push(System.out);
+	}
 
 	public static String getGlobalTempDirAbsolutePath() {
 		if(tempDir == null) {
@@ -38,7 +43,7 @@ public class Utility {
 				Path path = Files.createTempDirectory(TEMP_DIR_PATH);
 				tempDir = path.toString();
 				new File(tempDir).deleteOnExit();
-			} catch (IOException e) {
+			} catch(IOException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -46,46 +51,39 @@ public class Utility {
 		return tempDir;
 	}
 
-	public static Set<Atom> toSet(Atom[] data)
-	{
+	public static Set<Atom> toSet(Atom[] data) {
 		HashSet<Atom> ret = new HashSet<Atom>();
-		for (Atom element: data) 
+		for(Atom element : data)
 			ret.add(element);
 		return ret;
-	}
-	
-	static Stack<PrintStream> outs = new Stack<PrintStream>();
-	
-	static {
-		outs.push(System.out); 
 	}
 	
 	public static boolean redirectSystemOut()
 	{
 		String stamp = new SimpleDateFormat( "HH:mm:ss").format(new Date());
-		return redirectCurrentOut("./console" + stamp + ".txt"); 
+		return redirectCurrentOut("./console" + stamp + ".txt");
 	}
 	
 	public static boolean redirectCurrentOut(String fileName)
 	{
 		File file = new File(fileName);
-		PrintStream out; 
+		PrintStream out;
 		try {
 			out = new PrintStream(new FileOutputStream(file));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return false;
 		}
-		outs.push(out); 
+		outs.push(out);
 		System.setOut(out);
-		return true; 
+		return true;
 	}
-	
+
 	public static void closeCurrentOut() {
 		if (!outs.isEmpty())
 			outs.pop().close();
-		
-		if (!outs.isEmpty()) 
+
+		if(!outs.isEmpty())
 			System.setOut(outs.peek());
 	}
 	
@@ -103,7 +101,7 @@ public class Utility {
 				while ((line = reader.readLine()) != null && !line.startsWith("}"))
 					if (first) {
 						first = false;
-						query = expression(line.trim()); 
+						query = expression(line.trim());
 					}
 					else query += ", " + expression(line.trim());
 				writer.write(query);
@@ -122,8 +120,6 @@ public class Utility {
 		else return parts[1] + "(?" + variableIndex(parts[0]) + ",?" + variableIndex(parts[2]) + ")";
 	}
 	
-	private static int asciiX = (int)'X';
-	
 	private static int variableIndex(String exp) {
 		char var = exp.charAt(1);
 		return (int)var - asciiX;
@@ -135,12 +131,12 @@ public class Utility {
 			return null;
 		return line.trim();
 	}
-	
+
 	public static String getTextfromFile(String fileName) throws FileNotFoundException {
 		Scanner scanner = new Scanner(new File(fileName));
 		String program = scanner.useDelimiter("\\Z").next();
 		scanner.close();
-		return program; 
+		return program;
 	}
 
 	public static String[] getPattern(BufferedReader answerReader) throws IOException {
@@ -152,58 +148,56 @@ public class Utility {
 
 	public static void removeRecursively(File file) {
 		if (!file.exists()) return;
-		
+
 		if (file.isDirectory())
 			for (File tFile: file.listFiles())
 				removeRecursively(tFile);
 		file.delete();
 	}
-	
+
 	public static void removeRecursively(String fileName) {
 		removeRecursively(new File(fileName));
 	}
 
 	public static Collection<String> getQueryTexts(String fileName) throws IOException {
-		BufferedReader queryReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName))); 
-		String line; 
-		Collection<String> queryTexts = new LinkedList<String>(); 
+		BufferedReader queryReader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+		String line;
+		Collection<String> queryTexts = new LinkedList<String>();
 		while (true) {
-			while ((line = queryReader.readLine()) != null && ((line = line.trim()).isEmpty() || line.startsWith("#"))); 
+			while((line = queryReader.readLine()) != null && ((line = line.trim()).isEmpty() || line.startsWith("#"))) ;
 			if (line == null) {
 				queryReader.close();
 				return queryTexts;
 			}
-			
+
 			StringBuffer query = new StringBuffer();
 			if (!line.startsWith("^["))
 				query.append(line).append(LINE_SEPARATOR);
-			
-			while ((line = queryReader.readLine()) != null && !line.trim().endsWith("}")) 
+
+			while((line = queryReader.readLine()) != null && !line.trim().endsWith("}"))
 				query.append(line).append(LINE_SEPARATOR);
-			query.append(line); 
+			query.append(line);
 			queryTexts.add(query.toString());
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * @param answerReader
 	 * @return all lines before the next empty line
 	 * @throws IOException
 	 */
 	public static Collection<String> getLines(BufferedReader answerReader) throws IOException {
-		Collection<String> answerTuples = new LinkedList<String>(); 
+		Collection<String> answerTuples = new LinkedList<String>();
 		String line;
 		while ((line = answerReader.readLine()) != null) {
 			line = line.trim();
 			if (line.isEmpty())
-				break; 
+				break;
 			answerTuples.add(line);
 		}
 		return answerTuples;
 	}
-
-	private static StringBuilder logMessage = new StringBuilder();
 
 	private static String getLogMessage(Object[] messages) {
 		if (messages.length == 1) return messages[0].toString(); 
@@ -242,20 +236,6 @@ public class Utility {
 		if (LOGS != null)
 			LOGS.error(getLogMessage(messages));
 	}
-	
-//	public static void initialise() {
-//		File tmp = new File(TempDirectory);
-//		if (!tmp.exists()) tmp.mkdirs();
-//	}
-//
-//	public static void cleanup() {
-//		File tmp = new File(TempDirectory);
-//		if (tmp.exists()) {
-//			for (File file: tmp.listFiles())
-//				file.delete();
-//			tmp.delete();
-//		}
-//	}
 
 	public static String toFileIRI(String path) {
 		String iri; 

@@ -1,9 +1,9 @@
 package uk.ac.ox.cs.pagoda.query;
 
-import java.util.Iterator;
-
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.store.DataStore;
+
+import java.util.Iterator;
 
 public abstract class GapTupleIterator<T> implements Iterator<T> {
 	
@@ -16,8 +16,6 @@ public abstract class GapTupleIterator<T> implements Iterator<T> {
 	}
 	
 	public void compile(String programText) throws JRDFStoreException {}
-	
-	public abstract boolean isValid();
 	
 	public abstract void save(String file); 
 	

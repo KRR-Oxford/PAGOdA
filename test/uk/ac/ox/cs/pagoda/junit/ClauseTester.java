@@ -1,15 +1,40 @@
-package uk.ac.ox.cs.pagoda.global_tests;
+package uk.ac.ox.cs.pagoda.junit;
 
+import org.junit.Test;
 import org.semanticweb.HermiT.model.*;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.approx.Clause;
 import uk.ac.ox.cs.pagoda.approx.Clausifier;
 
+import static org.junit.Assert.fail;
+
 public class ClauseTester {
+
+	public void test_clause(Atom[] headAtoms, Atom[] bodyAtoms) {
+		OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+		OWLOntology emptyOntology = null;
+		try {
+			emptyOntology = m.createOntology();
+		} catch(Exception e) {
+			e.printStackTrace();
+			fail("failed to create a new ontology");
+		}
+		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
+		System.out.println(c.toString());
+	}
+
+	@Test
+	public void test_nominal() {
+		Variable x = Variable.create("X");
+		AtomicRole r = AtomicRole.create("r");
+		Individual o = Individual.create("o");
+		Atom[] bodyAtoms = new Atom[]{Atom.create(r, x, o)};
+		AtomicConcept A = AtomicConcept.create("A");
+		Atom[] headAtoms = new Atom[]{Atom.create(A, x)};
+		test_clause(headAtoms, bodyAtoms);
+	}
 
 	@Test
 	public void test_simple() {
@@ -32,7 +57,7 @@ public class ClauseTester {
 			emptyOntology = m.createOntology(); 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail("failed to create a new ontology");
+			fail("failed to create a new ontology"); 
 		}
 		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
 		System.out.println(c.toString()); 
@@ -62,7 +87,7 @@ public class ClauseTester {
 			emptyOntology = m.createOntology(); 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail("failed to create a new ontology");
+			fail("failed to create a new ontology"); 
 		}
 		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
 		System.out.println(c.toString()); 
@@ -89,7 +114,7 @@ public class ClauseTester {
 			emptyOntology = m.createOntology(); 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail("failed to create a new ontology");
+			fail("failed to create a new ontology"); 
 		}
 		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
 		System.out.println(c.toString()); 
@@ -119,7 +144,7 @@ public class ClauseTester {
 			emptyOntology = m.createOntology(); 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail("failed to create a new ontology");
+			fail("failed to create a new ontology"); 
 		}
 		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
 		System.out.println(c.toString()); 
@@ -149,7 +174,7 @@ public class ClauseTester {
 			emptyOntology = m.createOntology(); 
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail("failed to create a new ontology");
+			fail("failed to create a new ontology"); 
 		}
 		Clause c = new Clause(Clausifier.getInstance(emptyOntology), DLClause.create(headAtoms, bodyAtoms));
 		System.out.println(c.toString()); 

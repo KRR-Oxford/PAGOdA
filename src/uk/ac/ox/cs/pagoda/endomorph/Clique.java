@@ -1,10 +1,10 @@
 package uk.ac.ox.cs.pagoda.endomorph;
 
+import uk.ac.ox.cs.pagoda.summary.NodeTuple;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import uk.ac.ox.cs.pagoda.summary.NodeTuple;
 
 public class Clique {
 	NodeTuple representative; 
@@ -13,6 +13,7 @@ public class Clique {
 	public Clique(NodeTuple u) {
 		nodeTuples = new HashSet<NodeTuple>(); 
 		representative = u;
+		nodeTuples.add(u);
 	}
 
 	public boolean addNodeTuple(NodeTuple nodeTuple) {

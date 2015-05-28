@@ -7,6 +7,7 @@ import uk.ac.ox.cs.pagoda.owl.EqualitiesEliminator;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
+import uk.ac.ox.cs.pagoda.query.GapByStore4ID2;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.query.QueryRecord.Step;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
@@ -164,7 +165,9 @@ class MyQueryReasoner extends QueryReasoner {
 		trackingStore.importRDFData(name, datafile);
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);
 
-		GapByStore4ID gap = new GapByStore4ID(trackingStore);
+//		materialiseFullUpper();
+//		GapByStore4ID gap = new GapByStore4ID(trackingStore); 
+		GapByStore4ID gap = new GapByStore4ID2(trackingStore, rlLowerStore);
 		trackingStore.materialiseFoldedly(program, gap);
 		predicatesWithGap = gap.getPredicatesWithGap();
 		gap.clear();

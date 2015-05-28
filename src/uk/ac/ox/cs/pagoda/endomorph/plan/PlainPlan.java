@@ -1,11 +1,11 @@
 package uk.ac.ox.cs.pagoda.endomorph.plan;
 
-import java.util.Set;
-
 import uk.ac.ox.cs.pagoda.endomorph.Clique;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.summary.NodeTuple;
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.util.Set;
 
 public class PlainPlan implements CheckPlan {
 	
@@ -22,7 +22,7 @@ public class PlainPlan implements CheckPlan {
 		int count = 0; 
 		for (Clique clique: toCheck)
 			if (checker.check(clique.getRepresentative().getAnswerTuple())) {
-				count += clique.getNodeTuples().size() + 1; 
+				count += clique.getNodeTuples().size(); 
 				for (NodeTuple nodeTuple: clique.getNodeTuples()) 
 					Utility.logDebug(nodeTuple.getAnswerTuple().toString());
 			}

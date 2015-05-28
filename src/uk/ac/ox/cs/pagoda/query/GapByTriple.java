@@ -1,36 +1,29 @@
 package uk.ac.ox.cs.pagoda.query;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Collection;
-
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.Individual;
-
+import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.Prefixes;
+import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.JRDFox.store.Parameters;
+import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.Prefixes;
-import uk.ac.ox.cs.JRDFox.store.DataStore;
-import uk.ac.ox.cs.JRDFox.store.Parameters;
-import uk.ac.ox.cs.JRDFox.store.TupleIterator;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Collection;
 
 public class GapByTriple extends GapTupleIterator<String> {
 	
-	private static final String RDF_TYPE = Namespace.RDF_NS + "type"; 
-	private static final String BRIEF_RDF_TYPE = "rdf:type"; 
-	
 	static final String allTripleQuery = "SELECT ?X ?Y ?Z WHERE { ?X ?Y ?Z }";
-	
+	private static final String RDF_TYPE = Namespace.RDF_NS + "type";
+	private static final String BRIEF_RDF_TYPE = "rdf:type";
 	DataStore lowerStore, upperStore;
 	long multi; 
 	TupleIterator iterator;
@@ -163,11 +156,6 @@ public class GapByTriple extends GapTupleIterator<String> {
 		addTo(upperStore);
 	}
 	
-	@Override
-	public boolean isValid() {
-		return true;
-	}
-
 	@Override
 	public void clear() {
 		iterator.dispose();		
