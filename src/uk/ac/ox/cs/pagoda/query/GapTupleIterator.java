@@ -24,5 +24,5 @@ public abstract class GapTupleIterator<T> implements Iterator<T> {
 	public abstract void addTo(DataStore store) throws JRDFStoreException;
 	
 	public abstract void clear();
-
+	
 }
