@@ -1,24 +1,13 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
-
 import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-
+import org.semanticweb.owlapi.model.*;
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.model.Datatype;
+import uk.ac.ox.cs.JRDFox.store.DataStore;
+import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
+import uk.ac.ox.cs.JRDFox.store.Resource;
+import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
@@ -30,12 +19,11 @@ import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.UFS;
 import uk.ac.ox.cs.pagoda.util.Utility;
-import uk.ac.ox.cs.JRDFox.JRDFStoreException;
-import uk.ac.ox.cs.JRDFox.model.Datatype;
-import uk.ac.ox.cs.JRDFox.store.DataStore;
-import uk.ac.ox.cs.JRDFox.store.Resource;
-import uk.ac.ox.cs.JRDFox.store.TupleIterator;
-import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class QueryTracker {
 
@@ -85,7 +73,7 @@ public class QueryTracker {
 			store.applyReasoning(incrementally);
 			tripleCount = store.getTriplesCount();
 
-			Utility.logDebug("tracking store after materialising tracking program: "
+			Utility.logInfo("tracking store after materialising tracking program: "
 					+ tripleCount
 					+ " ("
 					+ (tripleCount - oldTripleCount)

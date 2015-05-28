@@ -77,7 +77,7 @@ public class QueryRecord {
 	}
 
 	public AnswerTuples getAnswers() {
-		if(processed())
+		if(isProcessed())
 			return getLowerBoundAnswers();
 
 		return getUpperBoundAnswers();
@@ -155,7 +155,8 @@ public class QueryRecord {
 			HashSet<AnswerTuple> difference = new HashSet<>(soundAnswerTuples);
 			difference.removeAll(namedAnswerTuples);
 			if(!difference.isEmpty())
-				throw new IllegalArgumentException("The upper bound does not contain the lower bound!");
+				throw new IllegalArgumentException("The upper bound does not contain the lower bound! Missing answers: " + difference
+						.size());
 		}
 		/*** END: debugging ***/
 
@@ -192,7 +193,7 @@ public class QueryRecord {
 		processed = true;
 	}
 
-	public boolean processed() {
+	public boolean isProcessed() {
 		if(gapAnswerTuples != null && gapAnswerTuples.isEmpty()) processed = true;
 		return processed;
 	}
@@ -228,7 +229,7 @@ public class QueryRecord {
 	public void outputAnswers(BufferedWriter writer) throws IOException {
 
 		int answerCounter = soundAnswerTuples.size();
-		if(!processed()) answerCounter += gapAnswerTuples.size();
+		if(!isProcessed()) answerCounter += gapAnswerTuples.size();
 
 		Utility.logInfo("The number of answer tuples: " + answerCounter);
 
@@ -254,7 +255,7 @@ public class QueryRecord {
 				writer.write(tuple.toString());
 				writer.newLine();
 			}
-			if (!processed())
+			if(!isProcessed())
 				for (AnswerTuple tuple: gapAnswerTuples) {
 					writer.write("*");
 					writer.write(tuple.toString());
@@ -269,7 +270,7 @@ public class QueryRecord {
 	public void outputAnswerStatistics() {
 
 		int answerCounter = soundAnswerTuples.size();
-		if (!processed()) answerCounter += gapAnswerTuples.size();
+		if(!isProcessed()) answerCounter += gapAnswerTuples.size();
 
 		Utility.logInfo("The number of answer tuples: " + answerCounter);
 //		if (jsonAnswers != null) {

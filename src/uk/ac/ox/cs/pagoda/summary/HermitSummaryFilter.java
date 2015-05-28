@@ -154,7 +154,7 @@ public class HermitSummaryFilter implements Checker {
 
 			m_record.removeUpperBoundAnswers(falsified);
 
-			if (m_record.processed()) {
+			if(m_record.isProcessed()) {
 				m_record.setDifficulty(Step.SUMMARISATION);
 				m_record.addProcessingTime(Step.SUMMARISATION, t.duration());
 				return 0;

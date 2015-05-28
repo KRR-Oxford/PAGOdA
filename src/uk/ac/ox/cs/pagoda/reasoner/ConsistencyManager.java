@@ -30,43 +30,42 @@ public class ConsistencyManager {
 	protected MyQueryReasoner m_reasoner;
 	protected QueryManager m_queryManager;  
 	
-	Timer t = new Timer(); 
+	Timer t = new Timer();
+	QueryRecord fullQueryRecord;
+	QueryRecord[] botQueryRecords;
+	LinkedList<DLClause> toAddClauses;
+	boolean fragmentExtracted = false;
 	
 	public ConsistencyManager(MyQueryReasoner reasoner) {
-		m_reasoner = reasoner; 
-		m_queryManager = reasoner.getQueryManager(); 
+		m_reasoner = reasoner;
+		m_queryManager = reasoner.getQueryManager();
 	}
-	
-	QueryRecord fullQueryRecord; 
-	QueryRecord[] botQueryRecords;
-	
-	LinkedList<DLClause> toAddClauses;
 	
 	boolean checkRLLowerBound() {
 		fullQueryRecord = m_queryManager.create(QueryRecord.botQueryText, 0);
-		AnswerTuples iter = null; 
-		
+		AnswerTuples iter = null;
+
 		try {
 			iter = m_reasoner.rlLowerStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
 			fullQueryRecord.updateLowerBoundAnswers(iter);
 		} finally {
 			iter.dispose();
 		}
-		
+
 		if (fullQueryRecord.getNoOfSoundAnswers() > 0) {
-			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple()); 
+			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple());
 			return false;
 		}
-		return true; 
+		return true;
 	}
-	
+
 	boolean checkELLowerBound() {
 		fullQueryRecord.updateLowerBoundAnswers(m_reasoner.elLowerStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()));
 		if (fullQueryRecord.getNoOfSoundAnswers() > 0) {
-			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple()); 
+			Utility.logInfo("Answers to bottom in the lower bound: ", fullQueryRecord.outputSoundAnswerTuple());
 			return true;
 		}
-		return true; 
+		return true;
 	}
 
 	boolean checkUpper(BasicQueryEngine upperStore) {
@@ -91,51 +90,6 @@ public class ConsistencyManager {
 		fullQueryRecord.dispose();
 	}
 
-	boolean check() {
-//		if (!checkRLLowerBound()) return false; 
-//		if (!checkELLowerBound()) return false;  
-//		if (checkLazyUpper()) return true; 
-		AnswerTuples iter = null; 
-		
-		try {
-			iter = m_reasoner.trackingStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables()); 
-			fullQueryRecord.updateUpperBoundAnswers(iter);
-		} finally {
-			if (iter != null) iter.dispose();
-		}
-		
-		if (fullQueryRecord.getNoOfCompleteAnswers() == 0)
-			return true;
-		
-		extractBottomFragment();
-		
-		try {
-			extractAxioms4Full();
-		} catch (OWLOntologyCreationException e) {
-			e.printStackTrace();
-		}
-//		fullQueryRecord.saveRelevantClause();
-		
-		boolean satisfiability; 
-		
-		Checker checker; 
-		for (QueryRecord r: getQueryRecords()) {
-			// TODO to be removed ... 
-//			r.saveRelevantOntology("bottom" + r.getQueryID() + ".owl");
-			checker = new HermitSummaryFilter(r, true); // m_reasoner.factory.getSummarisedReasoner(r);
-			satisfiability = checker.isConsistent(); 
-			checker.dispose();
-			if (!satisfiability) return false;
-		}
-		
-//		Checker checker = m_reasoner.factory.getSummarisedReasoner(fullQueryRecord); 
-//		boolean satisfiable = checker.isConsistent(); 
-//		checker.dispose();
-//		if (!satisfiable) return unsatisfiability(t.duration()); 
-		
-		return true;
-	}
-
 //	protected boolean unsatisfiability(double duration) {
 //		fullQueryRecord.dispose();
 //		Utility.logDebug("The ontology and dataset is unsatisfiable.");
@@ -147,8 +101,52 @@ public class ConsistencyManager {
 //		Utility.logDebug("The ontology and dataset is satisfiable.");
 //		return true;
 //	}
-	
-	boolean fragmentExtracted = false; 
+
+	boolean check() {
+//		if (!checkRLLowerBound()) return false;
+//		if (!checkELLowerBound()) return false;
+//		if (checkLazyUpper()) return true;
+		AnswerTuples iter = null;
+
+		try {
+			iter =
+					m_reasoner.trackingStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord.getAnswerVariables());
+			fullQueryRecord.updateUpperBoundAnswers(iter);
+		} finally {
+			if(iter != null) iter.dispose();
+		}
+
+		if(fullQueryRecord.getNoOfCompleteAnswers() == 0)
+			return true;
+
+		extractBottomFragment();
+
+		try {
+			extractAxioms4Full();
+		} catch(OWLOntologyCreationException e) {
+			e.printStackTrace();
+		}
+//		fullQueryRecord.saveRelevantClause();
+
+		boolean satisfiability;
+
+		Checker checker;
+		for(QueryRecord r : getQueryRecords()) {
+			// TODO to be removed ...
+//			r.saveRelevantOntology("bottom" + r.getQueryID() + ".owl");
+			checker = new HermitSummaryFilter(r, true); // m_reasoner.factory.getSummarisedReasoner(r);
+			satisfiability = checker.isConsistent();
+			checker.dispose();
+			if(!satisfiability) return false;
+		}
+
+//		Checker checker = m_reasoner.factory.getSummarisedReasoner(fullQueryRecord);
+//		boolean satisfiable = checker.isConsistent();
+//		checker.dispose();
+//		if (!satisfiable) return unsatisfiability(t.duration());
+
+		return true;
+	}
 
 	public void extractBottomFragment() {
 		if (fragmentExtracted) return ;
@@ -179,7 +177,7 @@ public class ConsistencyManager {
 			int[] group = new int[number - 1]; 
 			for (int i = 0; i < number - 1; ++i) group[i] = i; 
 			for (int i = 0; i < number - 1; ++i)
-				if (tempQueryRecords[i].processed()) tempQueryRecords[i].dispose();
+				if(tempQueryRecords[i].isProcessed()) tempQueryRecords[i].dispose();
 				else if (group[i] == i) {
 					++bottomNumber; 
 					record = tempQueryRecords[i]; 
@@ -193,8 +191,8 @@ public class ConsistencyManager {
 			int bottomCounter = 0;
 			botQueryRecords = new QueryRecord[bottomNumber];
 			Variable X = Variable.create("X"); 
-			for (int i = 0; i < number - 1; ++i) 
-				if (!tempQueryRecords[i].processed()) 
+			for (int i = 0; i < number - 1; ++i)
+				if(!tempQueryRecords[i].isProcessed())
 					if (group[i] == i) {
 						botQueryRecords[bottomCounter] = record = tempQueryRecords[i];
 						record.resetInfo(QueryRecord.botQueryText.replace("Nothing", "Nothing_final" + (++bottomCounter)), 0, group[i] = bottomCounter);

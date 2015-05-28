@@ -147,7 +147,7 @@ PagodaProperties properties;
 		if (forFacetGeneration) {
 			QueryRecord record = m_queryManager.create(queryText);
 			Utility.logInfo("---------- start evaluating upper bound for Query " + record.getQueryID() + " ----------", queryText);
-			if(!record.processed())
+			if(!record.isProcessed())
 				evaluateUpper(record);
 //			AnswerTuples tuples = record.getUpperBoundAnswers();
 //			for (AnswerTuple tuple; tuples.isValid(); tuples.moveNext()) {
@@ -167,7 +167,7 @@ PagodaProperties properties;
 	public AnswerTuples evaluate(String queryText) {
 		QueryRecord record = m_queryManager.create(queryText);
 		Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", queryText);
-		if(!record.processed())
+		if(!record.isProcessed())
 			evaluate(record);
 		AnswerTuples answer = record.getAnswers();
 		record.dispose();
@@ -178,7 +178,7 @@ PagodaProperties properties;
 	public void evaluate_shell(String queryText) {
 		QueryRecord record = m_queryManager.create(queryText);
 		Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------", queryText);
-		if(!record.processed())
+		if(!record.isProcessed())
 			evaluate(record);
 		Utility.logInfo("Answers to this query: ", record.outputSoundAnswerTuple());
 		record.dispose();
@@ -206,12 +206,12 @@ PagodaProperties properties;
 //			if (Integer.parseInt(record.getQueryID()) != 218) continue;
 			Utility.logInfo("---------- start evaluating Query " + record.getQueryID() + " ----------",
 					record.getQueryText());
-			if (!record.processed()) {
+			if(!record.isProcessed()) {
 				t.reset();
-				if (!record.processed())
+				if(!record.isProcessed())
 					evaluate(record);
 				Utility.logInfo("Total time to answer this query: " + t.duration());
-				if (!fullReasoner && !record.processed()) {
+				if(!fullReasoner && !record.isProcessed()) {
 					Utility.logInfo("The query has not been fully answered in " + t.duration() + " seconds.");
 					continue;
 				}

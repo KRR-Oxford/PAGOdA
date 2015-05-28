@@ -23,7 +23,6 @@ import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 class MyQueryReasoner extends QueryReasoner {
 
@@ -33,7 +32,7 @@ class MyQueryReasoner extends QueryReasoner {
 //	String additonalDataFile; 
 	BasicQueryEngine rlLowerStore = null;
 	BasicQueryEngine lazyUpperStore = null;
-	BasicQueryEngine limitedSkolemUpperStore;
+	//	BasicQueryEngine limitedSkolemUpperStore;
 	OWLOntology elho_ontology;
 //	boolean[] namedIndividuals_lazyUpper; 
 	KarmaQueryEngine elLowerStore = null;
@@ -99,7 +98,7 @@ class MyQueryReasoner extends QueryReasoner {
 		useUpperStores = multiStageTag && !program.getGeneral().isHorn();
 		if(useUpperStores) {
 			lazyUpperStore = getUpperStore("lazy-upper-bound", true);
-			limitedSkolemUpperStore = getUpperStore("limited-skolem-upper-bound", true);
+//			limitedSkolemUpperStore = getUpperStore("limited-skolem-upper-bound", true);
 		}
 
 		importData(program.getAdditionalDataFile());
@@ -147,20 +146,20 @@ class MyQueryReasoner extends QueryReasoner {
 			Utility.logInfo("time for satisfiability checking: " + t.duration());
 		}
 
-		if(limitedSkolemUpperStore != null) {
-			limitedSkolemUpperStore.importRDFData(name, datafile);
-			limitedSkolemUpperStore.materialise("saturate named individuals", originalMarkProgram);
-			int tag = limitedSkolemUpperStore.materialiseSkolemly(program, null);
-			if(tag != 1) {
-				limitedSkolemUpperStore.dispose();
-				limitedSkolemUpperStore = null;
-			}
-			if(tag == -1) return false;
-		}
-		if(satisfiable == SatisfiabilityStatus.UNCHECKED && consistency.checkUpper(limitedSkolemUpperStore)) {
-			satisfiable = SatisfiabilityStatus.SATISFIABLE;
-			Utility.logInfo("time for satisfiability checking: " + t.duration());
-		}
+//		if(limitedSkolemUpperStore != null) {
+//			limitedSkolemUpperStore.importRDFData(name, datafile);
+//			limitedSkolemUpperStore.materialise("saturate named individuals", originalMarkProgram);
+//			int tag = limitedSkolemUpperStore.materialiseSkolemly(program, null);
+//			if(tag != 1) {
+//				limitedSkolemUpperStore.dispose();
+//				limitedSkolemUpperStore = null;
+//			}
+//			if(tag == -1) return false;
+//		}
+//		if(satisfiable == SatisfiabilityStatus.UNCHECKED && consistency.checkUpper(limitedSkolemUpperStore)) {
+//			satisfiable = SatisfiabilityStatus.SATISFIABLE;
+//			Utility.logInfo("time for satisfiability checking: " + t.duration());
+//		}
 
 		trackingStore.importRDFData(name, datafile);
 		trackingStore.materialise("saturate named individuals", originalMarkProgram);
@@ -214,7 +213,7 @@ class MyQueryReasoner extends QueryReasoner {
 			queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
 
 		queryRecord.addProcessingTime(step, t.duration());
-		if(queryRecord.processed()) {
+		if(queryRecord.isProcessed()) {
 			queryRecord.setDifficulty(step);
 			return true;
 		}
@@ -224,7 +223,7 @@ class MyQueryReasoner extends QueryReasoner {
 	/**
 	 * Returns the part of the ontology relevant for Hermit, while computing the bound answers.
 	 * */
-	private OWLOntology relevantPart(QueryRecord queryRecord) {
+	private boolean queryBounds(QueryRecord queryRecord) {
 		AnswerTuples rlAnswer = null, elAnswer = null;
 
 		t.reset();
@@ -243,15 +242,15 @@ class MyQueryReasoner extends QueryReasoner {
 
 		Utility.logDebug("Tracking store");
 		if(queryUpperStore(trackingStore, queryRecord, extendedQueryTexts, Step.SIMPLE_UPPER_BOUND))
-			return null;
+			return true;
 
 		if(!queryRecord.isBottom()) {
 			Utility.logDebug("Lazy store");
 			if(lazyUpperStore != null && queryUpperStore(lazyUpperStore, queryRecord, extendedQueryTexts, Step.LAZY_UPPER_BOUND))
-				return null;
-			Utility.logDebug("Skolem store");
-			if(limitedSkolemUpperStore != null && queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts, Step.L_SKOLEM_UPPER_BOUND))
-				return null;
+				return true;
+//			Utility.logDebug("Skolem store");
+//			if(limitedSkolemUpperStore != null && queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts, Step.L_SKOLEM_UPPER_BOUND))
+//				return null;
 		}
 
 		t.reset();
@@ -266,52 +265,23 @@ class MyQueryReasoner extends QueryReasoner {
 		}
 		queryRecord.addProcessingTime(Step.EL_LOWER_BOUND, t.duration());
 
-		if (queryRecord.processed()) {
+		if(queryRecord.isProcessed()) {
 			queryRecord.setDifficulty(Step.EL_LOWER_BOUND);
-			return null;
+			return true;
 		}
 
+		return false;
+	}
+
+	private OWLOntology extractRelevantOntologySubset(QueryRecord queryRecord) {
 		t.reset();
 
 		QueryTracker tracker = new QueryTracker(encoder, rlLowerStore, queryRecord);
+		OWLOntology relevantOntologySubset = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
 
-		OWLOntology knowledgeBase;
-		t.reset();
-//		if (program.getGeneral().isHorn()) {
-//			knowledgebase = tracker.extract(lazyUpperStore, consistency.getQueryRecords(), true);
-//			queryRecord.addProcessingTime(Step.Fragment, t.duration());
-//			return knowledgebase;
-//		}
-//		else {
-		knowledgeBase = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
 		queryRecord.addProcessingTime(Step.FRAGMENT, t.duration());
-//		}
 
-		if(knowledgeBase.isEmpty() || queryRecord.isBottom())
-			return knowledgeBase;
-
-		if(program.getGeneral().isHorn()) return knowledgeBase;
-
-//		t.reset();
-//		if (queryRecord.isHorn() && lazyUpperStore != null) {
-////			knowledgebase = tracker.extract(lazyUpperStore, consistency.getQueryRecords(), true);
-//		} else if (queryRecord.getArity() < 3) {
-//			IterativeRefinement iterativeRefinement = new IterativeRefinement(queryRecord, tracker, trackingStore, consistency.getQueryRecords());
-//			knowledgebase = iterativeRefinement.extractWithFullABox(importedData.toString(), program.getUpperBottomStrategy());
-//		}
-//
-//		queryRecord.addProcessingTime(Step.FRAGMENT_REFINEMENT, t.duration());
-//
-//		if (knowledgebase == null)
-//			queryRecord.setDifficulty(Step.FRAGMENT_REFINEMENT);
-
-		return knowledgeBase;
-	}
-
-	private String toJsonKeyValuePair(String key, Object value) {
-		HashMap<String, Object> map = new HashMap<>();
-		map.put(key, value);
-		return QueryRecord.GsonCreator.getInstance().toJson(map);
+		return relevantOntologySubset;
 	}
 
 	private void queryUpperBound(BasicQueryEngine upperStore, QueryRecord queryRecord, String queryText, String[] answerVariables) {
@@ -323,35 +293,59 @@ class MyQueryReasoner extends QueryReasoner {
 			queryRecord.updateUpperBoundAnswers(rlAnswer);
 		} finally {
 			if(rlAnswer != null) rlAnswer.dispose();
-			rlAnswer = null;
 		}
 	}
 
-//	int counter = 0; 
-
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
-		OWLOntology knowledgeBase = relevantPart(queryRecord);
-
-		if(knowledgeBase == null) {
-			Utility.logDebug("Difficulty of this query: " + queryRecord.getDifficulty());
+		if(queryBounds(queryRecord))
 			return;
-		}
 
-		int aBoxCount = knowledgeBase.getABoxAxioms(true).size();
-		Utility.logDebug("ABox axioms: " + aBoxCount + " TBox axioms: " + (knowledgeBase.getAxiomCount() - aBoxCount));
+		OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
+
+		int aBoxCount = relevantOntologySubset.getABoxAxioms(true).size();
+		Utility.logInfo("Relevant ontology subset: ABox_axioms=" + aBoxCount + " TBox_axioms=" + (relevantOntologySubset
+				.getAxiomCount() - aBoxCount));
 //		queryRecord.saveRelevantOntology("fragment_query" + queryRecord.getQueryID() + ".owl");
+
+		if(querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
+			return;
 
 		Timer t = new Timer();
 		Checker summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());
-//		int validNumber =
 		summarisedChecker.check(queryRecord.getGapAnswers());
 		summarisedChecker.dispose();
 		Utility.logDebug("Total time for full reasoner: " + t.duration());
-//		if (validNumber == 0) {
 		queryRecord.markAsProcessed();
 		Utility.logDebug("Difficulty of this query: " + queryRecord.getDifficulty());
-//		}
+	}
+
+	private boolean querySkolemisedRelevantSubset(OWLOntology relevantSubset, QueryRecord queryRecord) {
+		MultiStageQueryEngine relevantStore =
+				new MultiStageQueryEngine("Relevant-store", true); // checkValidity is true
+		DatalogProgram relevantProgram = new DatalogProgram(relevantSubset, false); // toClassify is false
+
+//        relevantStore.importRDFData("data", importedData.toString()); // 2 answers more
+		relevantStore.importDataFromABoxOf(relevantSubset);
+
+		int materialisationResult = relevantStore.materialiseSkolemly(relevantProgram, null);
+		if(materialisationResult != 1)
+			throw new RuntimeException("Skolemised materialisation error"); // TODO check consistency
+//        relevantStore.materialiseRestrictedly(relevantProgram, null); // it has been tried
+
+		return queryUpperStore(relevantStore, queryRecord, queryRecord.getExtendedQueryText(), Step.L_SKOLEM_UPPER_BOUND);
+
+		// the following has been tried
+//        Tuple<String> extendedQueryText = queryRecord.getExtendedQueryText();
+//        if(queryRecord.hasNonAnsDistinguishedVariables()) {
+//            queryUpperBound(relevantStore, queryRecord, extendedQueryText.get(0), queryRecord.getAnswerVariables());
+//            queryUpperBound(relevantStore, queryRecord, extendedQueryText.get(1), queryRecord.getDistinguishedVariables());
+//        }
+//        else
+//            queryUpperBound(relevantStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+//
+//		return queryRecord.isProcessed();
+
 	}
 
 	@Override
@@ -375,7 +369,8 @@ class MyQueryReasoner extends QueryReasoner {
 		if (lazyUpperStore != null) lazyUpperStore.dispose();
 		if (elLowerStore != null) elLowerStore.dispose();
 		if (trackingStore != null) trackingStore.dispose();
-		if(limitedSkolemUpperStore != null) limitedSkolemUpperStore.dispose();
+
+//		if(limitedSkolemUpperStore != null) limitedSkolemUpperStore.dispose();
 		super.dispose();
 	}
 

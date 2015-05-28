@@ -68,7 +68,7 @@ class ELHOUQueryReasoner extends QueryReasoner {
 			}
 			queryRecord.addProcessingTime(Step.UPPER_BOUND, t.duration());
 
-			if (queryRecord.processed()) {
+			if(queryRecord.isProcessed()) {
 				queryRecord.setDifficulty(Step.UPPER_BOUND);
 				return;
 			}

@@ -1,5 +1,7 @@
 package uk.ac.ox.cs.pagoda.reasoner.light;
 
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.Prefixes;
 import uk.ac.ox.cs.JRDFox.store.DataStore;
@@ -18,32 +20,44 @@ import java.util.Collection;
 public abstract class RDFoxQueryEngine implements QueryEngine {
 	
 	public static final int matNoOfThreads = Runtime.getRuntime().availableProcessors() * 2;
-
-	public String getName() {
-		return name;
-	}
-
 	protected String name;
 	protected Prefixes prefixes = MyPrefixes.PAGOdAPrefixes.getRDFoxPrefixes();
 
 	public RDFoxQueryEngine(String name) {
-		this.name = name; 
-	} 
+		this.name = name;
+	}
+
+	public static DataStore createDataStore() {
+		DataStore instance = null;
+		try {
+//			instance = new DataStore("par-head-n");
+			instance = new DataStore(StoreType.NarrowParallelHead);
+			instance.setNumberOfThreads(matNoOfThreads);
+			instance.initialize();
+		} catch(JRDFStoreException e) {
+			e.printStackTrace();
+		}
+		return instance;
+	}
+	
+	public String getName() {
+		return name;
+	}
 	
 	public abstract DataStore getDataStore();
-	
-	public abstract void dispose(); 
-	
+
+	public abstract void dispose();
+
 	public void importRDFData(String fileName, String importedFile) {
-		if (importedFile == null || importedFile.isEmpty()) return ; 
-		Timer t = new Timer(); 
-		DataStore store = getDataStore(); 
+		if(importedFile == null || importedFile.isEmpty()) return;
+		Timer t = new Timer();
+		DataStore store = getDataStore();
 		try {
 			long oldTripleCount = store.getTriplesCount(), tripleCount;
 			for (String file: importedFile.split(QueryReasoner.ImportDataFileSeparator)) {
 				store.importTurtleFile(new File(file), prefixes);
 			}
-			tripleCount = store.getTriplesCount(); 
+			tripleCount = store.getTriplesCount();
 			Utility.logDebug(name + " store after importing " + fileName + ": " + tripleCount + " (" + (tripleCount - oldTripleCount) + " new)");
 			store.clearRulesAndMakeFactsExplicit();
 		} catch (JRDFStoreException e) {
@@ -51,17 +65,32 @@ public abstract class RDFoxQueryEngine implements QueryEngine {
 		}
 		Utility.logDebug(name + " store finished importing " + fileName + " in " + t.duration() + " seconds.");
 	}
-	
+
+	public void importDataFromABoxOf(OWLOntology ontology) {
+		DataStore store = getDataStore();
+		try {
+			long prevTriplesCount = store.getTriplesCount();
+			store.importOntology(ontology.getOWLOntologyManager().createOntology(ontology.getABoxAxioms(true)));
+			long loadedTriples = store.getTriplesCount() - prevTriplesCount;
+			Utility.logInfo(name + ": loaded " + loadedTriples + " triples from " + ontology.getABoxAxioms(true)
+																							.size() + " ABox axioms");
+		} catch(JRDFStoreException | OWLOntologyCreationException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+	}
+
 	public void materialise(String programName, String programText) {
-		if (programText == null) return ; 
+		if(programText == null) return;
 		Timer t = new Timer();
-		DataStore store = getDataStore(); 
+		DataStore store = getDataStore();
 		try {
 			long oldTripleCount = store.getTriplesCount(), tripleCount;
 //			store.addRules(new String[] {programText});
 			store.importRules(programText);
 			store.applyReasoning();
-			tripleCount = store.getTriplesCount(); 
+			tripleCount = store.getTriplesCount();
 			Utility.logDebug(name + " store after materialising " + programName + ": " + tripleCount + " (" + (tripleCount - oldTripleCount) + " new)");
 			store.clearRulesAndMakeFactsExplicit();
 		} catch (JRDFStoreException e) {
@@ -74,17 +103,17 @@ public abstract class RDFoxQueryEngine implements QueryEngine {
 	public void evaluate(Collection<String> queryTexts, String answerFile) {
 		if (queryTexts == null)
 			return ;
-		
-		int queryID = 0; 
-		AnswerTuplesWriter answerWriter = new AnswerTuplesWriter(answerFile); 
+
+		int queryID = 0;
+		AnswerTuplesWriter answerWriter = new AnswerTuplesWriter(answerFile);
 		AnswerTuples answerTuples;
-		Timer t = new Timer(); 
+		Timer t = new Timer();
 		try {
 			for (String query: queryTexts) {
 				t.reset();
-				answerTuples = null; 
+				answerTuples = null;
 				try {
-					answerTuples = evaluate(query); 
+					answerTuples = evaluate(query);
 					Utility.logDebug("time to answer Query " + ++queryID + ": " + t.duration());
 					answerWriter.write(answerTuples.getAnswerVariables(), answerTuples);
 				} finally {
@@ -94,22 +123,9 @@ public abstract class RDFoxQueryEngine implements QueryEngine {
 		} finally {
 			answerWriter.close();
 		}
-		
+
 		Utility.logDebug("done computing query answers by RDFox.");
-		
-	}
-	
-	public static DataStore createDataStore() {
-		DataStore instance = null; 
-		try {
-//			instance = new DataStore("par-head-n");
-			instance = new DataStore(StoreType.NarrowParallelHead);
-			instance.setNumberOfThreads(matNoOfThreads);
-			instance.initialize();
-		} catch (JRDFStoreException e) {
-			e.printStackTrace();
-		}
-		return instance;
+
 	}
 
 }

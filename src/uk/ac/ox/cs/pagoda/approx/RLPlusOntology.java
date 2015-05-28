@@ -38,46 +38,51 @@ public class RLPlusOntology implements KnowledgeBase {
 	LinkedList<Clause> clauses; 
 	Map<OWLAxiom, OWLAxiom> correspondence;
 	
-	BottomStrategy botStrategy; 
-	
+	BottomStrategy botStrategy;
+	Random random = new Random(19900114);
+	private Map<OWLClassExpression, Integer> subCounter = null;
+	private Map<OWLClass, OWLClass> atomic2negation = new HashMap<OWLClass, OWLClass>();
+
+	// FIXME multiple anonymous ontologies
 	@Override
 	public void load(OWLOntology o, uk.ac.ox.cs.pagoda.constraints.BottomStrategy bottomStrategy) {
 		if (bottomStrategy instanceof UnaryBottom)
-			botStrategy = BottomStrategy.UNARY; 
+			botStrategy = BottomStrategy.UNARY;
 		else if (bottomStrategy instanceof NullaryBottom)
-			botStrategy = BottomStrategy.NULLARY; 
-		else 
-			botStrategy = BottomStrategy.TOREMOVE; 
-		
-		if (corrFileName == null) 
+			botStrategy = BottomStrategy.NULLARY;
+		else
+			botStrategy = BottomStrategy.TOREMOVE;
+
+		if(corrFileName == null)
 			corrFileName = "rlplus.crr";
 		manager = o.getOWLOntologyManager();
 //		manager = OWLManager.createOWLOntologyManager();
-		factory = manager.getOWLDataFactory(); 
-		inputOntology = o; 
-		
+		factory = manager.getOWLDataFactory();
+		inputOntology = o;
+
 		try {
 			String path = OWLHelper.getOntologyPath(inputOntology);
-			String name = path.substring(path.lastIndexOf(Utility.JAVA_FILE_SEPARATOR)); 
+			String name = path.substring(path.lastIndexOf(Utility.JAVA_FILE_SEPARATOR));
 			String originalExtension = name.lastIndexOf(".") >= 0 ? name.substring(name.lastIndexOf(".")) : "";
-			
+
 			if (inputOntology.getOntologyID().getOntologyIRI() == null)
-				ontologyIRI = "http://www.example.org/anonymous-ontology" + originalExtension; 
-			else 
+				ontologyIRI = "http://www.example.org/anonymous-ontology" + originalExtension;
+			else
 				ontologyIRI = inputOntology.getOntologyID().getOntologyIRI().toString();
-			
-			String tOntoIRI = ontologyIRI; 
+
+			String tOntoIRI = ontologyIRI;
 			if (!tOntoIRI.endsWith(originalExtension)) tOntoIRI += originalExtension;
-			
+
 			String rlOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-RL.owl" : tOntoIRI.replaceFirst(originalExtension, "-RL.owl");
 			String rlDocumentIRI = (outputPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "RL.owl").toString());
 			outputOntology = manager.createOntology(IRI.create(rlOntologyIRI));
 			manager.setOntologyDocumentIRI(outputOntology, IRI.create(Utility.toFileIRI(rlDocumentIRI)));
-			
-			String tBoxOntologyIRI, aBoxOntologyIRI; 
-			tBoxOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-TBox.owl" : tOntoIRI.replaceFirst(originalExtension, "-TBox.owl"); 
+
+			String tBoxOntologyIRI, aBoxOntologyIRI;
+			tBoxOntologyIRI =
+					originalExtension.isEmpty() ? tOntoIRI + "-TBox.owl" : tOntoIRI.replaceFirst(originalExtension, "-TBox.owl");
 			aBoxOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-ABox.owl" : tOntoIRI.replaceFirst(originalExtension, "-ABox.owl");
-			
+
 			String tBoxDocumentIRI = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "TBox.owl").toString();
 			String aBoxDocumentIRI = (aBoxPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "ABox.owl").toString());
 			tBox = manager.createOntology(IRI.create(tBoxOntologyIRI));
@@ -85,10 +90,10 @@ public class RLPlusOntology implements KnowledgeBase {
 			manager.setOntologyDocumentIRI(tBox, IRI.create(Utility.toFileIRI(tBoxDocumentIRI)));
 			manager.setOntologyDocumentIRI(aBox, IRI.create(Utility.toFileIRI(aBoxDocumentIRI)));
 
-			FileOutputStream aBoxOut = new FileOutputStream(aBoxPath); 
+			FileOutputStream aBoxOut = new FileOutputStream(aBoxPath);
 			manager.saveOntology(aBox, aBoxOut);
 			aBoxOut.close();
-			
+
 			restOntology = manager.createOntology();
 		}
 		catch (OWLOntologyCreationException e) {
@@ -103,11 +108,11 @@ public class RLPlusOntology implements KnowledgeBase {
 	}
 	
 	public OWLOntology getTBox() {
-		return tBox; 
+		return tBox;
 	}
 	
 	public String getABoxPath() {
-		return aBoxPath; 
+		return aBoxPath;
 	}
 	
 	private void add2SubCounter(OWLClassExpression exp) {
@@ -118,24 +123,23 @@ public class RLPlusOntology implements KnowledgeBase {
 	}
 	
 	public void simplify() {
-		if (simplifyABox()) { 
+		if(simplifyABox()) {
 			save(aBox);
 //			save(tBox);
-		}
-		else 
-			tBox = inputOntology; 
+		} else
+			tBox = inputOntology;
 	}
-	
+
 	@Override
 	public void transform() {
 		simplify();
 		filter();
 		clausify();
-		
+
 		subCounter = new HashMap<OWLClassExpression, Integer>();
 		clauses = new LinkedList<Clause>();
-		Clausifier clausifier = Clausifier.getInstance(restOntology); 
-		
+		Clausifier clausifier = Clausifier.getInstance(restOntology);
+
 		for (DLClause c: dlOntology.getDLClauses()) {
 			Clause clause = new Clause(clausifier, c);
 			clauses.add(clause);
@@ -144,7 +148,7 @@ public class RLPlusOntology implements KnowledgeBase {
 			 * count the expressions in the left
 			 */
 			for (OWLClassExpression exp: clause.getSubClasses()) {
-				if (exp instanceof OWLClass) 
+				if(exp instanceof OWLClass)
 					add2SubCounter(exp);
 				else if (exp instanceof OWLObjectSomeValuesFrom) {
 					OWLObjectSomeValuesFrom someValue = (OWLObjectSomeValuesFrom)exp;
@@ -155,8 +159,7 @@ public class RLPlusOntology implements KnowledgeBase {
 					OWLObjectMinCardinality minCard = (OWLObjectMinCardinality)exp;
 					add2SubCounter(factory.getOWLObjectSomeValuesFrom(minCard.getProperty(), factory.getOWLThing()));
 					add2SubCounter(minCard.getFiller());
-				}
-				else 
+				} else
 					Utility.logError("strange class expression: " + exp);
 
 			}
@@ -170,12 +173,12 @@ public class RLPlusOntology implements KnowledgeBase {
 			addedAxioms.clear();
 			for (OWLClassExpression exp: getDisjunctionApprox0(clause.getSuperClasses())) {
 				addedAxioms.add(factory.getOWLSubClassOfAxiom(subExp, transform(exp, addedAxioms)));
-				for (OWLAxiom a: addedAxioms) 
-					addAxiom2output(a, factory.getOWLSubClassOfAxiom(subExp, 
+				for(OWLAxiom a : addedAxioms)
+					addAxiom2output(a, factory.getOWLSubClassOfAxiom(subExp,
 							OWLHelper.getSimplifiedDisjunction(factory, clause.getSuperClasses())));
 			}
 		}
-		
+
 		subCounter.clear();
 	}
 	
@@ -185,7 +188,7 @@ public class RLPlusOntology implements KnowledgeBase {
 			save(correspondence, corrFileName);
 		save(outputOntology);
 	}
-	
+
 	private void save(Map<OWLAxiom, OWLAxiom> map, String corrFileName) {
 		if (corrFileName == null) return ;
 		ObjectOutput output;
@@ -205,63 +208,61 @@ public class RLPlusOntology implements KnowledgeBase {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * treat disjunction as conjunction
 	 */
 	private Set<OWLClassExpression> getDisjunctionApprox0(Set<OWLClassExpression> superClasses) {
 		return superClasses;
 	}
-
+	
 	/*
 	 * choose one simple class disjunct
 	 */
 	@SuppressWarnings("unused")
 	private Set<OWLClassExpression> getDisjunctionApprox1(Set<OWLClassExpression> superClasses) {
-		if (superClasses.isEmpty() || superClasses.size() == 1) 
+		if(superClasses.isEmpty() || superClasses.size() == 1)
 			return superClasses;
-		
+
 		OWLClassExpression rep = null;
 		int min = Integer.MAX_VALUE, o;
-		for (OWLClassExpression exp: superClasses)
-			if (exp instanceof OWLClass && (o = getOccurrence(exp)) < min) {
+		for(OWLClassExpression exp : superClasses)
+			if(exp instanceof OWLClass && (o = getOccurrence(exp)) < min) {
 				min = o;
 				rep = exp;
 			}
-		
-		if (rep == null) rep = superClasses.iterator().next();
-		
+
+		if(rep == null) rep = superClasses.iterator().next();
+
 		return Collections.singleton(rep);
 	}
-	
-	Random random = new Random(19900114);
+
 	/*
 	 * randomly choose a class expression to represent this disjunction
 	 */
 	@SuppressWarnings("unused")
 	private Set<OWLClassExpression> getDisjunctionApprox2(Set<OWLClassExpression> superClasses) {
-		if (superClasses.isEmpty() || superClasses.size() == 1) 
+		if(superClasses.isEmpty() || superClasses.size() == 1)
 			return superClasses;
-		
+
 		int index = random.nextInt() % superClasses.size();
 		if (index < 0) index += superClasses.size();
-			
+
 		int i = 0;
-		for (OWLClassExpression exp: superClasses) 
+		for(OWLClassExpression exp : superClasses)
 			if (i++ == index)
 				return Collections.singleton(exp);
 		return null;
 	}
 	
-	private Map<OWLClassExpression, Integer> subCounter = null;
 	/*
 	 * choose the one that appears least in the l.h.s.
 	 */
 	@SuppressWarnings("unused")
 	private Set<OWLClassExpression> getDisjunctionApprox3(Set<OWLClassExpression> superClasses) {
-		if (superClasses.isEmpty() || superClasses.size() == 1) 
+		if(superClasses.isEmpty() || superClasses.size() == 1)
 			return superClasses;
-		
+
 		OWLClassExpression rep = null, exp1;
 		int occurrence = Integer.MAX_VALUE, o;
 		for (OWLClassExpression exp: superClasses) {
@@ -272,16 +273,16 @@ public class RLPlusOntology implements KnowledgeBase {
 				if (minCard.getCardinality() == 1)
 					exp1 = factory.getOWLObjectSomeValuesFrom(minCard.getProperty(), minCard.getFiller());
 			}
-			
+
 			if (!subCounter.containsKey(exp1) || (o = subCounter.get(exp1)) < occurrence) {
 				rep = exp;
 				occurrence = o;
 			}
 		}
-		
+
 		return Collections.singleton(rep);
 	}
-	
+
 	private int getOccurrence(OWLClassExpression exp) {
 		if (!subCounter.containsKey(exp))
 			return 0;
@@ -290,9 +291,9 @@ public class RLPlusOntology implements KnowledgeBase {
 
 	@SuppressWarnings("unused")
 	private Set<OWLClassExpression> getDisjunctionApprox4(Set<OWLClassExpression> superClasses) {
-		if (superClasses.isEmpty() || superClasses.size() == 1) 
+		if(superClasses.isEmpty() || superClasses.size() == 1)
 			return superClasses;
-		
+
 		OWLClassExpression rep = null;
 		int occurrence = Integer.MAX_VALUE, o;
 		for (OWLClassExpression exp: superClasses) {
@@ -304,10 +305,9 @@ public class RLPlusOntology implements KnowledgeBase {
 					o += getOccurrence(minCard.getFiller());
 //					if (o < o1) o = o1;
 				}
-			}
-			else 
+			} else
 				o = getOccurrence(exp);
-			
+
 			if (o < occurrence || o == occurrence && !(rep instanceof OWLClass)) {
 				rep = exp;
 				occurrence = o;
@@ -320,11 +320,11 @@ public class RLPlusOntology implements KnowledgeBase {
 	private boolean simplifyABox() {
 		boolean flag = false;
 		Map<OWLClassExpression, OWLClass> complex2atomic= new HashMap<OWLClassExpression, OWLClass>();
-		
-		OWLDatatype anyURI = factory.getOWLDatatype(IRI.create(Namespace.XSD_NS + "anyURI")); 
+
+		OWLDatatype anyURI = factory.getOWLDatatype(IRI.create(Namespace.XSD_NS + "anyURI"));
 		OWLObjectProperty sameAs = factory.getOWLObjectProperty(IRI.create(Namespace.EQUALITY));
 		OWLObjectProperty differentFrom = factory.getOWLObjectProperty(IRI.create(Namespace.INEQUALITY));
-		
+
 		for (OWLOntology imported: inputOntology.getImportsClosure())
 			for (OWLAxiom axiom: imported.getAxioms()) {
 				if (axiom instanceof OWLClassAssertionAxiom) {
@@ -334,7 +334,7 @@ public class RLPlusOntology implements KnowledgeBase {
 					OWLClass cls;
 					if (clsExp instanceof OWLClass) {
 						if (((OWLClass) clsExp).toStringID().startsWith("owl:"))
-							manager.addAxiom(tBox, axiom); 
+							manager.addAxiom(tBox, axiom);
 						else manager.addAxiom(aBox, axiom);
 					}
 					else {
@@ -343,40 +343,38 @@ public class RLPlusOntology implements KnowledgeBase {
 							manager.addAxiom(tBox, factory.getOWLSubClassOfAxiom(cls, clsExp));
 						}
 						manager.addAxiom(aBox, factory.getOWLClassAssertionAxiom(cls, assertion.getIndividual()));
-					} 
+					}
 				}
 				else if (axiom instanceof OWLObjectPropertyAssertionAxiom || axiom instanceof OWLDataPropertyAssertionAxiom || axiom instanceof OWLAnnotationAssertionAxiom) {
-					if (axiom.getDataPropertiesInSignature().contains(anyURI)) continue; 
+					if(axiom.getDataPropertiesInSignature().contains(anyURI)) continue;
 					flag = true;
 					manager.addAxiom(aBox, axiom);
 				}
 				else if (axiom instanceof OWLSameIndividualAxiom) {
-					OWLIndividual firstIndividual = null, previousIndividual = null, lastIndividual = null; 
+					OWLIndividual firstIndividual = null, previousIndividual = null, lastIndividual = null;
 					for (OWLIndividual next: ((OWLSameIndividualAxiom) axiom).getIndividuals()) {
-						if (firstIndividual == null) firstIndividual = previousIndividual = next; 
-						else 						
+						if(firstIndividual == null) firstIndividual = previousIndividual = next;
+						else
 							manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(sameAs, previousIndividual, next));
 						previousIndividual = lastIndividual = next;
 					}
 					manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(sameAs, lastIndividual, firstIndividual));
 				}
 				else if (axiom instanceof OWLDifferentIndividualsAxiom) {
-					int index1 = 0, index2; 
+					int index1 = 0, index2;
 					for (OWLIndividual individual1: ((OWLDifferentIndividualsAxiom) axiom).getIndividuals()) {
 						++index1;
-						index2 = 0; 
+						index2 = 0;
 						for (OWLIndividual individual2: ((OWLDifferentIndividualsAxiom) axiom).getIndividuals()) {
 							if (index2++ < index1) {
-								manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(differentFrom, individual1, individual2));							
-							}
-							else break; 
+								manager.addAxiom(aBox, factory.getOWLObjectPropertyAssertionAxiom(differentFrom, individual1, individual2));
+							} else break;
 						}
 					}
-				}
-				else 
+				} else
 					manager.addAxiom(tBox, axiom);
 			}
-		
+
 		return flag;
 	}
 
@@ -384,15 +382,15 @@ public class RLPlusOntology implements KnowledgeBase {
 		OWL2RLProfile profile = new OWL2RLProfile();
 		OWLProfileReport report = profile.checkOntology(tBox);
 		Set<OWLAxiom> rlAxioms = tBox.getAxioms();
-		OWLAxiom axiom; 
-		
+		OWLAxiom axiom;
+
 		for (OWLProfileViolation violation: report.getViolations()) {
 			manager.addAxiom(restOntology, axiom = violation.getAxiom());
-			rlAxioms.remove(axiom); 
+			rlAxioms.remove(axiom);
 		}
-		
+
 		for (Iterator<OWLAxiom> iter = rlAxioms.iterator(); iter.hasNext(); )
-			addAxiom2output(iter.next(), null); 
+			addAxiom2output(iter.next(), null);
 	}
 	
 	private void clausify() {
@@ -407,8 +405,6 @@ public class RLPlusOntology implements KnowledgeBase {
 		if (correspondingAxiom != null)
 			correspondence.put(axiom, correspondingAxiom);
 	}
-	
-	private Map<OWLClass, OWLClass> atomic2negation = new HashMap<OWLClass, OWLClass>();
 
 	private OWLClassExpression transform(OWLClassExpression exp, Set<OWLAxiom> addedAxioms) {
 		if (exp instanceof OWLClass) 

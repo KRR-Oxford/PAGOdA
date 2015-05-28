@@ -1,15 +1,15 @@
 package org.semanticweb.simpleETL;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.regex.Pattern;
 
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.rdfxml.RDFXMLParser;
 import org.openrdf.rio.turtle.TurtleWriter;
-
 import uk.ac.ox.cs.pagoda.util.Utility;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.regex.Pattern;
 
 public class SimpleETL {
 	
@@ -67,8 +67,7 @@ public class SimpleETL {
 		finally {
 			fos.close();
 		}
-		Utility.logInfo("SimpleETL rewriting DONE", 
-				"additional ontology data is saved in " + m_fileToExport + "."); 
+		Utility.logInfo("SimpleETL rewriting DONE: additional ontology data is saved in " + m_fileToExport + ".");
 	}
 	
 	public String getExportedFile() {

@@ -1,9 +1,6 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
-import java.io.File;
-
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.constraints.UpperUnaryBottom;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
@@ -14,6 +11,8 @@ import uk.ac.ox.cs.pagoda.rules.GeneralProgram;
 import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
+import java.io.File;
+
 public class IterativeRefinement {
 	
 	private static final int depthLimit = 1; 
@@ -23,16 +22,15 @@ public class IterativeRefinement {
 	BasicQueryEngine m_trackingStore;
 	QueryRecord[] botQueryRecords;  
 	
-	int m_depth = 0; 
-
-	public IterativeRefinement(QueryRecord queryRecord, QueryTracker tracker, BasicQueryEngine trackingStore, QueryRecord[] botQueryRecords) {
-		m_record = queryRecord; 		
-		m_tracker = tracker; 
-		m_trackingStore = trackingStore;
-		this.botQueryRecords = botQueryRecords; 
-	}
+	int m_depth = 0;
+	String tempDataFile = "temp.ttl";
 	
-	String tempDataFile = "temp.ttl"; 
+	public IterativeRefinement(QueryRecord queryRecord, QueryTracker tracker, BasicQueryEngine trackingStore, QueryRecord[] botQueryRecords) {
+		m_record = queryRecord;
+		m_tracker = tracker;
+		m_trackingStore = trackingStore;
+		this.botQueryRecords = botQueryRecords;
+	}
 
 	public OWLOntology extractWithFullABox(String dataset, BottomStrategy upperBottom) {
 		GeneralProgram program; 
@@ -58,8 +56,8 @@ public class IterativeRefinement {
 			} finally {
 				tEngine.dispose();
 			}
-			
-			if (m_record.processed())
+
+			if(m_record.isProcessed())
 				return null;
 			
 			if (!update) break; 
@@ -95,8 +93,8 @@ public class IterativeRefinement {
 			} finally {
 				tEngine.dispose();
 			}
-			
-			if (m_record.processed())
+
+			if(m_record.isProcessed())
 				return null;
 			
 			if (!update) break; 
