@@ -1,5 +1,6 @@
 package uk.ac.ox.cs.pagoda.approx;
 
+import org.apache.commons.io.FilenameUtils;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.HermiT.model.DLOntology;
@@ -19,25 +20,22 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class RLPlusOntology implements KnowledgeBase {
-	
+
+	private static final String DEFAULT_ONTOLOGY_FILE_EXTENSION = "owl";
 	OWLOntologyManager manager;
 	OWLDataFactory factory;
 	String ontologyIRI;
 	String corrFileName = null;
 	String outputPath, aBoxPath;
-	
 	OWLOntology inputOntology = null;
 	OWLOntology tBox = null;
 	OWLOntology aBox = null;
 	OWLOntology restOntology = null;
 	OWLOntology outputOntology = null; //RL ontology
-	
 	DLOntology dlOntology = null;
 	int rlCounter = 0;
-	
-	LinkedList<Clause> clauses; 
+	LinkedList<Clause> clauses;
 	Map<OWLAxiom, OWLAxiom> correspondence;
-	
 	BottomStrategy botStrategy;
 	Random random = new Random(19900114);
 	private Map<OWLClassExpression, Integer> subCounter = null;
@@ -45,7 +43,7 @@ public class RLPlusOntology implements KnowledgeBase {
 
 	// FIXME multiple anonymous ontologies
 	@Override
-	public void load(OWLOntology o, uk.ac.ox.cs.pagoda.constraints.BottomStrategy bottomStrategy) {
+	public void load(OWLOntology ontology, uk.ac.ox.cs.pagoda.constraints.BottomStrategy bottomStrategy) {
 		if (bottomStrategy instanceof UnaryBottom)
 			botStrategy = BottomStrategy.UNARY;
 		else if (bottomStrategy instanceof NullaryBottom)
@@ -55,55 +53,60 @@ public class RLPlusOntology implements KnowledgeBase {
 
 		if(corrFileName == null)
 			corrFileName = "rlplus.crr";
-		manager = o.getOWLOntologyManager();
+		manager = ontology.getOWLOntologyManager();
 //		manager = OWLManager.createOWLOntologyManager();
 		factory = manager.getOWLDataFactory();
-		inputOntology = o;
+		inputOntology = ontology;
 
 		try {
-			String path = OWLHelper.getOntologyPath(inputOntology);
-			String name = path.substring(path.lastIndexOf(Utility.JAVA_FILE_SEPARATOR));
-			String originalExtension = name.lastIndexOf(".") >= 0 ? name.substring(name.lastIndexOf(".")) : "";
-
-			if (inputOntology.getOntologyID().getOntologyIRI() == null)
-				ontologyIRI = "http://www.example.org/anonymous-ontology" + originalExtension;
+			IRI ontologyIri;
+			if(ontology.isAnonymous()) {
+				String anonymousOntologySuffix = Long.toString(System.currentTimeMillis());
+				ontologyIri = IRI.create("http://www.example.org/", "anonymous-ontology-"
+						+ anonymousOntologySuffix + "." + DEFAULT_ONTOLOGY_FILE_EXTENSION);
+			}
 			else
-				ontologyIRI = inputOntology.getOntologyID().getOntologyIRI().toString();
+				ontologyIri = inputOntology.getOntologyID().getOntologyIRI();
 
-			String tOntoIRI = ontologyIRI;
-			if (!tOntoIRI.endsWith(originalExtension)) tOntoIRI += originalExtension;
+			String ontologyIriPrefix = ontologyIri.getNamespace();
+			ontologyIRI = ontologyIri.toString();
+			String ontologyIriFragment = ontologyIri.getFragment();
+			String originalFileName = FilenameUtils.removeExtension(ontologyIriFragment);
+			String originalExtension = FilenameUtils.getExtension(ontologyIriFragment);
+			if(originalExtension.isEmpty()) originalExtension = DEFAULT_ONTOLOGY_FILE_EXTENSION;
 
-			String rlOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-RL.owl" : tOntoIRI.replaceFirst(originalExtension, "-RL.owl");
-			String rlDocumentIRI = (outputPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "RL.owl").toString());
-			outputOntology = manager.createOntology(IRI.create(rlOntologyIRI));
-			manager.setOntologyDocumentIRI(outputOntology, IRI.create(Utility.toFileIRI(rlDocumentIRI)));
 
-			String tBoxOntologyIRI, aBoxOntologyIRI;
-			tBoxOntologyIRI =
-					originalExtension.isEmpty() ? tOntoIRI + "-TBox.owl" : tOntoIRI.replaceFirst(originalExtension, "-TBox.owl");
-			aBoxOntologyIRI = originalExtension.isEmpty() ? tOntoIRI + "-ABox.owl" : tOntoIRI.replaceFirst(originalExtension, "-ABox.owl");
+			IRI rlOntologyIRI = IRI.create(ontologyIriPrefix, originalFileName + "-RL." + originalExtension);
+			outputPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(),
+								   originalFileName + "-RL." + originalExtension).toString();
+			IRI rlDocumentIRI = IRI.create(outputPath);
+			outputOntology = manager.createOntology(rlOntologyIRI);
+			manager.setOntologyDocumentIRI(outputOntology, rlDocumentIRI);
 
-			String tBoxDocumentIRI = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "TBox.owl").toString();
-			String aBoxDocumentIRI = (aBoxPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(), "ABox.owl").toString());
-			tBox = manager.createOntology(IRI.create(tBoxOntologyIRI));
-			aBox = manager.createOntology(IRI.create(aBoxOntologyIRI));
-			manager.setOntologyDocumentIRI(tBox, IRI.create(Utility.toFileIRI(tBoxDocumentIRI)));
-			manager.setOntologyDocumentIRI(aBox, IRI.create(Utility.toFileIRI(aBoxDocumentIRI)));
+			String tBoxOntologyFragment = originalFileName + "-TBox." + originalExtension;
+			IRI tBoxOntologyIRI = IRI.create(ontologyIriPrefix, tBoxOntologyFragment);
+			IRI tBoxDocumentIRI =
+					IRI.create("file://" + Paths.get(Utility.getGlobalTempDirAbsolutePath(), tBoxOntologyFragment));
+
+			String aBoxOntologyFragment = originalFileName + "-ABox." + originalExtension;
+			IRI aBoxOntologyIRI = IRI.create(ontologyIriPrefix, aBoxOntologyFragment);
+			aBoxPath = Paths.get(Utility.getGlobalTempDirAbsolutePath()) + aBoxOntologyFragment;
+			IRI aBoxDocumentIRI =
+					IRI.create("file://" + Paths.get(Utility.getGlobalTempDirAbsolutePath(), aBoxOntologyFragment));
+
+			tBox = manager.createOntology(tBoxOntologyIRI);
+			aBox = manager.createOntology(aBoxOntologyIRI);
+			manager.setOntologyDocumentIRI(tBox, tBoxDocumentIRI);
+			manager.setOntologyDocumentIRI(aBox, aBoxDocumentIRI);
 
 			FileOutputStream aBoxOut = new FileOutputStream(aBoxPath);
 			manager.saveOntology(aBox, aBoxOut);
 			aBoxOut.close();
 
 			restOntology = manager.createOntology();
-		}
-		catch (OWLOntologyCreationException e) {
+		} catch(OWLOntologyCreationException | OWLOntologyStorageException | IOException e) {
 			e.printStackTrace();
-		} catch (OWLOntologyStorageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 	
