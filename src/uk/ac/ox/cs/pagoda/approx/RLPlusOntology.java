@@ -18,10 +18,13 @@ import uk.ac.ox.cs.pagoda.util.Utility;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RLPlusOntology implements KnowledgeBase {
 
 	private static final String DEFAULT_ONTOLOGY_FILE_EXTENSION = "owl";
+	private static final Pattern ONTOLOGY_ID_REGEX = Pattern.compile("ontologyid\\((?<id>[a-z0-9\\-]+)\\)");
 	OWLOntologyManager manager;
 	OWLDataFactory factory;
 	String ontologyIRI;
@@ -61,9 +64,10 @@ public class RLPlusOntology implements KnowledgeBase {
 		try {
 			IRI ontologyIri;
 			if(ontology.isAnonymous()) {
-				String anonymousOntologySuffix = Long.toString(System.currentTimeMillis());
-				ontologyIri = IRI.create("http://www.example.org/", "anonymous-ontology-"
-						+ anonymousOntologySuffix + "." + DEFAULT_ONTOLOGY_FILE_EXTENSION);
+				Matcher matcher = ONTOLOGY_ID_REGEX.matcher(ontology.getOntologyID().toString().toLowerCase());
+				if(!matcher.matches()) throw new Error("Anonymous ontology without internal id");
+				ontologyIri =
+						IRI.create("http://www.example.org/", matcher.group("id") + "." + DEFAULT_ONTOLOGY_FILE_EXTENSION);
 			}
 			else
 				ontologyIri = inputOntology.getOntologyID().getOntologyIRI();
@@ -79,7 +83,7 @@ public class RLPlusOntology implements KnowledgeBase {
 			IRI rlOntologyIRI = IRI.create(ontologyIriPrefix, originalFileName + "-RL." + originalExtension);
 			outputPath = Paths.get(Utility.getGlobalTempDirAbsolutePath(),
 								   originalFileName + "-RL." + originalExtension).toString();
-			IRI rlDocumentIRI = IRI.create(outputPath);
+			IRI rlDocumentIRI = IRI.create("file://" + outputPath);
 			outputOntology = manager.createOntology(rlOntologyIRI);
 			manager.setOntologyDocumentIRI(outputOntology, rlDocumentIRI);
 

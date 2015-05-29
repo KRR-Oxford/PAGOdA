@@ -31,7 +31,6 @@ public class CheckAnswers {
         Set<QueryRecord> givenAnswersRecords = gson.fromJson(givenReader, cqType);
 
         for(QueryRecord computedAnswersRecord : computedAnswersRecords) {
-            if(computedAnswersRecord.queryID == 8) continue; // DEBUG
             Set<AnswerTuple> givenAnswers = null;
             for(QueryRecord givenAnswersRecord : givenAnswersRecords) {
                 if(givenAnswersRecord.queryID == computedAnswersRecord.queryID) {
@@ -44,7 +43,7 @@ public class CheckAnswers {
 
             Set<AnswerTuple> computedAnswers = computedAnswersRecord.soundAnswerTuples;
             Assert.assertEquals(computedAnswers.size(), givenAnswers.size(),
-                                "Different number sound answers for query " + computedAnswersRecord.queryID + "!"
+                                "Different number of sound answers for query " + computedAnswersRecord.queryID + "!"
                                         + "Expected " + givenAnswers.size() + ", got " + computedAnswers.size());
             Assert.assertEquals(computedAnswers, givenAnswers,
                                 "Different sound answers for query " + computedAnswersRecord.queryID + "!");
