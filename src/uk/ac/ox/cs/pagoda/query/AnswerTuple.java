@@ -172,7 +172,7 @@ public class AnswerTuple {
 						String lexicalForm = matcher.group("lexicalForm");
 						String dataTypeIRI = matcher.group("dataType");
 						Datatype dataType;
-						if (dataTypeIRI.isEmpty()) dataType = Datatype.RDF_PLAIN_LITERAL;
+						if(dataTypeIRI == null || dataTypeIRI.isEmpty()) dataType = Datatype.RDF_PLAIN_LITERAL;
 						else dataType = uk.ac.ox.cs.JRDFox.model.Datatype.value(dataTypeIRI);
 						terms[i] = uk.ac.ox.cs.JRDFox.model.Literal.create(lexicalForm, dataType);
 					}

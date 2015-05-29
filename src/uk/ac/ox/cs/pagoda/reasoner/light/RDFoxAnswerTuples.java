@@ -3,15 +3,14 @@ package uk.ac.ox.cs.pagoda.reasoner.light;
 import org.semanticweb.HermiT.model.Constant;
 import org.semanticweb.HermiT.model.Individual;
 import org.semanticweb.HermiT.model.Term;
-
-import uk.ac.ox.cs.pagoda.query.AnswerTuple;
-import uk.ac.ox.cs.pagoda.query.AnswerTuples;
-import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.model.GroundTerm;
 import uk.ac.ox.cs.JRDFox.store.TupleIterator;
+import uk.ac.ox.cs.pagoda.query.AnswerTuple;
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.util.Utility;
 
-public class RDFoxAnswerTuples implements AnswerTuples {
+public class RDFoxAnswerTuples extends AnswerTuples {
 
 	long multi; 
 	TupleIterator m_iter; 
@@ -22,7 +21,18 @@ public class RDFoxAnswerTuples implements AnswerTuples {
 		m_iter = iter; 
 		reset(); 
 	}
-	
+
+	public static Term getHermitTerm(GroundTerm t) {
+		if(t instanceof uk.ac.ox.cs.JRDFox.model.Individual) {
+			uk.ac.ox.cs.JRDFox.model.Individual individual = (uk.ac.ox.cs.JRDFox.model.Individual) t;
+			return Individual.create(individual.getIRI());
+		}
+		else {
+			uk.ac.ox.cs.JRDFox.model.Literal literal = ((uk.ac.ox.cs.JRDFox.model.Literal) t);
+			return Constant.create(literal.getLexicalForm(), literal.getDatatype().getIRI());
+		}
+	}
+
 	@Override
 	public boolean isValid() {
 		return multi != 0;
@@ -34,7 +44,7 @@ public class RDFoxAnswerTuples implements AnswerTuples {
 			return m_iter.getArity();
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
-			return -1; 
+			return -1;
 		}
 	}
 
@@ -44,15 +54,12 @@ public class RDFoxAnswerTuples implements AnswerTuples {
 			multi = m_iter.getNext();
 		} catch (JRDFStoreException e) {
 			e.printStackTrace();
-		}  
+		}
 	}
 
 	@Override
 	public void dispose() {
-		m_iter.dispose();
-	}
-	
-	protected void finalize() {
+		super.dispose();
 		m_iter.dispose();
 	}
 	
@@ -85,16 +92,9 @@ public class RDFoxAnswerTuples implements AnswerTuples {
 	public String[] getAnswerVariables() {
 		return m_answerVars;
 	}
-	
-	public static Term getHermitTerm(GroundTerm t) {
-		if (t instanceof uk.ac.ox.cs.JRDFox.model.Individual) {
-			uk.ac.ox.cs.JRDFox.model.Individual individual = (uk.ac.ox.cs.JRDFox.model.Individual) t; 
-			return Individual.create(individual.getIRI());
-		}
-		else {
-			uk.ac.ox.cs.JRDFox.model.Literal literal = ((uk.ac.ox.cs.JRDFox.model.Literal) t); 
-			return Constant.create(literal.getLexicalForm(), literal.getDatatype().getIRI());
-		}
+
+	protected void finalize() {
+		m_iter.dispose();
 	}
 	
 }

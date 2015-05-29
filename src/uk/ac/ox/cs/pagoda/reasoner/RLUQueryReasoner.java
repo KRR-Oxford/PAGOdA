@@ -10,6 +10,7 @@ import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
 class RLUQueryReasoner extends QueryReasoner {
 
@@ -19,7 +20,7 @@ class RLUQueryReasoner extends QueryReasoner {
 	
 	boolean multiStageTag, equalityTag;
 	Timer t = new Timer();
-	
+
 	public RLUQueryReasoner(boolean multiStageTag, boolean considerEqualities) {
 		this.multiStageTag = multiStageTag;
 		this.equalityTag = considerEqualities;
@@ -32,6 +33,7 @@ class RLUQueryReasoner extends QueryReasoner {
 	
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
+		if(isDisposed()) throw new DisposedException();
 		AnswerTuples ans = null;
 		t.reset(); 
 		try {
@@ -60,6 +62,7 @@ class RLUQueryReasoner extends QueryReasoner {
 	
 	@Override
 	public void evaluateUpper(QueryRecord queryRecord) {
+		if(isDisposed()) throw new DisposedException();
 		AnswerTuples ans = null; 
 		try {
 			ans = rlUpperStore.evaluate(queryRecord.getQueryText(), queryRecord.getAnswerVariables());
@@ -72,13 +75,14 @@ class RLUQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		if (rlLowerStore != null) rlLowerStore.dispose();
 		if (rlUpperStore != null) rlUpperStore.dispose();
-		super.dispose();
 	}
 
 	@Override
 	public void loadOntology(OWLOntology o) {
+		if(isDisposed()) throw new DisposedException();
 		if (!equalityTag) {
 			EqualitiesEliminator eliminator = new EqualitiesEliminator(o);
 			o = eliminator.getOutputOntology();
@@ -92,6 +96,7 @@ class RLUQueryReasoner extends QueryReasoner {
 
 	@Override
 	public boolean preprocess() {
+		if(isDisposed()) throw new DisposedException();
 		String datafile = importedData.toString(); 
 		rlLowerStore.importRDFData("data", datafile);
 		rlLowerStore.materialise("lower program", program.getLower().toString());
@@ -105,6 +110,7 @@ class RLUQueryReasoner extends QueryReasoner {
 
 	@Override
 	public boolean isConsistent() {
+		if(isDisposed()) throw new DisposedException();
 		String[] X = new String[] { "X" }; 
 		AnswerTuples ans = null; 
 		try {
@@ -125,6 +131,5 @@ class RLUQueryReasoner extends QueryReasoner {
 		Utility.logDebug("The consistency of the data has not been determined yet.");
 		return true; 
 	}
-	
-	
+
 }

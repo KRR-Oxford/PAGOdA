@@ -3,7 +3,7 @@ package uk.ac.ox.cs.pagoda.query;
 import java.util.Iterator;
 import java.util.Set;
 
-public class AnswerTuplesImp implements AnswerTuples {
+public class AnswerTuplesImp extends AnswerTuples {
 
 	int m_index; 
 	Iterator<AnswerTuple> m_iter;
@@ -52,9 +52,6 @@ public class AnswerTuplesImp implements AnswerTuples {
 		else
 			m_tuple = null; 
 	}
-
-	@Override
-	public void dispose() {}
 
 	@Override
 	public void reset() {

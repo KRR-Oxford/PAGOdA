@@ -1,0 +1,1158 @@
+The axiom: DataPropertyRange(<http://semantics.crl.ibm.com/univ-bench-dl.owl#firstName> xsd:string) is being ignored.
+The axiom: DataPropertyRange(<http://semantics.crl.ibm.com/univ-bench-dl.owl#lastName> xsd:string) is being ignored.
+The number of data property range axioms that are ignored: 2(186)
+XMLReader initialized using JAXP: org.apache.xerces.jaxp.SAXParserImpl$JAXPSAXParser@5456afaa
+SimpleETL rewriting DONE
+additional ontology data is saved in /home/alessandro/Desktop/Pagoda_basic-version/PAGOdA/tmp2015-05-28T14:42:07.907/ABox.ttl.
+HermiT classification done: 0.108
+classification done and enriched lower bound rules.
+The number of rules: 238
+OntologyID: OntologyID(OntologyIRI(<http://semantics.crl.ibm.com/univ-bench-dl.owl>))
+ELHO fragment extracted ...
+Preprocessing ... checking satisfiability ...
+rl-lower-bound store after importing data: 257920 (257920 new)
+rl-lower-bound store finished importing data in 0.576 seconds.
+Prefix declared: prefix0:=http://semantics.crl.ibm.com/univ-bench-dl.owl#
+rl-lower-bound store after materialising lower program: 515592 (257672 new)
+rl-lower-bound store finished the materialisation of lower program in 0.557 seconds.
+The number of answers in the lower bound: 0
+The number of sameAs assertions in RL lower store: 102
+elho-lower-bound store after importing data: 257920 (257920 new)
+elho-lower-bound store finished importing data in 0.559 seconds.
+elho-lower-bound store after materialising saturate named individuals: 341262 (83342 new)
+elho-lower-bound store finished the materialisation of saturate named individuals in 0.173 seconds.
+elho-lower-bound store after materialising lower program: 557087 (215825 new)
+elho-lower-bound store finished the materialisation of lower program in 0.525 seconds.
+elho-lower-store finished its own materialisation in 0.579 seconds.
+Failed to find configuration: location-mapping.ttl;location-mapping.rdf;location-mapping.n3;etc/location-mapping.rdf;etc/location-mapping.n3;etc/location-mapping.ttl
+@Time to group individuals by equality: 0.062
+The number of answers in the lower bound: 0
+lazy-upper-bound store after importing data: 257920 (257920 new)
+lazy-upper-bound store finished importing data in 0.555 seconds.
+lazy-upper-bound store after materialising saturate named individuals: 341262 (83342 new)
+lazy-upper-bound store finished the materialisation of saturate named individuals in 0.18 seconds.
+lazy-upper-bound store is materialising multi-stage upper program ...
+Iteration 1:
+The lazy-upper-bound store is valid.
+lazy-upper-bound store after materialising datalog-rules: 550540 (209278 new)
+Time to materialise datalog-rules: 0.612
+Time to detect violations: 0.367
+Time to make the constraint being satisfied: 0.01 594 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingLover>(X)
+tuple number: 594 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.006 553 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallLover>(X)
+tuple number: 553 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.056 9627 tuples for <http://semantics.crl.ibm.com/univ-bench-dl.owl#NonScienceStudent>(X) v <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasMajor_Science_exist>(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student>(X)
+tuple number: 0 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.007 48 tuples for <http://semantics.crl.ibm.com/univ-bench-dl.owl#Man>(X) v <http://semantics.crl.ibm.com/univ-bench-dl.owl#Woman>(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#Person>(X)
+tuple number: 0 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.004 331 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingFan>(X)
+tuple number: 331 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.005 596 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballLover>(X)
+tuple number: 596 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.005 345 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisFan>(X)
+tuple number: 345 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.052 43968 tuples for <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithManyHobbies>(X) v [Y1 == Y2]@atMost(2 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) v [Y1 == Y3]@atMost(2 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) v [Y2 == Y3]@atMost(2 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#like>(X,Y1), <http://semantics.crl.ibm.com/univ-bench-dl.owl#like>(X,Y2), <http://semantics.crl.ibm.com/univ-bench-dl.owl#like>(X,Y3)
+tuple number: 0 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.008 1065 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#worksFor> <http://semantics.crl.ibm.com/univ-bench-dl.owl#ResearchGroup>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#ResearchAssistant>(X)
+tuple number: 1065 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.004 478 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#worksFor> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Organization>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#Employee>(X)
+tuple number: 478 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.004 4 tuples for <http://semantics.crl.ibm.com/univ-bench-dl.owl#WomanCollege>(X) v <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasStudent_Man_exist>(X) v <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasStudent_UndergraduateStudent_neg_exist>(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#College>(X)
+tuple number: 0 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.004 380 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Sports>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsLover>(X)
+tuple number: 380 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.005 283 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Sports>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsFan>(X)
+tuple number: 283 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.004 361 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallFan>(X)
+tuple number: 361 before: 550540 after: 550540 (0 new) .
+Time to make the constraint being satisfied: 0.004 352 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballFan>(X)
+tuple number: 352 before: 550540 after: 550540 (0 new) .
+lazy-upper-bound store after adding facts for violations: 550540 (0 new)
+Time to add triples for violations: 0.283
+Iteration 2:
+The lazy-upper-bound store is valid.
+lazy-upper-bound store after materialising datalog-rules: 582920 (32380 new)
+Time to materialise datalog-rules: 0.057
+Time to detect violations: 0.233
+Time to make the constraint being satisfied: 0.007 3966 tuples for <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithManyHobbies>(X) v [Y1 == Y2]@atMost(2 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) v [Y1 == Y3]@atMost(2 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) v [Y2 == Y3]@atMost(2 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#like>(X,Y1), <http://semantics.crl.ibm.com/univ-bench-dl.owl#like>(X,Y2), <http://semantics.crl.ibm.com/univ-bench-dl.owl#like>(X,Y3)
+tuple number: 0 before: 582920 after: 582920 (0 new) .
+Time to make the constraint being satisfied: 0.015 1835 tuples for atLeast(3 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithManyHobbies>(X)
+tuple number: 1835 before: 582920 after: 582920 (0 new) .
+lazy-upper-bound store after adding facts for violations: 582920 (0 new)
+Time to add triples for violations: 0.04
+Iteration 3:
+The lazy-upper-bound store is valid.
+lazy-upper-bound store after materialising datalog-rules: 594418 (11498 new)
+Time to materialise datalog-rules: 0.026
+Time to detect violations: 0.338
+Time to make the constraint being satisfied: 0.005 481 tuples for atLeast(3 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithManyHobbies>(X)
+tuple number: 481 before: 594418 after: 594418 (0 new) .
+lazy-upper-bound store after adding facts for violations: 594418 (0 new)
+Time to add triples for violations: 0.017
+Iteration 4:
+The lazy-upper-bound store is valid.
+lazy-upper-bound store after materialising datalog-rules: 597304 (2886 new)
+Time to materialise datalog-rules: 0.016
+lazy-upper-bound store after materialising multi-stage upper program: 597304 (256042 new)
+lazy-upper-bound store is DONE for multi-stage materialising in 2.512 seconds.
+The lazy-upper-bound store is valid.
+There are no contradictions derived in the lazy upper bound materialisation.
+The ontology and dataset is satisfiable.
+time for satisfiability checking: 6.915
+tracking store after importing data: 257920 (257920 new)
+tracking store finished importing data in 0.589 seconds.
+tracking store after materialising saturate named individuals: 341262 (83342 new)
+tracking store finished the materialisation of saturate named individuals in 0.174 seconds.
+tracking store after materialising lower program: 557087 (215825 new)
+tracking store finished the materialisation of lower program in 0.532 seconds.
+tracking store is materialising multi-stage upper program ...
+Iteration 1:
+current store after materialising upper related rules: 646037 (88950 new)
+current store finished the materialisation of upper related rules in 0.513 seconds.
+gap query evaluted ...
+current store before importing gap tuples: 646037
+There are 126566 tuples in the gap between lower and upper bound materialisation.
+current store after importing gap tuples: 764044 (118007).
+current store finished importing gap tuples: 764044 in 0.372.
+tracking store after materialising datalog-rules: 764044 (206957 new)
+Time to materialise datalog-rules: 0.898
+Time to detect violations: 0.124
+Time to make the constraint being satisfied: 0.01 478 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingLover>(X)
+tuple number: 478 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.007 500 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballLover>(X)
+tuple number: 500 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.004 5 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasStudent> <http://semantics.crl.ibm.com/univ-bench-dl.owl#UndergraduateStudent_neg>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#College>(X)
+tuple number: 5 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.005 295 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisFan>(X)
+tuple number: 295 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.008 489 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallLover>(X)
+tuple number: 489 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.01 1065 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#worksFor> <http://semantics.crl.ibm.com/univ-bench-dl.owl#ResearchGroup>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#ResearchAssistant>(X)
+tuple number: 1065 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.012 1543 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#worksFor> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Organization>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#Employee>(X)
+tuple number: 1543 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.048 9627 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMajor> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Science>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student>(X)
+tuple number: 9627 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.012 1772 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Sports>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsLover>(X)
+tuple number: 1772 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.01 1311 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Sports>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsFan>(X)
+tuple number: 1311 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.005 270 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingFan>(X)
+tuple number: 270 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.004 4 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasStudent> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Man>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#College>(X)
+tuple number: 4 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.005 297 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallFan>(X)
+tuple number: 297 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.012 1772 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithHobby>(X)
+tuple number: 1772 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.006 290 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballClass>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballFan>(X)
+tuple number: 290 before: 764044 after: 764044 (0 new) .
+Time to make the constraint being satisfied: 0.084 7041 tuples for atLeast(3 <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> owl:Thing)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithManyHobbies>(X)
+tuple number: 7041 before: 764044 after: 764044 (0 new) .
+tracking store after adding facts for violations: 764044 (0 new)
+Time to add triples for violations: 0.38
+Iteration 2:
+current store after materialising upper related rules: 831557 (67513 new)
+current store finished the materialisation of upper related rules in 0.137 seconds.
+gap query evaluted ...
+current store before importing gap tuples: 831557
+There are 41367 tuples in the gap between lower and upper bound materialisation.
+current store after importing gap tuples: 867593 (36036).
+current store finished importing gap tuples: 867593 in 0.097.
+tracking store after materialising datalog-rules: 867593 (103549 new)
+Time to materialise datalog-rules: 0.245
+Time to detect violations: 0.134
+Time to make the constraint being satisfied: 0.005 2 tuples for atLeast(1 <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMajor> <http://semantics.crl.ibm.com/univ-bench-dl.owl#Science>)(X) :- <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student>(X)
+tuple number: 2 before: 867593 after: 867593 (0 new) .
+tracking store after adding facts for violations: 867593 (0 new)
+Time to add triples for violations: 0.024
+Iteration 3:
+current store after materialising upper related rules: 867601 (8 new)
+current store finished the materialisation of upper related rules in 0.012 seconds.
+gap query evaluted ...
+current store before importing gap tuples: 867601
+There are 4 tuples in the gap between lower and upper bound materialisation.
+current store after importing gap tuples: 867605 (4).
+current store finished importing gap tuples: 867605 in 0.01.
+tracking store after materialising datalog-rules: 867605 (12 new)
+Time to materialise datalog-rules: 0.033
+tracking store after materialising multi-stage upper program: 867605 (310518 new)
+tracking store is DONE for multi-stage materialising in 1.91 seconds.
+The number of answers in the upper bound: 12782
+The number of answers in the upper bound: 0
+The number of answers in the upper bound: 14182
+The number of answers in the upper bound: 1
+The number of answers in the upper bound: 5
+The number of answers in the upper bound: 23
+There are 5 different bottom fragments.
+12782 triples are added into the store.
+Prefix declared: prefix1:=http://semantics.crl.ibm.com/univ-bench-dl-TBox.owl#
+14182 triples are added into the store.
+1 triples are added into the store.
+5 triples are added into the store.
+23 triples are added into the store.
+tracking store after materialising tracking program: 1441314 (573709 new)
+tracking store finished the materialisation of tracking program in 2.941 seconds.
+@Time to group individuals by equality: 0.018
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Science> 10
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Person> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#ScienceStudent> 0
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasStudent_Man_exist> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Organization> 5
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#College> 4
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#UndergraduateStudent> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student> 9627
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#WomanCollege> 1
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasMajor_Science_exist> 3153
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Woman> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Man> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isMemberOf> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMember> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMajor> 3153
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isStudentOf> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasStudent> 0
+property: <http://www.w3.org/2002/07/owl#sameAs> 0
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 15953, TBoxAxiomsCount = 24
+finish extracting axioms for bottom 0_1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Person> 48
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student> 9627
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Organization> 5
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#WomanCollege> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Science> 0
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasMajor_Science_exist> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#UndergraduateStudent> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#College> 4
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Woman> 7211
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Man> 6873
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#ScienceStudent> 0
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasStudent_Man_exist> 19
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasStudent> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMember> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isMemberOf> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMajor> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isStudentOf> 0
+property: <http://www.w3.org/2002/07/owl#sameAs> 48
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 23836, TBoxAxiomsCount = 24
+finish extracting axioms for bottom 0_2
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#WomanCollege> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Organization> 5
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasMajor_Science_exist> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#College> 4
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student> 9627
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#UndergraduateStudent> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Person> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#ScienceStudent> 0
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasStudent_Man_exist> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Woman> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Man> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Science> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMember> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isMemberOf> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMajor> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isStudentOf> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasStudent> 0
+property: <http://www.w3.org/2002/07/owl#sameAs> 0
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 9637, TBoxAxiomsCount = 23
+finish extracting axioms for bottom 0_3
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#College> 4
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Student> 9627
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Person> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Woman> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#UndergraduateStudent> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#WomanCollege> 1
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasMajor_Science_exist> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Man> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#ScienceStudent> 0
+class: <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#concept_hasStudent_Man_exist> 0
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Organization> 5
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Science> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasStudent> 264
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMember> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isMemberOf> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#hasMajor> 0
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isStudentOf> 0
+property: <http://www.w3.org/2002/07/owl#sameAs> 0
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 9901, TBoxAxiomsCount = 24
+finish extracting axioms for bottom 0_4
+property: <http://www.w3.org/2002/07/owl#sameAs> 37
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 37, TBoxAxiomsCount = 2
+finish extracting axioms for bottom 0_5
+The ontology is consistent!
+Preprocessing Done in 18.306 seconds.
+---------- start evaluating Query 1 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:UndergraduateStudent . ?x benchmark:takesCourse <http://www.Department0.University0.edu/Course0> }
+0.0
+The number of answers in the lower bound: 21
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:UndergraduateStudent . ?x benchmark:takesCourse <http://www.Department0.University0.edu/Course0> }
+0.005
+The number of answers returned by the upper bound: 21
+The number of answers in the upper bound: 21
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.006
+The number of answer tuples: 21
+time for LowerBound: 0.001
+time for UpperBound: 0.005
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 2 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Employee }
+0.001
+The number of answers in the lower bound: 2465
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Employee }
+0.002
+The number of answers returned by the upper bound: 2465
+The number of answers in the upper bound: 2465
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.009
+The number of answer tuples: 2465
+time for LowerBound: 0.007
+time for UpperBound: 0.002
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 3 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Student . ?x benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.005
+The number of answers in the lower bound: 581
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Student . ?x benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.009
+The number of answers returned by the upper bound: 581
+The number of answers in the upper bound: 581
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.016
+The number of answer tuples: 581
+time for LowerBound: 0.007
+time for UpperBound: 0.009
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 4 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Publication . ?x benchmark:publicationAuthor ?y . ?y rdf:type benchmark:Faculty . ?y benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.001
+The number of answers in the lower bound: 292
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Publication . ?x benchmark:publicationAuthor ?y . ?y rdf:type benchmark:Faculty . ?y benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.006
+The number of answers returned by the upper bound: 292
+The number of answers in the upper bound: 292
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.01
+The number of answer tuples: 292
+time for LowerBound: 0.003
+time for UpperBound: 0.007
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 5 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:ResearchGroup . ?x benchmark:subOrganizationOf <http://www.University0.edu> }
+0.001
+The number of answers in the lower bound: 235
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:ResearchGroup . ?x benchmark:subOrganizationOf <http://www.University0.edu> }
+0.003
+The number of answers returned by the upper bound: 235
+The number of answers in the upper bound: 235
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.005
+The number of answer tuples: 235
+time for LowerBound: 0.002
+time for UpperBound: 0.003
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 6 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . <http://www.University0.edu> benchmark:hasAlumnus ?x }
+0.006
+The number of answers in the lower bound: 991
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . <http://www.University0.edu> benchmark:hasAlumnus ?x }
+0.007
+The number of answers returned by the upper bound: 991
+The number of answers in the upper bound: 991
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.016
+The number of answer tuples: 991
+time for LowerBound: 0.008
+time for UpperBound: 0.008
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 7 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:hasSameHomeTownWith <http://www.Department0.University0.edu/FullProfessor0> }
+0.0
+The number of answers in the lower bound: 0
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:hasSameHomeTownWith <http://www.Department0.University0.edu/FullProfessor0> }
+0.001
+The number of answers in the upper bound: 0
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.002
+The number of answer tuples: 0
+time for LowerBound: 0.001
+time for UpperBound: 0.001
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 8 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:SportsLover . <http://www.Department0.University0.edu> benchmark:hasMember ?x }
+0.0
+The number of answers in the lower bound: 376
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:SportsLover . <http://www.Department0.University0.edu> benchmark:hasMember ?x }
+0.002
+The number of answers returned by the upper bound: 376
+The number of answers in the upper bound: 376
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.003
+The number of answer tuples: 376
+time for LowerBound: 0.001
+time for UpperBound: 0.002
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 9 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:GraduateCourse . ?x benchmark:isTaughtBy ?y . ?y rdf:type benchmark:SportsLover . ?y benchmark:isMemberOf ?z . ?z benchmark:subOrganizationOf <http://www.University0.edu> }
+0.002
+The number of answers in the lower bound: 747
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:GraduateCourse . ?x benchmark:isTaughtBy ?y . ?y rdf:type benchmark:SportsLover . ?y benchmark:isMemberOf ?z . ?z benchmark:subOrganizationOf <http://www.University0.edu> }
+0.004
+The number of answers returned by the upper bound: 747
+The number of answers in the upper bound: 747
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.01
+The number of answer tuples: 747
+time for LowerBound: 0.005
+time for UpperBound: 0.005
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 10 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x benchmark:isFriendOf <http://www.Department0.University0.edu/FullProfessor0> }
+0.001
+The number of answers in the lower bound: 8
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x benchmark:isFriendOf <http://www.Department0.University0.edu/FullProfessor0> }
+0.002
+The number of answers returned by the upper bound: 8
+The number of answers in the upper bound: 8
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.003
+The number of answer tuples: 8
+time for LowerBound: 0.001
+time for UpperBound: 0.002
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 11 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:like ?y . ?z rdf:type benchmark:Chair . ?z benchmark:isHeadOf <http://www.Department0.University0.edu> . ?z benchmark:like ?y }
+0.003
+The number of answers in the lower bound: 2416
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:like ?y . ?z rdf:type benchmark:Chair . ?z benchmark:isHeadOf <http://www.Department0.University0.edu> . ?z benchmark:like ?y }
+0.005
+The number of answers returned by the upper bound: 3886
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:like ?y . ?z rdf:type benchmark:Chair . ?z benchmark:isHeadOf <http://www.Department0.University0.edu> . ?z benchmark:like ?y . ?y a <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#Original> . ?z a <http://www.cs.ox.ac.uk/PAGOdA/auxiliary#Original> }
+0.032
+The number of answers returned by the upper bound: 2416
+The number of answers in the upper bound: 2416
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.04
+The number of answer tuples: 2416
+time for LowerBound: 0.008
+time for UpperBound: 0.032
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 12 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Student . ?x benchmark:takesCourse ?y . ?y benchmark:isTaughtBy <http://www.Department0.University0.edu/FullProfessor0> }
+0.009
+The number of answers in the lower bound: 50
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Student . ?x benchmark:takesCourse ?y . ?y benchmark:isTaughtBy <http://www.Department0.University0.edu/FullProfessor0> }
+0.011
+The number of answers returned by the upper bound: 50
+The number of answers in the upper bound: 50
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.021
+The number of answer tuples: 50
+time for LowerBound: 0.01
+time for UpperBound: 0.011
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 13 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:PeopleWithHobby . ?x benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.004
+The number of answers in the lower bound: 416
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:PeopleWithHobby . ?x benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.005
+The number of answers returned by the upper bound: 416
+The number of answers in the upper bound: 416
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.01
+The number of answer tuples: 416
+time for LowerBound: 0.005
+time for UpperBound: 0.005
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 14 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Woman . ?x rdf:type benchmark:Student . ?x benchmark:isMemberOf ?y . ?y benchmark:subOrganizationOf <http://www.University0.edu> }
+0.012
+The number of answers in the lower bound: 6535
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Woman . ?x rdf:type benchmark:Student . ?x benchmark:isMemberOf ?y . ?y benchmark:subOrganizationOf <http://www.University0.edu> }
+0.013
+The number of answers returned by the upper bound: 6535
+The number of answers in the upper bound: 6535
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.039
+The number of answer tuples: 6535
+time for LowerBound: 0.024
+time for UpperBound: 0.015
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 15 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:PeopleWithManyHobbies . ?x benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.0
+The number of answers in the lower bound: 0
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:PeopleWithManyHobbies . ?x benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.003
+The number of answers in the upper bound: 112
+0.003
+The number of answers in the lower bound: 0
+112 triples are added into the store.
+tracking store after materialising tracking program: 1517657 (76343 new)
+tracking store finished the materialisation of tracking program in 0.749 seconds.
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isTaughtBy> 19
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isHeadOf> 1
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isMemberOf> 111
+property: <http://www.w3.org/2002/07/owl#sameAs> 1
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 132, TBoxAxiomsCount = 2
+None of bottom fragments is added for this query.
+ABox axioms: 132 TBox axioms: 2
+grouping individuals by its concepts
+The summary of ABox is consistent with the TBox.
+@TIME to check one tuple: 0.02
+@TIME to filter out non-answers by summarisation: 0.044
+Hermit was called 1 times.
+Hermit was called 0 times.
+Total time for full reasoner: 0.056
+Difficulty of this query: Summarisation
+Total time to answer this query: 0.936
+The number of answer tuples: 0
+time for LowerBound: 0.0
+time for UpperBound: 0.004
+time for ELLowerBound: 0.003
+time for Fragment: 0.873
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.063
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 16 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Publication . ?x benchmark:publicationAuthor _:y . _:y rdf:type benchmark:Faculty . _:y benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.002
+The number of answers in the lower bound: 292
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Publication . ?x benchmark:publicationAuthor _:y . _:y rdf:type benchmark:Faculty . _:y benchmark:isMemberOf <http://www.Department0.University0.edu> }
+0.003
+The number of answers returned by the upper bound: 292
+The number of answers in the upper bound: 292
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.006
+The number of answer tuples: 292
+time for LowerBound: 0.003
+time for UpperBound: 0.003
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 17 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:GraduateCourse . ?x benchmark:isTaughtBy _:y . _:y rdf:type benchmark:SportsLover . _:y benchmark:isMemberOf _:z . _:z benchmark:subOrganizationOf <http://www.University0.edu> }
+0.003
+The number of answers in the lower bound: 747
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:GraduateCourse . ?x benchmark:isTaughtBy _:y . _:y rdf:type benchmark:SportsLover . _:y benchmark:isMemberOf _:z . _:z benchmark:subOrganizationOf <http://www.University0.edu> }
+0.004
+The number of answers returned by the upper bound: 747
+The number of answers in the upper bound: 747
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.009
+The number of answer tuples: 747
+time for LowerBound: 0.005
+time for UpperBound: 0.004
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 18 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:like _:y . _:z rdf:type benchmark:Chair . _:z benchmark:isHeadOf <http://www.Department0.University0.edu> . _:z benchmark:like _:y }
+0.003
+The number of answers in the lower bound: 2416
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Person . ?x benchmark:like _:y . _:z rdf:type benchmark:Chair . _:z benchmark:isHeadOf <http://www.Department0.University0.edu> . _:z benchmark:like _:y }
+0.006
+The number of answers returned by the upper bound: 3886
+The number of answers in the upper bound: 3886
+1.16
+The number of answers in the lower bound: 2416
+1470 triples are added into the store.
+tracking store after materialising tracking program: 1717999 (200342 new)
+tracking store finished the materialisation of tracking program in 3.166 seconds.
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingFan> 675
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithHobby> 8813
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Sports> 7
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallClass> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsLover> 7881
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Chair> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisClass> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballFan> 687
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingClass> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballLover> 2281
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsFan> 3489
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallFan> 686
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballClass> 1
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallLover> 2268
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisFan> 699
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#SwimmingLover> 2178
+class: <http://semantics.crl.ibm.com/univ-bench-dl.owl#Person> 8787
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#like> 13770
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isCrazyAbout> 3381
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isHeadOf> 18
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#isTaughtBy> 1602
+property: <http://semantics.crl.ibm.com/univ-bench-dl.owl#love> 13770
+property: <http://www.w3.org/2002/07/owl#sameAs> 37
+ABox extraction Done
+TBox extraction Done
+Before adding bottom fragment:
+ABoxAxiomsCount = 71034, TBoxAxiomsCount = 30
+Part of bottom fragments is added for this query.
+ABox axioms: 71034 TBox axioms: 30
+grouping individuals by its concepts
+Prefix declared: prefix2:=http://www.Department4.University0.edu/
+The summary of ABox is consistent with the TBox.
+@TIME to check one tuple: 0.545
+@TIME to check one tuple: 0.129
+@TIME to check one tuple: 0.105
+@TIME to check one tuple: 0.09
+@TIME to check one tuple: 0.091
+@TIME to check one tuple: 0.091
+@TIME to check one tuple: 0.112
+@TIME to check one tuple: 0.087
+@TIME to check one tuple: 0.075
+@TIME to check one tuple: 0.071
+@TIME to check one tuple: 0.07
+@TIME to check one tuple: 0.07
+@TIME to check one tuple: 0.07
+@TIME to check one tuple: 0.073
+@TIME to check one tuple: 0.071
+@TIME to check one tuple: 0.864
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.062
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.064
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.061
+@TIME to check one tuple: 0.094
+@TIME to check one tuple: 0.096
+@TIME to check one tuple: 0.065
+@TIME to check one tuple: 0.064
+@TIME to check one tuple: 0.064
+@TIME to check one tuple: 0.097
+@TIME to check one tuple: 0.1
+@TIME to check one tuple: 0.148
+@TIME to check one tuple: 0.1
+@TIME to check one tuple: 0.105
+@TIME to check one tuple: 0.074
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.094
+@TIME to check one tuple: 0.062
+@TIME to check one tuple: 0.064
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.062
+@TIME to check one tuple: 0.062
+@TIME to check one tuple: 0.061
+@TIME to check one tuple: 0.061
+@TIME to check one tuple: 0.061
+@TIME to check one tuple: 0.061
+@TIME to check one tuple: 0.063
+@TIME to check one tuple: 0.062
+@TIME to check one tuple: 0.063
+@TIME to filter out non-answers by summarisation: 6.698
+The number of answers to be checked with HermiT: 1460/1470
+(http://www.Department16.University0.edu/GraduateStudent74@http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballFan^http://semantics.crl.ibm.com/univ-bench-dl.owl#BaseballLover^http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallFan^http://semantics.crl.ibm.com/univ-bench-dl.owl#BasketBallLover^http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithHobby^http://semantics.crl.ibm.com/univ-bench-dl.owl#Person^http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsFan^http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsLover^http://semantics.crl.ibm.com/univ-bench-dl.owl#TennisFan)
+(http://www.Department5.University0.edu/UndergraduateStudent359@http://semantics.crl.ibm.com/univ-bench-dl.owl#PeopleWithHobby^http://semantics.crl.ibm.com/univ-bench-dl.owl#Person^http://semantics.crl.ibm.com/univ-bench-dl.owl#SportsLover)
+The number of times to call homomorphism checker: 762299(645781,115809).
+Time to compute endomorphism relation: 2.32
+link: 2272
+@TIME to group individuals in the gap: 2.32
+The number of different groups: 853
+The number of individuals to be checked by Homomorphism checker: 1460
+Entrances: 98 Exists: 353
+start checking front ... <http://www.Department7.University0.edu/UndergraduateStudent70>
+@TIME to check one tuple: 24.128
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent430>
+start checking back ... <http://www.Department18.University0.edu/GraduateStudent32>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent106>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent443>
+start checking back ... <http://www.Department4.University0.edu/GraduateStudent111>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent148>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent223>
+start checking back ... <http://www.Department5.University0.edu/AssistantProfessor8>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent145>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent27>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent14>
+start checking back ... <http://www.Department8.University0.edu/GraduateStudent132>
+start checking back ... <http://www.Department14.University0.edu/GraduateStudent35>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent172>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent118>
+start checking back ... <http://www.Department12.University0.edu/AssistantProfessor0>
+start checking back ... <http://www.Department3.University0.edu/FullProfessor2>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent413>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent412>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent497>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent184>
+start checking back ... <http://www.Department11.University0.edu/GraduateStudent121>
+start checking back ... <http://www.Department17.University0.edu/GraduateStudent6>
+start checking back ... <http://www.Department16.University0.edu/SystemsStaff10>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent239>
+start checking back ... <http://www.Department13.University0.edu/GraduateStudent59>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent218>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent354>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent94>
+start checking back ... <http://www.Department11.University0.edu/GraduateStudent123>
+start checking back ... <http://www.Department10.University0.edu/Chair10>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent16>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent209>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent458>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent358>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent203>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent126>
+start checking back ... <http://www.Department13.University0.edu/Lecturer6>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent224>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent369>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent463>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent234>
+start checking back ... <http://www.Department16.University0.edu/GraduateStudent101>
+start checking back ... <http://www.Department7.University0.edu/other_staff7>
+start checking back ... <http://www.Department7.University0.edu/GraduateStudent149>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent311>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent259>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent285>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent281>
+start checking back ... <http://www.Department10.University0.edu/Lecturer6>
+start checking back ... <http://www.Department4.University0.edu/UndergraduateStudent213>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent90>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent335>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent356>
+start checking back ... <http://www.Department17.University0.edu/AssociateProfessor5>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent329>
+start checking back ... <http://www.Department0.University0.edu/other_staff16>
+start checking back ... <http://www.Department16.University0.edu/GraduateStudent88>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent270>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent203>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent112>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent172>
+start checking back ... <http://www.Department13.University0.edu/FullProfessor7>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent169>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent207>
+start checking back ... <http://www.Department14.University0.edu/FullProfessor1>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent180>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent321>
+start checking back ... <http://www.Department16.University0.edu/GraduateStudent56>
+start checking back ... <http://www.Department3.University0.edu/SystemsStaff9>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent377>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent71>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent327>
+start checking back ... <http://www.Department1.University0.edu/AssistantProfessor5>
+start checking back ... <http://www.Department0.University0.edu/GraduateStudent1>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent359>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent181>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent148>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent107>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent248>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent519>
+start checking back ... <http://www.Department0.University0.edu/AssistantProfessor5>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent256>
+start checking back ... <http://www.Department9.University0.edu/GraduateStudent44>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent322>
+start checking back ... <http://www.Department7.University0.edu/GraduateStudent28>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent530>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent572>
+start checking back ... <http://www.Department1.University0.edu/AssociateProfessor6>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent196>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent379>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent45>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent63>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent344>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent157>
+start checking back ... <http://www.Department16.University0.edu/Lecturer2>
+start checking back ... <http://www.Department14.University0.edu/GraduateStudent30>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent369>
+start checking back ... <http://www.Department11.University0.edu/GraduateStudent35>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent318>
+start checking back ... <http://www.Department18.University0.edu/GraduateStudent124>
+start checking back ... <http://www.Department16.University0.edu/UndergraduateStudent290>
+start checking back ... <http://www.Department4.University0.edu/GraduateStudent53>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent411>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent371>
+start checking back ... <http://www.Department17.University0.edu/GraduateStudent57>
+start checking back ... <http://www.Department4.University0.edu/UndergraduateStudent344>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent142>
+start checking back ... <http://www.Department13.University0.edu/GraduateStudent170>
+start checking back ... <http://www.Department1.University0.edu/GraduateStudent146>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent58>
+start checking back ... <http://www.Department16.University0.edu/UndergraduateStudent41>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent131>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent231>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent313>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent208>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent103>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent85>
+start checking back ... <http://www.Department0.University0.edu/SystemsStaff4>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent593>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent41>
+start checking back ... <http://www.College0.University0.edu/woman_student104>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent248>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent6>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent212>
+start checking back ... <http://www.Department14.University0.edu/AssociateProfessor9>
+start checking back ... <http://www.Department1.University0.edu/SameIndividual0>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent407>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent540>
+start checking back ... <http://www.Department15.University0.edu/GraduateStudent75>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent291>
+start checking back ... <http://www.Department8.University0.edu/GraduateStudent66>
+start checking back ... <http://www.Department17.University0.edu/GraduateStudent85>
+start checking back ... <http://www.Department11.University0.edu/GraduateStudent31>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent299>
+start checking back ... <http://www.Department6.University0.edu/GraduateStudent6>
+start checking back ... <http://www.Department0.University0.edu/AssociateProfessor4>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent242>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent296>
+start checking back ... <http://www.Department0.University0.edu/GraduateStudent114>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent209>
+start checking back ... <http://www.Department8.University0.edu/AssociateProfessor3>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent153>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent2>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent352>
+start checking back ... <http://www.College0.University0.edu/woman_student154>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent148>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent16>
+start checking back ... <http://www.Department1.University0.edu/GraduateStudent27>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent298>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent237>
+start checking back ... <http://www.Department16.University0.edu/GraduateStudent140>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent92>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent186>
+start checking back ... <http://www.Department8.University0.edu/GraduateStudent91>
+start checking back ... <http://www.Department0.University0.edu/GraduateStudent26>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent237>
+start checking back ... <http://www.Department14.University0.edu/GraduateStudent140>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent183>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent46>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent264>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent41>
+start checking back ... <http://www.Department0.University0.edu/GraduateStudent16>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent200>
+start checking back ... <http://www.Department6.University0.edu/Chair6>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent22>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent108>
+start checking back ... <http://www.Department16.University0.edu/UndergraduateStudent81>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent399>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent128>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent91>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent357>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent327>
+start checking back ... <http://www.Department8.University0.edu/AssistantProfessor8>
+start checking back ... <http://www.Department4.University0.edu/UndergraduateStudent335>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent99>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent78>
+start checking back ... <http://www.Department13.University0.edu/other_staff6>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent321>
+start checking back ... <http://www.Department6.University0.edu/other_staff13>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent240>
+start checking back ... <http://www.Department3.University0.edu/GraduateStudent32>
+start checking back ... <http://www.Department15.University0.edu/AssociateProfessor4>
+start checking back ... <http://www.Department2.University0.edu/other_staff13>
+start checking back ... <http://www.Department4.University0.edu/SystemsStaff10>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent249>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent505>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent52>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent513>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent184>
+start checking back ... <http://www.Department6.University0.edu/GraduateStudent148>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent471>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent205>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent186>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent470>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent404>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent308>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent142>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent283>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent530>
+start checking back ... <http://www.Department8.University0.edu/AssociateProfessor0>
+start checking back ... <http://www.Department5.University0.edu/Lecturer2>
+start checking back ... <http://www.Department16.University0.edu/AssociateProfessor4>
+start checking back ... <http://www.Department11.University0.edu/AssistantProfessor0>
+start checking back ... <http://www.Department16.University0.edu/AssistantProfessor5>
+start checking back ... <http://www.Department7.University0.edu/FullProfessor7>
+start checking back ... <http://www.Department11.University0.edu/FullProfessor5>
+start checking back ... <http://www.Department8.University0.edu/FullProfessor4>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent368>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent213>
+start checking back ... <http://www.Department16.University0.edu/GraduateStudent74>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent6>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent229>
+start checking back ... <http://www.Department16.University0.edu/other_staff4>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent319>
+start checking back ... <http://www.Department8.University0.edu/GraduateStudent156>
+start checking back ... <http://www.Department11.University0.edu/GraduateStudent32>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent370>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent145>
+start checking back ... <http://www.Department18.University0.edu/GraduateStudent103>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent412>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent286>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent316>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent171>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent492>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent133>
+start checking back ... <http://www.Department17.University0.edu/GraduateStudent55>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent209>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent59>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent12>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent128>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent556>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent427>
+start checking back ... <http://www.Department0.University0.edu/UndergraduateStudent301>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent511>
+start checking back ... <http://www.Department15.University0.edu/SystemsStaff11>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent6>
+start checking back ... <http://www.Department2.University0.edu/other_staff3>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent74>
+start checking back ... <http://www.Department1.University0.edu/GraduateStudent150>
+start checking back ... <http://www.Department18.University0.edu/GraduateStudent159>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent9>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent105>
+start checking back ... <http://www.Department6.University0.edu/GraduateStudent120>
+start checking back ... <http://www.Department9.University0.edu/GraduateStudent0>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent385>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent341>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent24>
+start checking back ... <http://www.Department1.University0.edu/GraduateStudent69>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent134>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent430>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent8>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent81>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent39>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent88>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent111>
+start checking back ... <http://www.Department15.University0.edu/AssociateProfessor7>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent241>
+start checking back ... <http://www.Department10.University0.edu/AssistantProfessor1>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent19>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent341>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent424>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent136>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent169>
+start checking back ... <http://www.Department15.University0.edu/GraduateStudent128>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent325>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent73>
+start checking back ... <http://www.Department12.University0.edu/GraduateStudent95>
+start checking back ... <http://www.Department5.University0.edu/AssistantProfessor2>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent415>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent114>
+start checking back ... <http://www.Department3.University0.edu/FullProfessor5>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent423>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent269>
+start checking back ... <http://www.Department12.University0.edu/GraduateStudent67>
+start checking back ... <http://www.Department4.University0.edu/ClericalStaff1>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent297>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent379>
+start checking back ... <http://www.Department18.University0.edu/GraduateStudent139>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent110>
+start checking back ... <http://www.Department11.University0.edu/GraduateStudent135>
+start checking back ... <http://www.Department2.University0.edu/GraduateStudent108>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent257>
+start checking back ... <http://www.Department13.University0.edu/UndergraduateStudent332>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent192>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent333>
+start checking back ... <http://www.Department10.University0.edu/other_staff8>
+start checking back ... <http://www.Department1.University0.edu/GraduateStudent154>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent400>
+start checking back ... <http://www.Department4.University0.edu/UndergraduateStudent73>
+start checking back ... <http://www.College0.University0.edu/woman_student203>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent116>
+start checking back ... <http://www.Department3.University0.edu/SystemsStaff14>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent65>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent482>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent324>
+start checking back ... <http://www.Department13.University0.edu/GraduateStudent24>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent67>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent404>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent138>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent42>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent127>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent164>
+start checking back ... <http://www.Department3.University0.edu/SameIndividual0>
+start checking back ... <http://www.Department17.University0.edu/SystemsStaff15>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent337>
+start checking back ... <http://www.Department3.University0.edu/GraduateStudent134>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent453>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent571>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent120>
+start checking back ... <http://www.Department1.University0.edu/AssociateProfessor12>
+start checking back ... <http://www.Department0.University0.edu/GraduateStudent4>
+start checking back ... <http://www.Department7.University0.edu/FullProfessor2>
+start checking back ... <http://www.Department14.University0.edu/AssociateProfessor1>
+start checking back ... <http://www.Department17.University0.edu/AssistantProfessor8>
+start checking back ... <http://www.Department18.University0.edu/GraduateStudent153>
+start checking back ... <http://www.Department11.University0.edu/other_staff8>
+start checking back ... <http://www.Department1.University0.edu/UndergraduateStudent35>
+start checking back ... <http://www.Department9.University0.edu/AssociateProfessor5>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent219>
+start checking back ... <http://www.Department14.University0.edu/UndergraduateStudent166>
+start checking back ... <http://www.Department8.University0.edu/SystemsStaff8>
+start checking back ... <http://www.Department6.University0.edu/FullProfessor5>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent161>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent94>
+start checking back ... <http://www.Department3.University0.edu/ClericalStaff0>
+start checking back ... <http://www.Department2.University0.edu/other_staff16>
+start checking back ... <http://www.Department16.University0.edu/UndergraduateStudent381>
+start checking back ... <http://www.Department2.University0.edu/GraduateStudent15>
+start checking back ... <http://www.Department1.University0.edu/GraduateStudent36>
+start checking back ... <http://www.Department12.University0.edu/UndergraduateStudent273>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent147>
+start checking back ... <http://www.Department10.University0.edu/other_staff0>
+start checking back ... <http://www.Department3.University0.edu/UndergraduateStudent94>
+start checking back ... <http://www.Department5.University0.edu/GraduateStudent164>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent293>
+start checking back ... <http://www.Department15.University0.edu/UndergraduateStudent269>
+start checking back ... <http://www.Department18.University0.edu/UndergraduateStudent514>
+start checking back ... <http://www.Department7.University0.edu/UndergraduateStudent51>
+start checking back ... <http://www.Department2.University0.edu/UndergraduateStudent127>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent306>
+start checking back ... <http://www.Department10.University0.edu/GraduateStudent112>
+start checking back ... <http://www.Department5.University0.edu/UndergraduateStudent322>
+start checking back ... <http://www.Department6.University0.edu/UndergraduateStudent282>
+start checking back ... <http://www.Department17.University0.edu/UndergraduateStudent498>
+start checking back ... <http://www.Department10.University0.edu/UndergraduateStudent417>
+start checking back ... <http://www.Department9.University0.edu/UndergraduateStudent86>
+start checking back ... <http://www.Department13.University0.edu/GraduateStudent43>
+start checking back ... <http://www.Department8.University0.edu/UndergraduateStudent358>
+start checking back ... <http://www.Department16.University0.edu/UndergraduateStudent277>
+start checking back ... <http://www.Department16.University0.edu/GraduateStudent85>
+start checking back ... <http://www.Department11.University0.edu/UndergraduateStudent10>
+start checking back ... <http://www.Department17.University0.edu/GraduateStudent42>
+The number of correct answers: 0
+Hermit was called 52 times.
+Hermit was called 1 times.
+Total time for full reasoner: 47.885
+Difficulty of this query: FullReasoning
+Total time to answer this query: 53.158
+The number of answer tuples: 2416
+time for LowerBound: 0.005
+time for UpperBound: 0.021
+time for ELLowerBound: 1.16
+time for Fragment: 4.037
+time for FragmentRefinement: 0.0
+time for Summarisation: 7.498
+time for Dependency: 0.0
+time for FullReasoning: 38.332
+---------- start evaluating Query 19 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Student . ?x benchmark:takesCourse _:y . _:y benchmark:isTaughtBy <http://www.Department0.University0.edu/FullProfessor0> }
+0.009
+The number of answers in the lower bound: 50
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Student . ?x benchmark:takesCourse _:y . _:y benchmark:isTaughtBy <http://www.Department0.University0.edu/FullProfessor0> }
+0.011
+The number of answers returned by the upper bound: 50
+The number of answers in the upper bound: 50
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.021
+The number of answer tuples: 50
+time for LowerBound: 0.01
+time for UpperBound: 0.011
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0
+---------- start evaluating Query 20 ----------
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Woman . ?x rdf:type benchmark:Student . ?x benchmark:isMemberOf _:y . _:y benchmark:subOrganizationOf <http://www.University0.edu> }
+0.011
+The number of answers in the lower bound: 6535
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#> SELECT distinct ?x WHERE { ?x rdf:type benchmark:Woman . ?x rdf:type benchmark:Student . ?x benchmark:isMemberOf _:y . _:y benchmark:subOrganizationOf <http://www.University0.edu> }
+0.013
+The number of answers returned by the upper bound: 6535
+The number of answers in the upper bound: 6535
+Difficulty of this query: UpperBound
+Total time to answer this query: 0.03
+The number of answer tuples: 6535
+time for LowerBound: 0.015
+time for UpperBound: 0.015
+time for ELLowerBound: 0.0
+time for Fragment: 0.0
+time for FragmentRefinement: 0.0
+time for Summarisation: 0.0
+time for Dependency: 0.0
+time for FullReasoning: 0.0

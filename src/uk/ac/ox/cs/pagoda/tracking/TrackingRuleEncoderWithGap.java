@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
-	
+
 	public TrackingRuleEncoderWithGap(UpperDatalogProgram program, BasicQueryEngine store) {
 		super(program, store);
 	}
@@ -113,6 +113,4 @@ public class TrackingRuleEncoderWithGap extends TrackingRuleEncoder {
 		}
 		
 	}
-
-
 }

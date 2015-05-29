@@ -1,17 +1,15 @@
 package uk.ac.ox.cs.pagoda.reasoner;
 
+import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.util.disposable.Disposable;
+
 import java.util.Collection;
 
-import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+public abstract class QueryEngine extends Disposable {
 
-public interface QueryEngine {
+	public abstract void evaluate(Collection<String> queryTexts, String answerFile);
 
-	public void evaluate(Collection<String> queryTexts, String answerFile);
-	
-	public AnswerTuples evaluate(String queryText);
-	
-	public AnswerTuples evaluate(String queryText, String[] answerVariables);
-	
-	public void dispose(); 
-	
+	public abstract AnswerTuples evaluate(String queryText);
+
+	public abstract AnswerTuples evaluate(String queryText, String[] answerVariables);
 }

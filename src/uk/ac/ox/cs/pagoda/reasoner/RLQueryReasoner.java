@@ -9,6 +9,7 @@ import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.LowerDatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Timer;
+import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
 class RLQueryReasoner extends QueryReasoner {
 	
@@ -16,13 +17,14 @@ class RLQueryReasoner extends QueryReasoner {
 
 	LowerDatalogProgram program;
 	Timer t = new Timer();
-	
+
 	public RLQueryReasoner() {
 		rlLowerStore = new BasicQueryEngine("rl");
 	}
 	
 	@Override
 	public void evaluate(QueryRecord queryRecord) {
+		if(isDisposed()) throw new DisposedException();
 		AnswerTuples rlAnswer = null; 
 		t.reset();
 		try {
@@ -38,12 +40,13 @@ class RLQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void dispose() {
-		if (rlLowerStore != null) rlLowerStore.dispose();
 		super.dispose();
+		if(rlLowerStore != null) rlLowerStore.dispose();
 	}
 
 	@Override
 	public void loadOntology(OWLOntology ontology) {
+		if(isDisposed()) throw new DisposedException();
 		program = new LowerDatalogProgram(); 
 		program.load(ontology, new UnaryBottom());
 		program.transform();
@@ -53,6 +56,7 @@ class RLQueryReasoner extends QueryReasoner {
 
 	@Override
 	public boolean preprocess() {
+		if(isDisposed()) throw new DisposedException();
 		rlLowerStore.importRDFData("data", importedData.toString());
 		rlLowerStore.materialise("lower program", program.toString());
 
@@ -61,6 +65,7 @@ class RLQueryReasoner extends QueryReasoner {
 
 	@Override
 	public boolean isConsistent() {
+		if(isDisposed()) throw new DisposedException();
 		AnswerTuples ans = null; 
 		try {
 			ans = rlLowerStore.evaluate(QueryRecord.botQueryText, new String[] {"X"});
@@ -74,6 +79,7 @@ class RLQueryReasoner extends QueryReasoner {
 
 	@Override
 	public void evaluateUpper(QueryRecord record) {
+		if(isDisposed()) throw new DisposedException();
 		evaluate(record); 
 	}
 

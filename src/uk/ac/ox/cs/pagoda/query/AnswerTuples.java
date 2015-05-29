@@ -1,23 +1,22 @@
 package uk.ac.ox.cs.pagoda.query;
 
-public interface AnswerTuples {
-	
-	public void reset(); 
-	
-	public boolean isValid();
-	
-	public int getArity();  
-	
-	public String[] getAnswerVariables(); 
-	
-	public void moveNext(); 
-	
-	public void dispose(); 
-	
-	public AnswerTuple getTuple(); 
-	
- 	public boolean contains(AnswerTuple t);
- 	
- 	public void remove(); 
+import uk.ac.ox.cs.pagoda.util.disposable.Disposable;
 
+public abstract class AnswerTuples extends Disposable {
+
+    public abstract void reset();
+
+    public abstract boolean isValid();
+
+    public abstract int getArity();
+
+    public abstract String[] getAnswerVariables();
+
+    public abstract void moveNext();
+
+    public abstract AnswerTuple getTuple();
+
+    public abstract boolean contains(AnswerTuple t);
+
+    public abstract void remove();
 }

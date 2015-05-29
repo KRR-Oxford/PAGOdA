@@ -1,24 +1,19 @@
 package uk.ac.ox.cs.pagoda.tracking;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.HermiT.model.*;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
-
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.UpperDatalogProgram;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 public class TrackingRuleEncoderWithoutGap extends TrackingRuleEncoder {
-	
+
 	public TrackingRuleEncoderWithoutGap(UpperDatalogProgram program, BasicQueryEngine store) {
 		super(program, store); 
 	}
@@ -105,5 +100,4 @@ public class TrackingRuleEncoderWithoutGap extends TrackingRuleEncoder {
 		}
 		
 	}
-
 }
