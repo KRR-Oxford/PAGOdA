@@ -73,7 +73,7 @@ public class QueryTracker {
 			store.applyReasoning(incrementally);
 			tripleCount = store.getTriplesCount();
 
-			Utility.logInfo("tracking store after materialising tracking program: "
+			Utility.logDebug("tracking store after materialising tracking program: "
 					+ tripleCount
 					+ " ("
 					+ (tripleCount - oldTripleCount)
@@ -149,28 +149,47 @@ public class QueryTracker {
 
 	}
 
+	public void addRelatedAxiomsAndClauses(QueryRecord[] botQueryRecords) {
+		LinkedList<QueryRecord> toAddedRecords = new LinkedList<QueryRecord>();
+
+		for(QueryRecord botQueryRecord : botQueryRecords)
+			if(overlappingDisjunctiveClauses(botQueryRecord) != null)
+				toAddedRecords.add(botQueryRecord);
+
+		for(QueryRecord botQueryRecord : toAddedRecords) {
+			m_manager.addAxioms(m_record.getRelevantOntology(), botQueryRecord.getRelevantOntology().getAxioms());
+			for(DLClause clause : botQueryRecord.getRelevantClauses())
+				m_record.addRelevantClauses(clause);
+		}
+
+		if(!toAddedRecords.isEmpty())
+			Utility.logDebug("Part of bottom fragments is added for this query.");
+		else
+			Utility.logDebug("None of bottom fragments is added for this query.");
+	}
+
 	private int extractBinaryTuples(BasicQueryEngine trackingStore, OWLDataFactory factory, Set<String> binaryPredicates) {
-		OWLOntology fragment = m_record.getRelevantOntology();  
-		int count;  
-		int aboxAxiomCounter = 0; 
-		Resource sub, obj; 
+		OWLOntology fragment = m_record.getRelevantOntology();
+		int count;
+		int aboxAxiomCounter = 0;
+		Resource sub, obj;
 		OWLAxiom aboxAxiom;
-		String trackingIRI; 
-		Set<Integer> trackedIDEqualities = new HashSet<Integer>(); 
-		Set<String> trackedEntityEqualities = new HashSet<String>(); 
+		String trackingIRI;
+		Set<Integer> trackedIDEqualities = new HashSet<Integer>();
+		Set<String> trackedEntityEqualities = new HashSet<String>();
 		TupleIterator trackingAnswers, lowerAnswers;
-		
+
 		for (Iterator<String> iter = binaryPredicates.iterator(); iter.hasNext(); ) {
-			trackingIRI = iter.next();  
+			trackingIRI = iter.next();
 			String propIRI = m_encoder.getOriginalPredicate(trackingIRI);
-			if (propIRI == null) continue; 
+			if(propIRI == null) continue;
 			if (!propIRI.equals(Namespace.EQUALITY_QUOTED)) continue;
-			trackingAnswers = null; 
+			trackingAnswers = null;
 			try {
 				trackingAnswers = trackingStore.internal_evaluateAgainstIDBs(getSPARQLQuery4Binary(trackingIRI));
 				for (long multi = trackingAnswers.open(); multi != 0; multi = trackingAnswers.getNext()) {
 					if (trackingAnswers.getResourceID(0) != trackingAnswers.getResourceID(1)) {
-						for (int i = 0; i < 2; ++i) 
+						for(int i = 0; i < 2; ++i)
 							if (trackedIDEqualities.add(trackingAnswers.getResourceID(i))) {
 								trackedEntityEqualities.add(trackingAnswers.getResource(i).m_lexicalForm);
 							}
@@ -179,71 +198,74 @@ public class QueryTracker {
 			} catch (JRDFStoreException e) {
 				e.printStackTrace();
 			} finally {
-				if (trackingAnswers != null) trackingAnswers.dispose(); 
+				if(trackingAnswers != null) trackingAnswers.dispose();
 			}
 			iter.remove();
-			break; 
+			break;
 		}
-		
-		String sub_rep, obj_rep; 
-		
+
+		String sub_rep, obj_rep;
+
 		for (Iterator<String> iter = binaryPredicates.iterator(); iter.hasNext(); ) {
-			trackingIRI = iter.next(); 
-			count = 0; 
+			trackingIRI = iter.next();
+			count = 0;
 			String propIRI = m_encoder.getOriginalPredicate(trackingIRI);
-			if (propIRI == null) continue; 
-			iter.remove(); 
-			lowerAnswers = null; trackingAnswers = null; 
+			if(propIRI == null) continue;
+			iter.remove();
+			lowerAnswers = null;
+			trackingAnswers = null;
 			Set<String> lower = new HashSet<String>();
 			OWLObject prop = null;
 			try {
 				trackingAnswers = trackingStore.internal_evaluateAgainstIDBs(getSPARQLQuery4Binary(trackingIRI));
 				trackingAnswers.open();
-				if (trackingAnswers.getMultiplicity() == 0) continue; 
-				
+				if(trackingAnswers.getMultiplicity() == 0) continue;
+
 				lowerAnswers = m_dataStore.internal_evaluateNotExpanded(getSPARQLQuery4Binary(propIRI));
-				lowerAnswers.open(); 
-				if (lowerAnswers.getMultiplicity() == 0) continue; 
-				
+				lowerAnswers.open();
+				if(lowerAnswers.getMultiplicity() == 0) continue;
+
 				StringBuilder builder = new StringBuilder();
 				for (long multi = lowerAnswers.getMultiplicity(); multi != 0; multi = lowerAnswers.getNext()) {
-					sub = lowerAnswers.getResource(0); 
+					sub = lowerAnswers.getResource(0);
 					obj = lowerAnswers.getResource(1);
 					builder.setLength(0);
-					builder.append(equalityGroups.find(sub.m_lexicalForm)).append(AnswerTuple.SEPARATOR).append(equalityGroups.find(obj.m_lexicalForm)); 
+					builder.append(equalityGroups.find(sub.m_lexicalForm))
+						   .append(AnswerTuple.SEPARATOR)
+						   .append(equalityGroups.find(obj.m_lexicalForm));
 					lower.add(builder.toString());
 				}
-				
+
 				for (long multi = trackingAnswers.getMultiplicity(); multi != 0; multi = trackingAnswers.getNext()) {
 					sub = trackingAnswers.getResource(0);
 					obj = trackingAnswers.getResource(1);
 					builder.setLength(0);
 					sub_rep = equalityGroups.find(sub.m_lexicalForm);
-					obj_rep = equalityGroups.find(obj.m_lexicalForm); 
+					obj_rep = equalityGroups.find(obj.m_lexicalForm);
 					if (!sub_rep.equals(sub.m_lexicalForm) || !obj_rep.equals(obj.m_lexicalForm)) continue;
-					
-					builder.append(sub_rep).append(AnswerTuple.SEPARATOR).append(obj_rep); 
+
+					builder.append(sub_rep).append(AnswerTuple.SEPARATOR).append(obj_rep);
 					if (lower.contains(builder.toString())) {
-						OWLObject owlObj = getOWLObject(obj, factory); 
+						OWLObject owlObj = getOWLObject(obj, factory);
 						if (owlObj instanceof OWLIndividual) {
 							if (prop == null)
 								prop = factory.getOWLObjectProperty(IRI.create(propIRI.startsWith("<") ? OWLHelper.removeAngles(propIRI) : propIRI));
 							aboxAxiom = factory.getOWLObjectPropertyAssertionAxiom(
-									(OWLObjectProperty) prop, 
-									factory.getOWLNamedIndividual(IRI.create(sub_rep)), 
+									(OWLObjectProperty) prop,
+									factory.getOWLNamedIndividual(IRI.create(sub_rep)),
 									factory.getOWLNamedIndividual(IRI.create(obj_rep)));
 						}
 						else if (owlObj instanceof OWLLiteral) {
 							if (prop == null)
 								prop = factory.getOWLDataProperty(IRI.create(propIRI.startsWith("<") ? OWLHelper.removeAngles(propIRI) : propIRI));
 							aboxAxiom = factory.getOWLDataPropertyAssertionAxiom(
-									(OWLDataProperty) prop, 
-									factory.getOWLNamedIndividual(IRI.create(sub_rep)), 
+									(OWLDataProperty) prop,
+									factory.getOWLNamedIndividual(IRI.create(sub_rep)),
 									(OWLLiteral) owlObj);
 						}
 						else {
-							Utility.logError("There might be an error here ... "); 
-							continue; 
+							Utility.logError("There might be an error here ... ");
+							continue;
 						}
 						if (!fragment.containsAxiom(aboxAxiom)) {
 							m_manager.addAxiom(fragment, aboxAxiom);
@@ -259,30 +281,30 @@ public class QueryTracker {
 				if (lowerAnswers != null) lowerAnswers.dispose();
 				lower.clear();
 			}
-			Utility.logDebug("property: " + propIRI + " " + count); 
+			Utility.logDebug("property: " + propIRI + " " + count);
 		}
-		
+
 		count = 0;
-		String value; 
-		OWLObjectProperty sameAs = factory.getOWLObjectProperty(IRI.create(Namespace.EQUALITY)); 
+		String value;
+		OWLObjectProperty sameAs = factory.getOWLObjectProperty(IRI.create(Namespace.EQUALITY));
 		for (String key: equalityGroups.keySet()) {
-			if (!trackedEntityEqualities.contains(key)) continue; 
+			if(!trackedEntityEqualities.contains(key)) continue;
 			value = equalityGroups.find(key);
 			m_manager.addAxiom(fragment, factory.getOWLObjectPropertyAssertionAxiom(
-					sameAs, 
-					factory.getOWLNamedIndividual(IRI.create(key)), 
+					sameAs,
+					factory.getOWLNamedIndividual(IRI.create(key)),
 					factory.getOWLNamedIndividual(IRI.create(value))));
-			++aboxAxiomCounter; 
-			++count; 
+			++aboxAxiomCounter;
+			++count;
 		}
 		Utility.logDebug("property: " + Namespace.EQUALITY_QUOTED + " " + count);
-		
-		trackedEntityEqualities.clear(); 
+
+		trackedEntityEqualities.clear();
 		trackedIDEqualities.clear();
 		Utility.logTrace(Namespace.EQUALITY_QUOTED + " " + count);
-		
-		Utility.logDebug("ABox extraction Done"); 
-		return aboxAxiomCounter; 
+
+		Utility.logDebug("ABox extraction Done");
+		return aboxAxiomCounter;
 	}
 
 	private OWLObject getOWLObject(Resource rdfoxTerm, OWLDataFactory factory) {
@@ -298,15 +320,17 @@ public class QueryTracker {
 //				rdfoxTerm.m_datatype.equals(Datatype.XSD_UNSIGNED_BYTE))
 		if (rdfoxTerm.m_datatype.equals(Datatype.XSD_DATE))
 			return factory.getOWLLiteral(rdfoxTerm.m_lexicalForm, factory.getOWLDatatype(IRI.create(Namespace.XSD_STRING)));
-		
-		else return factory.getOWLLiteral(rdfoxTerm.m_lexicalForm, factory.getOWLDatatype(IRI.create(rdfoxTerm.m_datatype.getIRI()))); 
+
+		else
+			return factory.getOWLLiteral(rdfoxTerm.m_lexicalForm, factory.getOWLDatatype(IRI.create(rdfoxTerm.m_datatype
+																											.getIRI())));
 	}
 
 	private int extractUnaryTuples(BasicQueryEngine trackingStore, OWLDataFactory factory, Set<String> unaryPredicates) {
 		OWLOntology fragment = m_record.getRelevantOntology();
 		int count;
 		int aboxAxiomCounter = 0;
-		String answer; 
+		String answer;
 		OWLAxiom aboxAxiom;
 		for (String trackingIRI : unaryPredicates) {
 			count = 0;
@@ -319,12 +343,12 @@ public class QueryTracker {
 			try {
 				answers = trackingStore.internal_evaluateAgainstIDBs(getSPARQLQuery4Unary(trackingIRI));
 				answers.open();
-				if (answers.getMultiplicity() == 0) continue; 
+				if(answers.getMultiplicity() == 0) continue;
 
 				lowerAnswers = m_dataStore.internal_evaluateNotExpanded(getSPARQLQuery4Unary(clsIRI));
-				lowerAnswers.open(); 
+				lowerAnswers.open();
 				if (lowerAnswers.getMultiplicity() == 0) continue;
-				
+
 				for (long multi = lowerAnswers.getMultiplicity(); multi != 0; multi = lowerAnswers.getNext())
 					lower.add(equalityGroups.find(lowerAnswers.getResource(0).m_lexicalForm));
 
@@ -384,25 +408,6 @@ public class QueryTracker {
 		} finally {
 			if (derivedTuples != null) derivedTuples.dispose();
 		}
-	}
-
-	public void addRelatedAxiomsAndClauses(QueryRecord[] botQueryRecords) {
-		LinkedList<QueryRecord> toAddedRecords = new LinkedList<QueryRecord>();
-
-		for (QueryRecord botQueryRecord : botQueryRecords)
-			if (overlappingDisjunctiveClauses(botQueryRecord) != null)
-				toAddedRecords.add(botQueryRecord);
-
-		for (QueryRecord botQueryRecord : toAddedRecords) {
-			m_manager.addAxioms(m_record.getRelevantOntology(), botQueryRecord.getRelevantOntology().getAxioms());
-			for (DLClause clause : botQueryRecord.getRelevantClauses())
-				m_record.addRelevantClauses(clause);
-		}
-
-		if (!toAddedRecords.isEmpty())
-			Utility.logDebug("Part of bottom fragments is added for this query.");
-		else
-			Utility.logDebug("None of bottom fragments is added for this query.");
 	}
 
 	private Set<DLClause> overlappingDisjunctiveClauses(

@@ -40,7 +40,7 @@ public abstract class StageQueryEngine extends BasicQueryEngine {
 		}
 
 		if (validMaterialisation)
-			Utility.logInfo("The " + name + " store is valid.");
+			Utility.logDebug("The " + name + " store is valid.");
 		else
 			Utility.logInfo("The " + name + " store is not valid.");
 		return validMaterialisation;

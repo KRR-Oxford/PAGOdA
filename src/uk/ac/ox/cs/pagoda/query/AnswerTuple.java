@@ -16,14 +16,10 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AnswerTuple {
 	
 	public static final String SEPARATOR = "\t";
-	static final Pattern owlLiteralRegex =
-			Pattern.compile("^\"(?<lexicalForm>[^@]+(@(?<langTag>.+))?)\"(^^<(?<dataType>.+)>)?$");
 	String m_str = null;
 	GroundTerm[] m_tuple;
 	
@@ -158,32 +154,36 @@ public class AnswerTuple {
 			String tuplesString = json.getAsJsonPrimitive().getAsString();
 //			StringTokenizer tokenizer = new StringTokenizer(tuplesString, SEPARATOR);
 			StringTokenizer tokenizer = new StringTokenizer(tuplesString);
-			GroundTerm[] terms = new GroundTerm[tokenizer.countTokens()];
+			int tokensCount = tokenizer.countTokens();
+			GroundTerm[] terms = new GroundTerm[tokensCount];
 
 			// TODO test parsing
-			for (int i = 0; i < tokenizer.countTokens(); i++) {
+			for(int i = 0; i < tokensCount; i++) {
 				String token = tokenizer.nextToken();
 				if (token.charAt(0) == '<') {
 					terms[i] = uk.ac.ox.cs.JRDFox.model.Individual.create(token.substring(1,token.length()-1));
 				}
 				else if (token.charAt(0) == '"') {
-					Matcher matcher = owlLiteralRegex.matcher(token);
-					if(matcher.matches()) {
-						String lexicalForm = matcher.group("lexicalForm");
-						String dataTypeIRI = matcher.group("dataType");
-						Datatype dataType;
-						if(dataTypeIRI == null || dataTypeIRI.isEmpty()) dataType = Datatype.RDF_PLAIN_LITERAL;
-						else dataType = uk.ac.ox.cs.JRDFox.model.Datatype.value(dataTypeIRI);
-						terms[i] = uk.ac.ox.cs.JRDFox.model.Literal.create(lexicalForm, dataType);
+					Datatype datatype;
+					String lexicalForm;
+					if(token.contains("^^")) {
+						String[] lexicalFormAndType = token.split("^^");
+						lexicalForm = lexicalFormAndType[0];
+						datatype = Datatype.value(lexicalFormAndType[1]);
 					}
 					else {
-						throw new IllegalArgumentException("The given json does not represent a valid AnswerTuple");
+						lexicalForm = token.substring(1, token.length() - 1);
+						// TODO check
+//						datatype = token.contains("@") ? Datatype.RDF_PLAIN_LITERAL : Datatype.XSD_STRING;
+						datatype = Datatype.XSD_STRING;
 					}
+					terms[i] = uk.ac.ox.cs.JRDFox.model.Literal.create(lexicalForm, datatype);
 				}
 				else {
 					terms[i] = uk.ac.ox.cs.JRDFox.model.BlankNode.create(token);
 				}
 			}
+
 			return new AnswerTuple(terms);
 		}
 	}

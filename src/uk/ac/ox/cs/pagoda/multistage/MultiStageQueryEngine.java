@@ -82,7 +82,6 @@ public class MultiStageQueryEngine extends StageQueryEngine {
         if(gap != null)
             treatment.addAdditionalGapTuples();
         String programName = "multi-stage upper program";
-        Utility.logInfo(name + " store is materialising " + programName + " ...");
         Timer t = new Timer();
 
         String datalogProgram = program.getDatalogRuleText();
@@ -101,7 +100,8 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 long oldTripleCount = store.getTriplesCount();
 
                 subTimer.reset();
-                Utility.logInfo("Iteration " + ++iteration + ": ");
+                Utility.logInfo(name + " store is materialising " +
+                                        programName + "... (iteration " + ++iteration + ")");
 
                 incrementally = (iteration != 1);
 
@@ -143,8 +143,8 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 subTimer.reset();
                 if((violations = program.isIntegrated(this, incrementally)) == null || violations.size() == 0) {
                     store.clearRulesAndMakeFactsExplicit();
-                    Utility.logInfo(name + " store after materialising " + programName + ": " + tripleCount + " (" + (tripleCount - tripleCountBeforeMat) + " new)");
-                    Utility.logInfo(name + " store is DONE for multi-stage materialising in " + t.duration() + " seconds.");
+                    Utility.logDebug(name + " store after materialising " + programName + ": " + tripleCount + " (" + (tripleCount - tripleCountBeforeMat) + " new)");
+                    Utility.logDebug(name + " store is DONE for multi-stage materialising in " + t.duration() + " seconds.");
                     return isValid() ? 1 : 0;
                 }
                 Utility.logDebug("Time to detect violations: " + subTimer.duration());

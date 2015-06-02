@@ -311,7 +311,7 @@ public abstract class TrackingRuleEncoder extends Disposable {
             }
         }
 
-        Utility.logInfo(addedData.size() + " triples are added into the store.");
+        Utility.logDebug(addedData.size() + " triples are added into the store.");
     }
 
     protected DLPredicate getGapDLPredicate(DLPredicate dlPredicate) {

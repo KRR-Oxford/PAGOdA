@@ -106,7 +106,7 @@ protected PredicateDependency dependencyGraph;
 		clauses.addAll(botStrategy.process(botRelated));
 
 		if(this instanceof GeneralProgram)
-			Utility.logInfo("The number of rules: " + (clauses.size() - 1));
+			Utility.logDebug("The number of rules: " + (clauses.size() - 1));
 	}
 	
 	@Override

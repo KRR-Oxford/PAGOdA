@@ -128,7 +128,7 @@ public class ConsistencyManager extends Disposable {
 			store.applyReasoning(true);
 			tripleCount = store.getTriplesCount();
 
-			Utility.logInfo("tracking store after materialising tracking program: " + tripleCount + " (" + (tripleCount - oldTripleCount) + " new)",
+			Utility.logDebug("tracking store after materialising tracking program: " + tripleCount + " (" + (tripleCount - oldTripleCount) + " new)",
 							"tracking store finished the materialisation of tracking program in " + t1.duration() + " seconds.");
 
 			extractAxioms();

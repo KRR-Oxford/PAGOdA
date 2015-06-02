@@ -31,42 +31,29 @@ class MyQueryReasoner extends QueryReasoner {
     OWLOntology ontology;
     DatalogProgram program;
 
-    //	String additonalDataFile;
     BasicQueryEngine rlLowerStore = null;
     BasicQueryEngine lazyUpperStore = null;
-    MultiStageQueryEngine limitedSkolemUpperStore;
+    //    MultiStageQueryEngine limitedSkolemUpperStore;
     OWLOntology elho_ontology;
-    //	boolean[] namedIndividuals_lazyUpper;
     KarmaQueryEngine elLowerStore = null;
     BasicQueryEngine trackingStore = null;
-    //	boolean[] namedIndividuals_tracking;
     TrackingRuleEncoder encoder;
     private boolean equalityTag;
-    private boolean multiStageTag;
     private Timer t = new Timer();
     private Collection<String> predicatesWithGap = null;
     private SatisfiabilityStatus satisfiable;
     private ConsistencyManager consistency = new ConsistencyManager(this);
-    private boolean useUpperStores = false;
 
     public MyQueryReasoner() {
-        setup(true, true);
+        setup(true);
     }
 
     public MyQueryReasoner(boolean multiStageTag, boolean considerEqualities) {
-        setup(multiStageTag, considerEqualities);
-    }
+        if(!multiStageTag)
+            throw new IllegalArgumentException(
+                    "Value \"true\" for parameter \"multiStageTag\" is no longer supported");
 
-    public void setup(boolean multiStageTag, boolean considerEqualities) {
-        if(isDisposed()) throw new DisposedException();
-        satisfiable = SatisfiabilityStatus.UNCHECKED;
-        this.multiStageTag = multiStageTag;
-        this.equalityTag = considerEqualities;
-
-        rlLowerStore = new BasicQueryEngine("rl-lower-bound");
-        elLowerStore = new KarmaQueryEngine("elho-lower-bound");
-
-        trackingStore = getUpperStore("tracking", false);
+        setup(considerEqualities);
     }
 
     @Override
@@ -84,11 +71,8 @@ class MyQueryReasoner extends QueryReasoner {
 //		program.getUpper().save();
 //		program.getGeneral().save();
 
-        useUpperStores = multiStageTag && !program.getGeneral().isHorn();
-        if(useUpperStores) {
-            lazyUpperStore = getUpperStore("lazy-upper-bound", true);
-            limitedSkolemUpperStore = new MultiStageQueryEngine("limited-skolem-upper-bound", true);
-        }
+        if(!program.getGeneral().isHorn())
+            lazyUpperStore = new MultiStageQueryEngine("lazy-upper-bound", true);
 
         importData(program.getAdditionalDataFile());
 
@@ -104,15 +88,16 @@ class MyQueryReasoner extends QueryReasoner {
     @Override
     public boolean preprocess() {
         if(isDisposed()) throw new DisposedException();
+
         t.reset();
-        Utility.logInfo("Preprocessing... checking satisfiability... ");
+        Utility.logInfo("Preprocessing (and checking satisfiability)...");
 
         String name = "data", datafile = importedData.toString();
         rlLowerStore.importRDFData(name, datafile);
         rlLowerStore.materialise("lower program", program.getLower().toString());
 //		program.getLower().save();
         if(!consistency.checkRLLowerBound()) return false;
-        Utility.logInfo("The number of sameAs assertions in RL lower store: " + rlLowerStore.getSameAsNumber());
+        Utility.logDebug("The number of sameAs assertions in RL lower store: " + rlLowerStore.getSameAsNumber());
 
         String originalMarkProgram = OWLHelper.getOriginalMarkProgram(ontology);
 
@@ -134,22 +119,7 @@ class MyQueryReasoner extends QueryReasoner {
         }
         if(consistency.checkUpper(lazyUpperStore)) {
             satisfiable = SatisfiabilityStatus.SATISFIABLE;
-            Utility.logInfo("time for satisfiability checking: " + t.duration());
-        }
-
-        if(limitedSkolemUpperStore != null) {
-            limitedSkolemUpperStore.importRDFData(name, datafile);
-            limitedSkolemUpperStore.materialise("saturate named individuals", originalMarkProgram);
-            int tag = limitedSkolemUpperStore.materialiseSkolemly(program, null);
-            if(tag != 1) {
-                limitedSkolemUpperStore.dispose();
-                limitedSkolemUpperStore = null;
-            }
-            if(tag == -1) return false;
-        }
-        if(satisfiable == SatisfiabilityStatus.UNCHECKED && consistency.checkUpper(limitedSkolemUpperStore)) {
-            satisfiable = SatisfiabilityStatus.SATISFIABLE;
-            Utility.logInfo("time for satisfiability checking: " + t.duration());
+            Utility.logDebug("time for satisfiability checking: " + t.duration());
         }
 
         trackingStore.importRDFData(name, datafile);
@@ -194,14 +164,11 @@ class MyQueryReasoner extends QueryReasoner {
     @Override
     public void evaluate(QueryRecord queryRecord) {
         if(isDisposed()) throw new DisposedException();
-        if(queryBounds(queryRecord))
+
+        if(queryLowerAndUpperBounds(queryRecord))
             return;
 
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
-
-        int aBoxCount = relevantOntologySubset.getABoxAxioms(true).size();
-        Utility.logInfo("Relevant ontology subset: ABox_axioms=" + aBoxCount + " TBox_axioms=" + (relevantOntologySubset
-                .getAxiomCount() - aBoxCount));
 //		queryRecord.saveRelevantOntology("fragment_query" + queryRecord.getQueryID() + ".owl");
 
         if(querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
@@ -240,16 +207,18 @@ class MyQueryReasoner extends QueryReasoner {
         if(lazyUpperStore != null) lazyUpperStore.dispose();
         if(elLowerStore != null) elLowerStore.dispose();
         if(trackingStore != null) trackingStore.dispose();
-        if(limitedSkolemUpperStore != null) limitedSkolemUpperStore.dispose();
-
+//        if(limitedSkolemUpperStore != null) limitedSkolemUpperStore.dispose();
     }
 
-    private BasicQueryEngine getUpperStore(String name, boolean checkValidity) {
-        if(multiStageTag)
-            return new MultiStageQueryEngine(name, checkValidity);
-//			return new TwoStageQueryEngine(name, checkValidity);
-        else
-            return new BasicQueryEngine(name);
+    private void setup(boolean considerEqualities) {
+        if(isDisposed()) throw new DisposedException();
+        satisfiable = SatisfiabilityStatus.UNCHECKED;
+        this.equalityTag = considerEqualities;
+
+        rlLowerStore = new BasicQueryEngine("rl-lower-bound");
+        elLowerStore = new KarmaQueryEngine("elho-lower-bound");
+
+        trackingStore = new MultiStageQueryEngine("tracking", false);
     }
 
     protected void internal_importDataFile(String name, String datafile) {
@@ -284,10 +253,37 @@ class MyQueryReasoner extends QueryReasoner {
         return false;
     }
 
+    private boolean checkGapAnswers(BasicQueryEngine relevantStore, QueryRecord queryRecord) {
+        Tuple<String> extendedQueries = queryRecord.getExtendedQueryText();
+        if(queryRecord.hasNonAnsDistinguishedVariables())
+            checkGapAnswers(relevantStore, queryRecord, extendedQueries.get(0), queryRecord.getAnswerVariables());
+        else
+            checkGapAnswers(relevantStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+
+        queryRecord.addProcessingTime(Step.L_SKOLEM_UPPER_BOUND, t.duration());
+        if(queryRecord.isProcessed()) {
+            queryRecord.setDifficulty(Step.L_SKOLEM_UPPER_BOUND);
+            return true;
+        }
+        return false;
+    }
+
+    private void checkGapAnswers(BasicQueryEngine relevantStore, QueryRecord queryRecord, String queryText, String[] answerVariables) {
+        AnswerTuples rlAnswer = null;
+        try {
+            Utility.logDebug(queryText);
+            rlAnswer = relevantStore.evaluate(queryText, answerVariables);
+            Utility.logDebug(t.duration());
+            queryRecord.checkUpperBoundAnswers(rlAnswer);
+        } finally {
+            if(rlAnswer != null) rlAnswer.dispose();
+        }
+    }
+
     /**
      * Returns the part of the ontology relevant for Hermit, while computing the bound answers.
      */
-    private boolean queryBounds(QueryRecord queryRecord) {
+    private boolean queryLowerAndUpperBounds(QueryRecord queryRecord) {
         AnswerTuples rlAnswer = null, elAnswer = null;
 
         t.reset();
@@ -312,9 +308,6 @@ class MyQueryReasoner extends QueryReasoner {
             Utility.logDebug("Lazy store");
             if(lazyUpperStore != null && queryUpperStore(lazyUpperStore, queryRecord, extendedQueryTexts, Step.LAZY_UPPER_BOUND))
                 return true;
-//			Utility.logDebug("Skolem store");
-//			if(limitedSkolemUpperStore != null && queryUpperStore(limitedSkolemUpperStore, queryRecord, extendedQueryTexts, Step.L_SKOLEM_UPPER_BOUND))
-//				return null;
         }
 
         t.reset();
@@ -338,12 +331,22 @@ class MyQueryReasoner extends QueryReasoner {
     }
 
     private OWLOntology extractRelevantOntologySubset(QueryRecord queryRecord) {
+        Utility.logInfo("Extracting relevant ontology-subset...");
+
         t.reset();
 
         QueryTracker tracker = new QueryTracker(encoder, rlLowerStore, queryRecord);
         OWLOntology relevantOntologySubset = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
 
         queryRecord.addProcessingTime(Step.FRAGMENT, t.duration());
+
+        // just statistics
+        int numOfABoxAxioms = relevantOntologySubset.getABoxAxioms(true).size();
+        int numOfTBoxAxioms = relevantOntologySubset.getAxiomCount() - numOfABoxAxioms;
+        int originalNumOfABoxAxioms = ontology.getABoxAxioms(true).size();
+        int originalNumOfTBoxAxioms = ontology.getAxiomCount() - originalNumOfABoxAxioms;
+        Utility.logInfo("Relevant ontology-subset has been extracted: |ABox|="
+                                + numOfABoxAxioms + ", |TBox|=" + numOfTBoxAxioms);
 
         return relevantOntologySubset;
     }
@@ -361,22 +364,23 @@ class MyQueryReasoner extends QueryReasoner {
     }
 
     private boolean querySkolemisedRelevantSubset(OWLOntology relevantSubset, QueryRecord queryRecord) {
+        Utility.logInfo("Evaluating semi-Skolemised relevant upper store...");
+
         DatalogProgram relevantProgram = new DatalogProgram(relevantSubset, false); // toClassify is false
 
         MultiStageQueryEngine relevantStore =
                 new MultiStageQueryEngine("Relevant-store", true); // checkValidity is true
-//        relevantStore.importRDFData("data", relevantProgram.getAdditionalDataFile()); // tried, doesn't work
+
         relevantStore.importDataFromABoxOf(relevantSubset);
 
         int materialisationResult = relevantStore.materialiseSkolemly(relevantProgram, null);
-//        int materialisationResult = relevantStore.materialiseRestrictedly(relevantProgram, null); // DOESN'T WORK!!!
         if(materialisationResult != 1)
             throw new RuntimeException("Skolemised materialisation error"); // TODO check consistency
-//        relevantStore.materialiseRestrictedly(relevantProgram, null); // it has been tried
 
-        return queryUpperStore(relevantStore, queryRecord, queryRecord.getExtendedQueryText(), Step.L_SKOLEM_UPPER_BOUND);
+        boolean isFullyProcessed = checkGapAnswers(relevantStore, queryRecord);
 
-//        return queryUpperStore(limitedSkolemUpperStore, queryRecord, queryRecord.getExtendedQueryText(), Step.L_SKOLEM_UPPER_BOUND);
+        Utility.logInfo("Semi-Skolemised relevant upper store has been evaluated");
+        return isFullyProcessed;
     }
 
     enum SatisfiabilityStatus {SATISFIABLE, UNSATISFIABLE, UNCHECKED}

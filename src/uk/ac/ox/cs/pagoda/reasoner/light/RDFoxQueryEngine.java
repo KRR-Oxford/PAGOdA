@@ -74,7 +74,7 @@ public abstract class RDFoxQueryEngine extends QueryEngine {
             long prevTriplesCount = store.getTriplesCount();
             store.importOntology(ontology.getOWLOntologyManager().createOntology(ontology.getABoxAxioms(true)));
             long loadedTriples = store.getTriplesCount() - prevTriplesCount;
-            Utility.logInfo(name + ": loaded " + loadedTriples + " triples from " + ontology.getABoxAxioms(true)
+            Utility.logDebug(name + ": loaded " + loadedTriples + " triples from " + ontology.getABoxAxioms(true)
                                                                                             .size() + " ABox axioms");
         } catch(JRDFStoreException | OWLOntologyCreationException e) {
             e.printStackTrace();

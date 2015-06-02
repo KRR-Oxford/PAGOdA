@@ -67,7 +67,7 @@ public class SimpleETL {
 		finally {
 			fos.close();
 		}
-		Utility.logInfo("SimpleETL rewriting DONE: additional ontology data is saved in " + m_fileToExport + ".");
+		Utility.logDebug("SimpleETL rewriting DONE: additional ontology data is saved in " + m_fileToExport + ".");
 	}
 	
 	public String getExportedFile() {
