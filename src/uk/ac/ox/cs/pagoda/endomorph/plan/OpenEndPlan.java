@@ -94,14 +94,14 @@ public class OpenEndPlan implements CheckPlan {
 
 	private boolean redundant(Clique clique) {
 		for (NodeTuple nodeTuple: clique.getNodeTuples())
-			if (!passedAnswers.contains(AnswerTuple.getInstance(nodeTuple.getAnswerTuple(), m_answerArity)))
+			if(!passedAnswers.contains(AnswerTuple.create(nodeTuple.getAnswerTuple(), m_answerArity)))
 				return false; 
 		return true;
 	}
 
 	private void addProjections(Clique clique) {
-		for (NodeTuple nodeTuple: clique.getNodeTuples()) 
-			passedAnswers.add(AnswerTuple.getInstance(nodeTuple.getAnswerTuple(), m_answerArity));
+		for (NodeTuple nodeTuple: clique.getNodeTuples())
+			passedAnswers.add(AnswerTuple.create(nodeTuple.getAnswerTuple(), m_answerArity));
 	}
 
 	private void setMarkCascadelyValidated(Clique clique) { 

@@ -49,7 +49,7 @@ public class AnswerTuple {
 	/**
 	 * It returns the first argument if its arity equals length, a new AnswerTuple otherwise.
 	 */
-	public static AnswerTuple getInstance(AnswerTuple extendedTuple, int length) {
+	public static AnswerTuple create(AnswerTuple extendedTuple, int length) {
 		if(length == extendedTuple.getArity()) return extendedTuple;
 		else return new AnswerTuple(extendedTuple, length);
 	}

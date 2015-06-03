@@ -19,6 +19,7 @@ import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
@@ -44,7 +45,6 @@ class MyQueryReasoner extends QueryReasoner {
     private Collection<String> predicatesWithGap = null;
     private ConsistencyStatus isConsistent;
     private ConsistencyManager consistency = new ConsistencyManager(this);
-    private boolean useSkolemisation = false; // now only debugging
 
     public MyQueryReasoner() {
         setup(true);
@@ -192,7 +192,8 @@ class MyQueryReasoner extends QueryReasoner {
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
         queryRecord.saveRelevantOntology("/home/alessandro/Desktop/fragment_query" + queryRecord.getQueryID() + ".owl");
 
-        if(useSkolemisation && querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
+        if(PagodaProperties.getDefaultUseSkolemUpperBound() &&
+                querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
             return;
 
         Timer t = new Timer();
@@ -263,10 +264,12 @@ class MyQueryReasoner extends QueryReasoner {
     private boolean queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord,
                                     Tuple<String> extendedQuery, Step step) {
         t.reset();
-        if(queryRecord.hasNonAnsDistinguishedVariables())
+
+        queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+        if(!queryRecord.isProcessed() && !queryRecord.getQueryText().equals(extendedQuery.get(0)))
             queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
-        else
-            queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
+        if(!queryRecord.isProcessed() && queryRecord.hasNonAnsDistinguishedVariables())
+            queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
 
         queryRecord.addProcessingTime(step, t.duration());
         if(queryRecord.isProcessed()) {
@@ -274,34 +277,6 @@ class MyQueryReasoner extends QueryReasoner {
             return true;
         }
         return false;
-    }
-
-    private boolean checkGapAnswers(BasicQueryEngine relevantStore, QueryRecord queryRecord) {
-        t.reset();
-        Tuple<String> extendedQueries = queryRecord.getExtendedQueryText();
-        if(queryRecord.hasNonAnsDistinguishedVariables())
-            checkGapAnswers(relevantStore, queryRecord, extendedQueries.get(0), queryRecord.getAnswerVariables());
-        else
-            checkGapAnswers(relevantStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-
-        queryRecord.addProcessingTime(Step.L_SKOLEM_UPPER_BOUND, t.duration());
-        if(queryRecord.isProcessed()) {
-            queryRecord.setDifficulty(Step.L_SKOLEM_UPPER_BOUND);
-            return true;
-        }
-        return false;
-    }
-
-    private void checkGapAnswers(BasicQueryEngine relevantStore, QueryRecord queryRecord, String queryText, String[] answerVariables) {
-        AnswerTuples rlAnswer = null;
-        try {
-            Utility.logDebug(queryText);
-            rlAnswer = relevantStore.evaluate(queryText, answerVariables);
-            Utility.logDebug(t.duration());
-            queryRecord.checkUpperBoundAnswers(rlAnswer);
-        } finally {
-            if(rlAnswer != null) rlAnswer.dispose();
-        }
     }
 
     /**
@@ -322,9 +297,11 @@ class MyQueryReasoner extends QueryReasoner {
 
         Tuple<String> extendedQueryTexts = queryRecord.getExtendedQueryText();
 
-        Utility.logDebug("Tracking store");
-        if(queryUpperStore(trackingStore, queryRecord, extendedQueryTexts, Step.SIMPLE_UPPER_BOUND))
-            return true;
+        if(PagodaProperties.getDefaultUseAlwaysSimpleUpperBound() || lazyUpperStore == null) {
+            Utility.logDebug("Tracking store");
+            if(queryUpperStore(trackingStore, queryRecord, extendedQueryTexts, Step.SIMPLE_UPPER_BOUND))
+                return true;
+        }
 
         if(!queryRecord.isBottom()) {
             Utility.logDebug("Lazy store");
@@ -362,7 +339,6 @@ class MyQueryReasoner extends QueryReasoner {
 
         queryRecord.addProcessingTime(Step.FRAGMENT, t.duration());
 
-        // just statistics
         int numOfABoxAxioms = relevantOntologySubset.getABoxAxioms(true).size();
         int numOfTBoxAxioms = relevantOntologySubset.getAxiomCount() - numOfABoxAxioms;
         Utility.logInfo("Relevant ontology-subset has been extracted: |ABox|="
@@ -407,7 +383,9 @@ class MyQueryReasoner extends QueryReasoner {
             return false;
         }
 
-        boolean isFullyProcessed = checkGapAnswers(relevantStore, queryRecord);
+        boolean isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
+                                                   queryRecord.getExtendedQueryText(),
+                                                   Step.L_SKOLEM_UPPER_BOUND);
         Utility.logInfo("Semi-Skolemised relevant upper store has been evaluated");
         return isFullyProcessed;
     }

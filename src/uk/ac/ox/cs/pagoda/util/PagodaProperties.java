@@ -10,24 +10,41 @@ import java.util.Properties;
 public class PagodaProperties {
 
 	public static final String CONFIG_FILE = "pagoda.properties";
-
 	public static final boolean DEFAULT_DEBUG = false;
+	private static final boolean DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
+	private static final boolean DEFAULT_USE_SKOLEM_UPPER_BOUND;
+
 	public static boolean shellModeDefault = false;
 	private static boolean debug = DEFAULT_DEBUG;
 
 	static {
+		boolean defaultUseAlwaysSimpleUpperBound = false;
+		boolean defaultUseSkolemUpperBound = true;
+
 		try(InputStream in = PagodaProperties.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
 			Properties config = new Properties();
 			config.load(in);
 			in.close();
+			Logger logger = Logger.getLogger("PagodaProperties");
 			if(config.containsKey("debug")) {
 				debug = Boolean.parseBoolean(config.getProperty("debug"));
-				Logger.getLogger("PagodaProperties")
-					  .info("Debugging mode is enabled (you can disable it from file \"pagoda.properties\")");
+//			  	logger.info("Debugging mode is enabled (you can disable it from file \"pagoda.properties\")");
+				logger.info("Debugging mode is enabled");
+			}
+			if(config.containsKey("useAlwaysSimpleUpperBound")) {
+				defaultUseAlwaysSimpleUpperBound =
+						Boolean.parseBoolean(config.getProperty("useAlwaysSimpleUpperBound"));
+				logger.info("The simple upper bound is always used");
+			}
+			if(config.containsKey("useSkolemUpperBound")) {
+				defaultUseSkolemUpperBound = Boolean.parseBoolean(config.getProperty("useSkolemUpperBound"));
+				logger.info("The Skolem upper bound is enabled");
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+		DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND = defaultUseAlwaysSimpleUpperBound;
+		DEFAULT_USE_SKOLEM_UPPER_BOUND = defaultUseSkolemUpperBound;
 	}
 
 	String dataPath = null;
@@ -37,7 +54,8 @@ public class PagodaProperties {
 	boolean toClassify = true;
 	boolean toCallHermiT = true;
 	boolean shellMode = shellModeDefault;
-
+	private boolean useAlwaysSimpleUpperBound = DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
+	private boolean useSkolemUpperBound = DEFAULT_USE_SKOLEM_UPPER_BOUND;
 	public PagodaProperties(String path) {
 		java.util.Properties m_properties = new java.util.Properties();
 		InputStream inputStream = null;
@@ -63,12 +81,19 @@ public class PagodaProperties {
 				}
 		}
 	}
-
 	public PagodaProperties() {
 	}
 
 	public static boolean isDebuggingMode() {
 		return debug;
+	}
+
+	public static boolean getDefaultUseAlwaysSimpleUpperBound() {
+		return DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
+	}
+
+	public static boolean getDefaultUseSkolemUpperBound() {
+		return DEFAULT_USE_SKOLEM_UPPER_BOUND;
 	}
 
 	public String getDataPath() {
@@ -127,4 +152,19 @@ public class PagodaProperties {
 		shellMode = flag;
 	}
 
+	public boolean getUseAlwaysSimpleUpperBound() {
+		return useAlwaysSimpleUpperBound;
+	}
+
+	public void setUseAlwaysSimpleUpperBound(boolean flag) {
+		useAlwaysSimpleUpperBound = flag;
+	}
+
+	public boolean getUseSkolemUpperBound() {
+		return useSkolemUpperBound;
+	}
+
+	public void setUseSkolemUpperBound(boolean flag) {
+		useSkolemUpperBound = flag;
+	}
 }

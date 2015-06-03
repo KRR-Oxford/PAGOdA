@@ -9,7 +9,6 @@ import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxAnswerTuples;
 import uk.ac.ox.cs.pagoda.rules.GeneralProgram;
 import uk.ac.ox.cs.pagoda.util.ConjunctiveQueryHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
-import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.Disposable;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
@@ -133,18 +132,6 @@ public class QueryRecord extends Disposable {
         if(isDisposed()) throw new DisposedException();
 
         return updateUpperBoundAnswers(answerTuples, false);
-    }
-
-    public boolean checkUpperBoundAnswers(AnswerTuples answerTuples) {
-        if(isDisposed()) throw new DisposedException();
-
-        return updateUpperBoundAnswers(answerTuples, true, false);
-    }
-
-    public boolean updateUpperBoundAnswers(AnswerTuples answerTuples, boolean toCheckAux) {
-        if(isDisposed()) throw new DisposedException();
-
-        return updateUpperBoundAnswers(answerTuples, toCheckAux, true);
     }
 
     public int getNumberOfAnswers() {
@@ -377,7 +364,7 @@ public class QueryRecord extends Disposable {
                 Utility.logError("The answer (" + answer + ") cannot be added, because it is not in the upper bound.");
             gapAnswerTuples.remove(answer);
 
-            answer = AnswerTuple.getInstance(answer, answerVariables[0].length);
+            answer = AnswerTuple.create(answer, answerVariables[0].length);
 //			if (soundAnswerTuples.contains(answer))
 //				Utility.logError("The answer (" + answer + ") cannot be added, because it is in the lower bound.");
             soundAnswerTuples.add(answer);
@@ -556,7 +543,6 @@ public class QueryRecord extends Disposable {
         return false;
     }
 
-    // TODO remove fully extended query
     public Tuple<String> getExtendedQueryText() {
         if(isDisposed()) throw new DisposedException();
 
@@ -655,75 +641,65 @@ public class QueryRecord extends Disposable {
         return Objects.hash(queryText, soundAnswerTuples);
     }
 
-    private boolean updateUpperBoundAnswers(AnswerTuples answerTuples, boolean toCheckAux, boolean _check_containment) {
-        if(!(answerTuples instanceof RDFoxAnswerTuples)) {
-            String msg = "The upper bound must be computed by RDFox!";
-            Utility.logError(msg);
-            throw new IllegalArgumentException(msg);
-        }
-
-        RDFoxAnswerTuples rdfoxAnswerTuples = (RDFoxAnswerTuples) answerTuples;
-
-        Set<AnswerTuple> candidateGapAnswerTuples = new HashSet<AnswerTuple>();
-        AnswerTuple tuple;
-        for(; rdfoxAnswerTuples.isValid(); rdfoxAnswerTuples.moveNext()) {
-            tuple = rdfoxAnswerTuples.getTuple();
-            if(isBottom() || !tuple.hasAnonymousIndividual())
-                if((!toCheckAux || !tuple.hasAuxPredicate()) && !soundAnswerTuples.contains(tuple))
-                    candidateGapAnswerTuples.add(tuple);
-        }
-
-        /*** START: debugging ***/
-        if(PagodaProperties.isDebuggingMode() && _check_containment) {
-            if(rdfoxAnswerTuples.getArity() != getAnswerVariables().length)
-                throw new IllegalArgumentException(
-                        "The arity of answers (" + rdfoxAnswerTuples.getArity() + ") " +
-                                "is different from the number of answer variables (" +
-                                getAnswerVariables().length + ")");
-
-            Set<AnswerTuple> namedAnswerTuples = new HashSet<>();
-            rdfoxAnswerTuples.reset();
-            int numberOfAnswers = 0;
-            for(; rdfoxAnswerTuples.isValid(); rdfoxAnswerTuples.moveNext()) {
-                tuple = rdfoxAnswerTuples.getTuple();
-//				if(isBottom() || !tuple.hasAnonymousIndividual()) {
-                namedAnswerTuples.add(tuple);
-//				}
-                numberOfAnswers++;
-            }
-            Utility.logDebug("The number of answers returned by an upper bound: " + numberOfAnswers);
-            HashSet<AnswerTuple> difference = new HashSet<>(soundAnswerTuples);
-            difference.removeAll(namedAnswerTuples);
-            if(!difference.isEmpty())
-                throw new IllegalArgumentException("The upper bound does not contain the lower bound! Missing answers: " + difference
-                        .size());
-        }
-        /*** END: debugging ***/
-
-        boolean update;
-        if(gapAnswerTuples == null) {
-            gapAnswerTuples = candidateGapAnswerTuples;
-            update = true;
-        }
+    public boolean updateUpperBoundAnswers(AnswerTuples answerTuples, boolean toCheckAux) {
+        RDFoxAnswerTuples rdfAnswerTuples;
+        if(answerTuples instanceof RDFoxAnswerTuples)
+            rdfAnswerTuples = (RDFoxAnswerTuples) answerTuples;
         else {
-            update = gapAnswerTuples.retainAll(candidateGapAnswerTuples);
+            Utility.logError("The upper bound must be computed by RDFox!");
+            return false;
         }
 
-        if(update)
-            Utility.logInfo("Upper bound answers updated: " + getNumberOfAnswers());
-        else
-            Utility.logInfo("Upper bound answers unchanged");
+        if(soundAnswerTuples.size() > 0) {
+            int number = 0;
+            for(; answerTuples.isValid(); answerTuples.moveNext()) {
+                ++number;
+            }
+            Utility.logDebug("The number of answers returned by an upper bound: " + number);
+            if(number <= soundAnswerTuples.size()) {
+                if(gapAnswerTuples != null) gapAnswerTuples.clear();
+                else gapAnswerTuples = new HashSet<AnswerTuple>();
+
+                Utility.logInfo("Upper bound answers updated: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
+                return false;
+            }
+            answerTuples.reset();
+        }
+
+        boolean justCheck = (answerTuples.getArity() != answerVariables[1].length);
+
+        Set<AnswerTuple> tupleSet = new HashSet<AnswerTuple>();
+        AnswerTuple tuple, extendedTuple;
+        for(; answerTuples.isValid(); answerTuples.moveNext()) {
+            extendedTuple = rdfAnswerTuples.getTuple();
+            if(isBottom() || !extendedTuple.hasAnonymousIndividual()) {
+                tuple = AnswerTuple.create(extendedTuple, answerVariables[0].length);
+                if((!toCheckAux || !tuple.hasAuxPredicate()) && !soundAnswerTuples.contains(tuple)) {
+                    if(!toCheckAux && justCheck) return false;
+                    tupleSet.add(extendedTuple);
+                }
+            }
+        }
+
+        if(gapAnswerTuples == null) {
+            gapAnswerTuples = tupleSet;
+
+            Utility.logInfo("Upper bound answers updated: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
+            return true;
+        }
+
+        boolean update = false;
+        for(Iterator<AnswerTuple> iter = gapAnswerTuples.iterator(); iter.hasNext(); ) {
+            tuple = iter.next();
+            if(!tupleSet.contains(tuple)) {
+                iter.remove();
+                update = true;
+            }
+        }
+
+        Utility.logInfo("Upper bound answers updated: " + (soundAnswerTuples.size() + gapAnswerTuples.size()));
 
         return update;
-
-//		boolean update = false;
-//		for(Iterator<AnswerTuple> iter = gapAnswerTuples.iterator(); iter.hasNext(); ) {
-//			tuple = iter.next();
-//			if(!candidateGapAnswerTuples.contains(tuple)) {
-//				iter.remove();
-//				update = true;
-//			}
-//		}
     }
 
     public enum Step {
