@@ -23,6 +23,7 @@ import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.Disposable;
+import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
 import java.util.LinkedList;
 
@@ -49,6 +50,8 @@ public class ConsistencyManager extends Disposable {
 	}
 
 	public void extractBottomFragment() {
+		if(isDisposed()) throw new DisposedException();
+
 		if(fragmentExtracted) return;
 		fragmentExtracted = true;
 
@@ -141,10 +144,14 @@ public class ConsistencyManager extends Disposable {
 	}
 
 	public QueryRecord[] getQueryRecords() {
+		if(isDisposed()) throw new DisposedException();
+
 		return botQueryRecords;
 	}
 
 	boolean checkRLLowerBound() {
+		if(isDisposed()) throw new DisposedException();
+
 		fullQueryRecord = m_queryManager.create(QueryRecord.botQueryText, 0);
 		AnswerTuples iter = null;
 
@@ -175,6 +182,8 @@ public class ConsistencyManager extends Disposable {
 //	}
 
 	boolean checkELLowerBound() {
+		if(isDisposed()) throw new DisposedException();
+
 		fullQueryRecord.updateLowerBoundAnswers(m_reasoner.elLowerStore.evaluate(fullQueryRecord.getQueryText(), fullQueryRecord
 				.getAnswerVariables()));
 		if(fullQueryRecord.getNoOfSoundAnswers() > 0) {
@@ -185,6 +194,8 @@ public class ConsistencyManager extends Disposable {
 	}
 
 	boolean checkUpper(BasicQueryEngine upperStore) {
+		if(isDisposed()) throw new DisposedException();
+
 		if(upperStore != null) {
 			AnswerTuples tuples = null;
 			try {
@@ -202,6 +213,8 @@ public class ConsistencyManager extends Disposable {
 	}
 
 	boolean check() {
+		if(isDisposed()) throw new DisposedException();
+
 //		if (!checkRLLowerBound()) return false;
 //		if (!checkELLowerBound()) return false;
 //		if (checkLazyUpper()) return true;

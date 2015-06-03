@@ -613,7 +613,7 @@ public class QueryRecord extends Disposable {
         }
 //		}
 
-        TupleBuilder result = new TupleBuilder();
+        TupleBuilder<String> result = new TupleBuilder<>();
         result.append(extendedSelect + " " + fullyExtendedWhere);
 
         extra.setLength(0);

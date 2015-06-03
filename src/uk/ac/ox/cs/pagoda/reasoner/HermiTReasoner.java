@@ -46,7 +46,7 @@ class HermiTReasoner extends QueryReasoner {
         if(isDisposed()) throw new DisposedException();
         OWLOntology tbox = onto;
         try {
-            onto = OWLHelper.getImportedOntology(tbox, importedData.toString().split(ImportDataFileSeparator));
+            onto = OWLHelper.getImportedOntology(tbox, getImportedData().split(ImportDataFileSeparator));
             importedOntologyPath = OWLHelper.getOntologyPath(onto);
         } catch(OWLOntologyCreationException | OWLOntologyStorageException | IOException e) {
             e.printStackTrace();
@@ -55,7 +55,7 @@ class HermiTReasoner extends QueryReasoner {
         DatalogProgram datalogProgram = new DatalogProgram(tbox, false);
         importData(datalogProgram.getAdditionalDataFile());
         upperStore = new MultiStageQueryEngine("rl-upper", false);
-        upperStore.importRDFData("data", importedData.toString());
+        upperStore.importRDFData("data", getImportedData());
         GapByStore4ID gap = new GapByStore4ID(upperStore);
         upperStore.materialiseFoldedly(datalogProgram, gap);
         gap.clear();

@@ -26,10 +26,10 @@ public abstract class QueryReasoner extends Disposable {
     private static final boolean DEFAULT_MULTI_STAGES = true;
     private static final boolean DEFAULT_EQUALITIES = true;
     public boolean fullReasoner = this instanceof MyQueryReasoner;
-    protected StringBuilder importedData = new StringBuilder();
     //	protected boolean forSemFacet = false;
     PagodaProperties properties;
     BufferedWriter answerWriter = null;
+    private StringBuilder importedData = new StringBuilder();
     private QueryManager m_queryManager = new QueryManager();
 
     public static QueryReasoner getInstance(PagodaProperties p) {
@@ -208,10 +208,6 @@ public abstract class QueryReasoner extends Disposable {
         queryRecords.stream().forEach(record -> record.dispose());
     }
 
-//	public void evaluate(Collection<QueryRecord> queryRecords) {
-//		evaluate(queryRecords);
-//	}
-
     @Override
     public void dispose() {
         super.dispose();
@@ -225,9 +221,17 @@ public abstract class QueryReasoner extends Disposable {
 //		Utility.cleanup();
     }
 
+//	public void evaluate(Collection<QueryRecord> queryRecords) {
+//		evaluate(queryRecords);
+//	}
+
     public QueryManager getQueryManager() {
         if(isDisposed()) throw new DisposedException();
         return m_queryManager;
+    }
+
+    protected String getImportedData() {
+        return importedData.toString();
     }
 
     private void importDataDirectory(File file) {

@@ -49,22 +49,28 @@ public class MultiStageQueryEngine extends StageQueryEngine {
         RestrictedApplication program = new RestrictedApplication(generalProgram, dProgram.getUpperBottomStrategy());
         Treatment treatment = new Pick4NegativeConceptNaive(this, program);
         int ret = materialise(program, treatment, gap);
-        treatment.dispose(); // does nothing
-        return ret;
-    }
-
-    public int materialise4SpecificQuery(Program generalProgram, QueryRecord record, BottomStrategy upperBottom) {
-        if(isDisposed()) throw new DisposedException();
-
-        RestrictedApplication program = new RestrictedApplication(generalProgram, upperBottom);
-        Treatment treatment = new Pick4NegativeConceptQuerySpecific(this, program, record);
-        int ret = materialise(program, treatment, null);
-        treatment.dispose();
+        treatment.dispose(); // FIXME does nothing
         return ret;
     }
 
     /**
      * delta-chase
+     */
+    public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap, int maxTermDepth) {
+        if(isDisposed()) throw new DisposedException();
+
+        materialise("lower program", dProgram.getLower().toString());
+        Program generalProgram = dProgram.getGeneral();
+        LimitedSkolemisationApplication program =
+                new LimitedSkolemisationApplication(generalProgram,
+                                                    dProgram.getUpperBottomStrategy(),
+                                                    maxTermDepth);
+        Treatment treatment = new Pick4NegativeConceptNaive(this, program);
+        return materialise(program, treatment, gap);
+    }
+
+    /**
+     * delta-chase with fixed mad term depth
      */
     @Override
     public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap) {
@@ -76,6 +82,16 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 new LimitedSkolemisationApplication(generalProgram, dProgram.getUpperBottomStrategy());
         Treatment treatment = new Pick4NegativeConceptNaive(this, program);
         return materialise(program, treatment, gap);
+    }
+
+    public int materialise4SpecificQuery(Program generalProgram, QueryRecord record, BottomStrategy upperBottom) {
+        if(isDisposed()) throw new DisposedException();
+
+        RestrictedApplication program = new RestrictedApplication(generalProgram, upperBottom);
+        Treatment treatment = new Pick4NegativeConceptQuerySpecific(this, program, record);
+        int ret = materialise(program, treatment, null);
+        treatment.dispose(); // FIXME does nothing
+        return ret;
     }
 
     private int materialise(MultiStageUpperProgram program, Treatment treatment, GapByStore4ID gap) {
@@ -128,7 +144,7 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 
                 if(!isValid()) {
                     if(iteration == 1) {
-                        Utility.logInfo("The ontology is inconsistent.");
+                        Utility.logDebug("The ontology is inconsistent.");
                         return -1;
                     }
                     Utility.logInfo(name + " store FAILED for multi-stage materialisation in " + t.duration() + " seconds.");

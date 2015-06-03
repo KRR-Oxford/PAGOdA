@@ -1,5 +1,7 @@
 package uk.ac.ox.cs.pagoda.util;
 
+import org.apache.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +22,8 @@ public class PagodaProperties {
 			in.close();
 			if(config.containsKey("debug")) {
 				debug = Boolean.parseBoolean(config.getProperty("debug"));
+				Logger.getLogger("PagodaProperties")
+					  .info("Debugging mode is enabled (you can disable it from file \"pagoda.properties\")");
 			}
 		} catch(IOException e) {
 			e.printStackTrace();

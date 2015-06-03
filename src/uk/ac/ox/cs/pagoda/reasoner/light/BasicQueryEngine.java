@@ -104,16 +104,22 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public void outputInstance4BinaryPredicate(String iri, String filename) {
+        if(isDisposed()) throw new DisposedException();
+
         Utility.redirectCurrentOut(filename);
         outputInstance4BinaryPredicate(iri);
         Utility.closeCurrentOut();
     }
 
     public void outputInstance4BinaryPredicate(String iri) {
+        if(isDisposed()) throw new DisposedException();
+
         outputAnswers("select ?x ?y where { ?x <" + iri + "> ?y . }");
     }
 
     public void outputInstanceNumbers(String filename) {
+        if(isDisposed()) throw new DisposedException();
+
         TupleIterator predicateTuples = null;
         TupleIterator instanceTuples;
         Set<String> number = new HashSet<String>();
@@ -177,6 +183,8 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public TupleIterator internal_evaluateAgainstIDBs(String queryText) throws JRDFStoreException {
+        if(isDisposed()) throw new DisposedException();
+
         TupleIterator iter =
                 store.compileQuery(queryText, prefixes, parameters, TripleStatus.TUPLE_STATUS_IDB.union(TripleStatus.TUPLE_STATUS_EDB), TripleStatus.TUPLE_STATUS_IDB);
 //		iter.open();
@@ -184,16 +192,22 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public TupleIterator internal_evaluate(String queryText) throws JRDFStoreException {
+        if(isDisposed()) throw new DisposedException();
+
         TupleIterator iter = store.compileQuery(queryText, prefixes, parameters);
 //		iter.open();
         return iter;
     }
 
     public void setExpandEquality(boolean flag) {
+        if(isDisposed()) throw new DisposedException();
+
         parameters.m_expandEquality = flag;
     }
 
     public TupleIterator internal_evaluateNotExpanded(String queryText) throws JRDFStoreException {
+        if(isDisposed()) throw new DisposedException();
+
         parameters.m_expandEquality = false;
         TupleIterator iter = store.compileQuery(queryText, prefixes, parameters);
 //		iter.open();
@@ -202,10 +216,14 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public TupleIterator internal_evaluate(String queryText, boolean incrementally) throws JRDFStoreException {
+        if(isDisposed()) throw new DisposedException();
+
         return incrementally ? internal_evaluateAgainstIDBs(queryText) : internal_evaluate(queryText);
     }
 
     public String getUnusedRules(Collection<DLClause> clauses, boolean toUpdate) {
+        if(isDisposed()) throw new DisposedException();
+
         DLClause clause;
         for(Iterator<DLClause> iter = clauses.iterator(); iter.hasNext(); ) {
             if(materialisedRules.contains(clause = iter.next()))
@@ -219,10 +237,14 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public void outputMaterialisedRules() {
+        if(isDisposed()) throw new DisposedException();
+
         System.out.println(DLClauseHelper.toString(materialisedRules));
     }
 
     public void outputAnswers(String query) {
+        if(isDisposed()) throw new DisposedException();
+
         TupleIterator iter = null;
         try {
             iter = internal_evaluate(query);
@@ -241,6 +263,8 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public void outputInstance4UnaryPredicate(String iri) {
+        if(isDisposed()) throw new DisposedException();
+
         outputAnswers("select ?x where { ?x "
                               + "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <"
                               + iri
@@ -248,14 +272,20 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public void outputSubjects(String p, String o) {
+        if(isDisposed()) throw new DisposedException();
+
         outputAnswers("select x where { ?x <" + p + "> <" + o + "> . }");
     }
 
     public void outputObjects(String s, String p) {
+        if(isDisposed()) throw new DisposedException();
+
         outputAnswers("select ?x where { <" + s + "> <" + p + "> ?x . }");
     }
 
     public void outputIDBFacts() {
+        if(isDisposed()) throw new DisposedException();
+
         TupleIterator iter = null;
         try {
             iter = internal_evaluateAgainstIDBs("select distict ?x ?y ?z where { ?x ?y ?z }");
@@ -274,10 +304,14 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public void outputType4Individual(String iri) {
+        if(isDisposed()) throw new DisposedException();
+
         outputAnswers("select ?z where { <" + iri + "> " + Namespace.RDF_TYPE_QUOTED + " ?z }");
     }
 
     public int getSameAsNumber() {
+        if(isDisposed()) throw new DisposedException();
+
         TupleIterator iter = null;
         int counter = 0;
         try {
@@ -294,6 +328,8 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public UFS<String> getEqualityGroups(boolean reuse) {
+        if(isDisposed()) throw new DisposedException();
+
         if(reuse && equalityGroups != null) return equalityGroups;
 
         equalityGroups = new UFS<String>();
@@ -317,6 +353,8 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
     }
 
     public void clearRulesAndIDBFacts(Collection<int[]> collection) {
+        if(isDisposed()) throw new DisposedException();
+
 //		performDeletion(collection);
         collection.clear();
         try {

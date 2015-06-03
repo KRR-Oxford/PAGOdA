@@ -14,11 +14,12 @@ import uk.ac.ox.cs.pagoda.reasoner.full.HermitChecker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class HermitSummaryFilter implements Checker {
+public class HermitSummaryFilter extends Checker {
 
 	public static final String QueryAnswerTermPrefix = TrackingRuleEncoder.QueryPredicate + "_term";
 	QueryRecord m_record;
@@ -97,6 +98,8 @@ public class HermitSummaryFilter implements Checker {
 	
 	@Override
 	public boolean isConsistent() {
+		if(isDisposed()) throw new DisposedException();
+
 		if (summary == null)
 			summary = new Summary(endomorphismChecker.getOntology(), endomorphismChecker.getGraph());
 
@@ -107,31 +110,22 @@ public class HermitSummaryFilter implements Checker {
 		return endomorphismChecker.isConsistent();
 	}
 
-	private void initialiseSummarisedReasoner() {
-		Timer t = new Timer();
-		summarisedHermiT = new HermitChecker(summary.getSummary(), summary.getSummary(m_record));
-//		summary.save("summarised_query" + m_record.getQueryID() + ".owl");
-		if(summarisedConsistency = summarisedHermiT.isConsistent())
-			Utility.logDebug("The summary of ABox is consistent with the TBox.");
-		else
-			Utility.logDebug("The summary of ABox is NOT consistent with the TBox.");
-		m_record.addProcessingTime(Step.SUMMARISATION, t.duration());
-	}
-
 	@Override
 	public int check(AnswerTuples answers) {
+		if(isDisposed()) throw new DisposedException();
+
 		Timer t = new Timer();
 		OWLOntology newOntology = addOntologyWithQueryPreciate(endomorphismChecker.getOntology(), m_record, answers);
 		summary = new Summary(newOntology);
 		initialiseSummarisedReasoner();
 
-		if (summarisedConsistency) {
+		if(summarisedConsistency) {
 			Set<AnswerTuple> passed = new HashSet<AnswerTuple>(), succ = new HashSet<AnswerTuple>();
 			Set<AnswerTuple> falsified = new HashSet<AnswerTuple>(), fail = new HashSet<AnswerTuple>();
 
 			int counter = 0;
 			AnswerTuple representative;
-			for (AnswerTuple answer; answers.isValid(); answers.moveNext()) {
+			for(AnswerTuple answer; answers.isValid(); answers.moveNext()) {
 				++counter;
 				answer = answers.getTuple();
 				representative = summary.getSummary(answer);
@@ -140,13 +134,13 @@ public class HermitSummaryFilter implements Checker {
 				else if(succ.contains(representative))
 					passed.add(answer);
 				else if(summarisedHermiT.check(representative)) {
-						succ.add(representative);
-						passed.add(answer);
-					}
-					else {
-						fail.add(representative);
+					succ.add(representative);
+					passed.add(answer);
+				}
+				else {
+					fail.add(representative);
 					falsified.add(answer);
-					}
+				}
 			}
 			answers.dispose();
 
@@ -177,16 +171,31 @@ public class HermitSummaryFilter implements Checker {
 
 	@Override
 	public boolean check(AnswerTuple answer) {
-		AnswerTuple representative = summary.getSummary(answer); 
-		if (summarisedHermiT.isConsistent() && !summarisedHermiT.check(representative))
+		if(isDisposed()) throw new DisposedException();
+
+		AnswerTuple representative = summary.getSummary(answer);
+		if(summarisedHermiT.isConsistent() && !summarisedHermiT.check(representative))
 			return false;
-		return endomorphismChecker.check(answer); 
+		return endomorphismChecker.check(answer);
 	}
 
 	@Override
 	public void dispose() {
-		if (summarisedHermiT != null) summarisedHermiT.dispose(); 
-		endomorphismChecker.dispose(); 
+		super.dispose();
+
+		if(summarisedHermiT != null) summarisedHermiT.dispose();
+		endomorphismChecker.dispose();
+	}
+
+	private void initialiseSummarisedReasoner() {
+		Timer t = new Timer();
+		summarisedHermiT = new HermitChecker(summary.getSummary(), summary.getSummary(m_record));
+//		summary.save("summarised_query" + m_record.getQueryID() + ".owl");
+		if(summarisedConsistency = summarisedHermiT.isConsistent())
+			Utility.logDebug("The summary of ABox is consistent with the TBox.");
+		else
+			Utility.logDebug("The summary of ABox is NOT consistent with the TBox.");
+		m_record.addProcessingTime(Step.SUMMARISATION, t.duration());
 	}
 
 }

@@ -129,7 +129,7 @@ class ELHOUQueryReasoner extends QueryReasoner {
     @Override
     public boolean preprocess() {
         if(isDisposed()) throw new DisposedException();
-        String name = "data", datafile = importedData.toString();
+        String name = "data", datafile = getImportedData();
 
         String lowername = "lower program";
         String rlLowerProgramText = program.getLower().toString();

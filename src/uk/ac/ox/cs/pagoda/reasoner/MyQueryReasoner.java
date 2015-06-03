@@ -29,20 +29,22 @@ import java.util.Collection;
 class MyQueryReasoner extends QueryReasoner {
 
     OWLOntology ontology;
+    OWLOntology elho_ontology;
     DatalogProgram program;
 
     BasicQueryEngine rlLowerStore = null;
-    BasicQueryEngine lazyUpperStore = null;
-    //    MultiStageQueryEngine limitedSkolemUpperStore;
-    OWLOntology elho_ontology;
     KarmaQueryEngine elLowerStore = null;
-    BasicQueryEngine trackingStore = null;
+    MultiStageQueryEngine lazyUpperStore = null;
+    MultiStageQueryEngine trackingStore = null;
     TrackingRuleEncoder encoder;
+
     private boolean equalityTag;
     private Timer t = new Timer();
+
     private Collection<String> predicatesWithGap = null;
-    private SatisfiabilityStatus satisfiable;
+    private ConsistencyStatus isConsistent;
     private ConsistencyManager consistency = new ConsistencyManager(this);
+    private boolean useSkolemisation = false; // now only debugging
 
     public MyQueryReasoner() {
         setup(true);
@@ -92,11 +94,15 @@ class MyQueryReasoner extends QueryReasoner {
         t.reset();
         Utility.logInfo("Preprocessing (and checking satisfiability)...");
 
-        String name = "data", datafile = importedData.toString();
+        String name = "data", datafile = getImportedData();
         rlLowerStore.importRDFData(name, datafile);
         rlLowerStore.materialise("lower program", program.getLower().toString());
 //		program.getLower().save();
-        if(!consistency.checkRLLowerBound()) return false;
+        if(!consistency.checkRLLowerBound()) {
+            Utility.logDebug("time for satisfiability checking: " + t.duration());
+            isConsistent = ConsistencyStatus.INCONSISTENT;
+            return false;
+        }
         Utility.logDebug("The number of sameAs assertions in RL lower store: " + rlLowerStore.getSameAsNumber());
 
         String originalMarkProgram = OWLHelper.getOriginalMarkProgram(ontology);
@@ -105,20 +111,28 @@ class MyQueryReasoner extends QueryReasoner {
         elLowerStore.materialise("saturate named individuals", originalMarkProgram);
         elLowerStore.materialise("lower program", program.getLower().toString());
         elLowerStore.initialiseKarma();
-        if(!consistency.checkELLowerBound()) return false;
+        if(!consistency.checkELLowerBound()) {
+            Utility.logDebug("time for satisfiability checking: " + t.duration());
+            isConsistent = ConsistencyStatus.INCONSISTENT;
+            return false;
+        }
 
         if(lazyUpperStore != null) {
             lazyUpperStore.importRDFData(name, datafile);
             lazyUpperStore.materialise("saturate named individuals", originalMarkProgram);
             int tag = lazyUpperStore.materialiseRestrictedly(program, null);
-            if(tag != 1) {
+            if(tag == -1) {
+                Utility.logDebug("time for satisfiability checking: " + t.duration());
+                isConsistent = ConsistencyStatus.INCONSISTENT;
+                return false;
+            }
+            else if(tag != 1) {
                 lazyUpperStore.dispose();
                 lazyUpperStore = null;
             }
-            if(tag == -1) return false;
         }
         if(consistency.checkUpper(lazyUpperStore)) {
-            satisfiable = SatisfiabilityStatus.SATISFIABLE;
+            isConsistent = ConsistencyStatus.CONSISTENT;
             Utility.logDebug("time for satisfiability checking: " + t.duration());
         }
 
@@ -140,13 +154,12 @@ class MyQueryReasoner extends QueryReasoner {
 //			encoder = new TrackingRuleEncoderDisjVar2(program.getUpper(), trackingStore);
 //			encoder = new TrackingRuleEncoderDisj2(program.getUpper(), trackingStore);
 
+        // TODO add consistency check by Skolem-upper-bound
+
         if(!isConsistent())
             return false;
 
         consistency.extractBottomFragment();
-        consistency.dispose();
-
-        program.dispose();
 
         return true;
     }
@@ -154,11 +167,19 @@ class MyQueryReasoner extends QueryReasoner {
     @Override
     public boolean isConsistent() {
         if(isDisposed()) throw new DisposedException();
-        if(satisfiable == SatisfiabilityStatus.UNCHECKED) {
-            satisfiable = consistency.check() ? SatisfiabilityStatus.SATISFIABLE : SatisfiabilityStatus.UNSATISFIABLE;
-            Utility.logInfo("time for satisfiability checking: " + t.duration());
+
+        if(isConsistent == ConsistencyStatus.UNCHECKED) {
+            isConsistent = consistency.check() ? ConsistencyStatus.CONSISTENT : ConsistencyStatus.INCONSISTENT;
+            Utility.logDebug("time for satisfiability checking: " + t.duration());
         }
-        return satisfiable == SatisfiabilityStatus.SATISFIABLE;
+        if(isConsistent == ConsistencyStatus.CONSISTENT) {
+            Utility.logInfo("The ontology is consistent!");
+            return true;
+        }
+        else {
+            Utility.logInfo("The ontology is inconsistent!");
+            return false;
+        }
     }
 
     @Override
@@ -169,9 +190,9 @@ class MyQueryReasoner extends QueryReasoner {
             return;
 
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
-//		queryRecord.saveRelevantOntology("fragment_query" + queryRecord.getQueryID() + ".owl");
+        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/fragment_query" + queryRecord.getQueryID() + ".owl");
 
-        if(querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
+        if(useSkolemisation && querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
             return;
 
         Timer t = new Timer();
@@ -207,12 +228,14 @@ class MyQueryReasoner extends QueryReasoner {
         if(lazyUpperStore != null) lazyUpperStore.dispose();
         if(elLowerStore != null) elLowerStore.dispose();
         if(trackingStore != null) trackingStore.dispose();
-//        if(limitedSkolemUpperStore != null) limitedSkolemUpperStore.dispose();
+        if(consistency != null) consistency.dispose();
+        if(program != null) program.dispose();
     }
 
     private void setup(boolean considerEqualities) {
         if(isDisposed()) throw new DisposedException();
-        satisfiable = SatisfiabilityStatus.UNCHECKED;
+
+        isConsistent = ConsistencyStatus.UNCHECKED;
         this.equalityTag = considerEqualities;
 
         rlLowerStore = new BasicQueryEngine("rl-lower-bound");
@@ -239,7 +262,7 @@ class MyQueryReasoner extends QueryReasoner {
      */
     private boolean queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord,
                                     Tuple<String> extendedQuery, Step step) {
-
+        t.reset();
         if(queryRecord.hasNonAnsDistinguishedVariables())
             queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
         else
@@ -254,6 +277,7 @@ class MyQueryReasoner extends QueryReasoner {
     }
 
     private boolean checkGapAnswers(BasicQueryEngine relevantStore, QueryRecord queryRecord) {
+        t.reset();
         Tuple<String> extendedQueries = queryRecord.getExtendedQueryText();
         if(queryRecord.hasNonAnsDistinguishedVariables())
             checkGapAnswers(relevantStore, queryRecord, extendedQueries.get(0), queryRecord.getAnswerVariables());
@@ -295,8 +319,6 @@ class MyQueryReasoner extends QueryReasoner {
             if(rlAnswer != null) rlAnswer.dispose();
         }
         queryRecord.addProcessingTime(Step.LOWER_BOUND, t.duration());
-
-        t.reset();
 
         Tuple<String> extendedQueryTexts = queryRecord.getExtendedQueryText();
 
@@ -343,8 +365,6 @@ class MyQueryReasoner extends QueryReasoner {
         // just statistics
         int numOfABoxAxioms = relevantOntologySubset.getABoxAxioms(true).size();
         int numOfTBoxAxioms = relevantOntologySubset.getAxiomCount() - numOfABoxAxioms;
-        int originalNumOfABoxAxioms = ontology.getABoxAxioms(true).size();
-        int originalNumOfTBoxAxioms = ontology.getAxiomCount() - originalNumOfABoxAxioms;
         Utility.logInfo("Relevant ontology-subset has been extracted: |ABox|="
                                 + numOfABoxAxioms + ", |TBox|=" + numOfTBoxAxioms);
 
@@ -365,6 +385,7 @@ class MyQueryReasoner extends QueryReasoner {
 
     private boolean querySkolemisedRelevantSubset(OWLOntology relevantSubset, QueryRecord queryRecord) {
         Utility.logInfo("Evaluating semi-Skolemised relevant upper store...");
+        t.reset();
 
         DatalogProgram relevantProgram = new DatalogProgram(relevantSubset, false); // toClassify is false
 
@@ -373,16 +394,24 @@ class MyQueryReasoner extends QueryReasoner {
 
         relevantStore.importDataFromABoxOf(relevantSubset);
 
-        int materialisationResult = relevantStore.materialiseSkolemly(relevantProgram, null);
-        if(materialisationResult != 1)
-            throw new RuntimeException("Skolemised materialisation error"); // TODO check consistency
+        int queryDependentMaxTermDepth = 1; // TODO make it dynamic
+        int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
+                                                                   queryDependentMaxTermDepth);
+        queryRecord.addProcessingTime(Step.L_SKOLEM_UPPER_BOUND, t.duration());
+        if(materialisationTag == -1) {
+            throw new Error("A consistent ontology has turned out to be " +
+                                    "inconsistent in the Skolemises-relevant-upper-store");
+        }
+        else if(materialisationTag != 1) {
+            Utility.logInfo("Semi-Skolemised relevant upper store cannot be employed");
+            return false;
+        }
 
         boolean isFullyProcessed = checkGapAnswers(relevantStore, queryRecord);
-
         Utility.logInfo("Semi-Skolemised relevant upper store has been evaluated");
         return isFullyProcessed;
     }
 
-    enum SatisfiabilityStatus {SATISFIABLE, UNSATISFIABLE, UNCHECKED}
+    private enum ConsistencyStatus {CONSISTENT, INCONSISTENT, UNCHECKED}
 
 }

@@ -97,7 +97,7 @@ class RLUQueryReasoner extends QueryReasoner {
 	@Override
 	public boolean preprocess() {
 		if(isDisposed()) throw new DisposedException();
-		String datafile = importedData.toString(); 
+		String datafile = getImportedData();
 		rlLowerStore.importRDFData("data", datafile);
 		rlLowerStore.materialise("lower program", program.getLower().toString());
 		

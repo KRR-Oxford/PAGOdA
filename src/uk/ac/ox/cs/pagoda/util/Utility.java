@@ -29,12 +29,16 @@ public class Utility {
 	private static StringBuilder logMessage = new StringBuilder();
 
 	static {
-		LOGS = Logger.getLogger("PAGOdA");
+		LOGS = Logger.getLogger("Pagoda");
 		LOGS.setLevel(Level.DEBUG);
 	}
 
 	static {
 		outs.push(System.out);
+	}
+
+	static {
+
 	}
 
 	public static String getGlobalTempDirAbsolutePath() {

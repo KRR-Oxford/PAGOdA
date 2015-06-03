@@ -70,7 +70,7 @@ class ELHOQueryReasoner extends QueryReasoner {
     @Override
     public boolean preprocess() {
         if(isDisposed()) throw new DisposedException();
-        elLowerStore.importRDFData("data", importedData.toString());
+        elLowerStore.importRDFData("data", getImportedData());
         String rlLowerProgramText = program.toString();
 //		program.save();
         elLowerStore.materialise("lower program", rlLowerProgramText);

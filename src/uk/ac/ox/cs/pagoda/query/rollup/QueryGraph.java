@@ -1,48 +1,10 @@
 package uk.ac.ox.cs.pagoda.query.rollup;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.Constant;
-import org.semanticweb.HermiT.model.Individual;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLClassExpressionVisitorEx;
-import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
-import org.semanticweb.owlapi.model.OWLDataExactCardinality;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDataHasValue;
-import org.semanticweb.owlapi.model.OWLDataMaxCardinality;
-import org.semanticweb.owlapi.model.OWLDataMinCardinality;
-import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectComplementOf;
-import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
-import org.semanticweb.owlapi.model.OWLObjectHasSelf;
-import org.semanticweb.owlapi.model.OWLObjectHasValue;
-import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
-import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
-import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
-import org.semanticweb.owlapi.model.OWLObjectOneOf;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectUnionOf;
-import org.semanticweb.owlapi.model.OWLOntology;
-
+import org.semanticweb.HermiT.model.*;
+import org.semanticweb.owlapi.model.*;
 import uk.ac.ox.cs.pagoda.util.Namespace;
+
+import java.util.*;
 
 public class QueryGraph {
 	
@@ -82,168 +44,170 @@ public class QueryGraph {
 		
 		rollup(); 
 	}
-	
-	private void updateExistentiallyVariables(Variable argumentVariable) {
-		if (freeVars.contains(argumentVariable)) return ; 
-		existVars.add(argumentVariable);
-	}
 
 	public void createEdges(Term u, AtomicRole r, Term v) {
-		if (ontology.containsDataPropertyInSignature(IRI.create(r.getIRI()))) {
+		if(ontology.containsDataPropertyInSignature(IRI.create(r.getIRI()))) {
 //			edges.add(u, new DataEdge(r, v));
-			Constant c = (Constant) v; 
-			OWLLiteral l = factory.getOWLLiteral(c.getLexicalForm(), c.getDatatypeURI());  
+			Constant c = (Constant) v;
+			OWLLiteral l = factory.getOWLLiteral(c.getLexicalForm(), c.getDatatypeURI());
 			concepts.add(u, factory.getOWLDataHasValue(factory.getOWLDataProperty(IRI.create(r.getIRI())), l));
 		}
 		else {
 			boolean rollable = existVars.contains(u) || existVars.contains(v);
-			
+
 			ObjectEdge edge = new ObjectEdge(r, v, false);
-			if (rollable) {
+			if(rollable) {
 				rollable_edges.add(u, edge);
 				edge = new ObjectEdge(r, u, true);
 				rollable_edges.add(v, edge);
 			}
 			else edges.add(u, edge);
-			
+
 		}
+	}
+
+	public Set<OWLAxiom> getPropertyAssertions(Map<Variable, Term> assignment) {
+		OWLIndividual sub, obj;
+		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>();
+		for(Map.Entry<Term, Set<ObjectEdge>> entry : edges.map.entrySet()) {
+			sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
+			for(ObjectEdge edge : entry.getValue()) {
+				Individual individual = getIndividual(edge.v, assignment);
+				String iri = individual.getIRI();
+				obj = factory.getOWLNamedIndividual(IRI.create(iri));
+				axioms.add(factory.getOWLObjectPropertyAssertionAxiom(edge.p, sub, obj));
+			}
+		}
+		return axioms;
+	}
+
+	public Set<OWLAxiom> getAssertions(Map<Variable, Term> assignment) {
+		if(!rollable_edges.isEmpty()) return null;
+
+		OWLIndividual sub;
+		Visitor visitor = new Visitor(factory, assignment);
+		Set<OWLAxiom> axioms = getPropertyAssertions(assignment);
+		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
+			if(existVars.contains(entry.getKey())) continue;
+			sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
+			for(OWLClassExpression clsExp : entry.getValue()) {
+				axioms.add(factory.getOWLClassAssertionAxiom(clsExp.accept(visitor), sub));
+			}
+		}
+		return axioms;
+	}
+
+	private void updateExistentiallyVariables(Variable argumentVariable) {
+		if(freeVars.contains(argumentVariable)) return;
+		existVars.add(argumentVariable);
 	}
 	
 	private void rollup() {
 		for (boolean updated = true; updated; ) {
-			updated = false; 
-			
-			Set<ObjectEdge> set; 
+			updated = false;
+
+			Set<ObjectEdge> set;
 			for (Variable var: existVars) {
 				if ((set = rollable_edges.map.get(var)) != null && set.size() == 1) {
-					updated = true; 
+					updated = true;
 					ObjectEdge edge = set.iterator().next();
 					rollupEdge(edge.v, edge.p.getInverseProperty().getSimplified(), var, true);
 					set.clear();
 				}
 			}
-			if (updated) continue; 
-			
+			if(updated) continue;
+
 			for (Variable var: existVars) {
-				set = rollable_edges.map.get(var); 
-				if (set == null) continue; 
+				set = rollable_edges.map.get(var);
+				if(set == null) continue;
 				for (Iterator<ObjectEdge> iter = set.iterator(); iter.hasNext(); ) {
-					ObjectEdge edge = iter.next(); 
+					ObjectEdge edge = iter.next();
 					if (constants.contains(edge.v) || freeVars.contains(edge.v)) {
-						updated = true; 
+						updated = true;
 						rollupEdge(var, edge.p, edge.v, false);
 						iter.remove();
 					}
 				}
 			}
 		}
-		
+
 	}
 
 	private void rollupEdge(Term u, OWLObjectPropertyExpression op, Term v, boolean inverse) {
 		if (existVars.contains(v)) {
-			concepts.add(u, factory.getOWLObjectSomeValuesFrom(op, factory.getOWLObjectIntersectionOf(concepts.get(v)))); 
+			concepts.add(u, factory.getOWLObjectSomeValuesFrom(op, factory.getOWLObjectIntersectionOf(concepts.get(v))));
 		}
 		else {
-			OWLIndividual obj = getOWLIndividual(v); 
+			OWLIndividual obj = getOWLIndividual(v);
 			concepts.add(u, factory.getOWLObjectHasValue(op, obj));
 		}
-		
-		if (inverse) 
+
+		if(inverse)
 			removeRollableEdge(u, op, v);
-		else 
+		else
 			removeRollableEdge(v, op.getInverseProperty().getSimplified(), u);
 	}
-	
+
 	private void removeRollableEdge(Term u, OWLObjectPropertyExpression op, Term v) {
 		Set<ObjectEdge> set = rollable_edges.get(u);
-		ObjectEdge edge; 
+		ObjectEdge edge;
 		if (set != null)
 			for (Iterator<ObjectEdge> iter = set.iterator(); iter.hasNext(); ) {
-				edge = iter.next(); 
-				if (edge.p.equals(op) && edge.v.equals(v)) iter.remove(); 
+				edge = iter.next();
+				if(edge.p.equals(op) && edge.v.equals(v)) iter.remove();
 			}
 	}
-	
+
 	OWLNamedIndividual getOWLIndividual(Term t) {
 		if (freeVars.contains(t))
 			return new VariableIndividual((Variable) t);
 		else if (t instanceof Variable)
-			return null; 
-		else 
-			return factory.getOWLNamedIndividual(IRI.create(((Individual) t).getIRI())); 
+			return null;
+		else
+			return factory.getOWLNamedIndividual(IRI.create(((Individual) t).getIRI()));
+	}
+
+	private Individual getIndividual(Term key, Map<Variable, Term> assignment) {
+		if(key instanceof Individual)
+			return (Individual) key;
+		else
+			return (Individual) assignment.get(key);
 	}
 
 	class ObjectEdge {
 		OWLObjectPropertyExpression p;
-		Term v; 
-		
+		Term v;
+
 		public ObjectEdge(AtomicRole r, Term t, boolean inverse) {
-			p = factory.getOWLObjectProperty(IRI.create(r.getIRI())); 
-			if (inverse) p = p.getInverseProperty();
-			v = t; 
+			p = factory.getOWLObjectProperty(IRI.create(r.getIRI()));
+			if(inverse) p = p.getInverseProperty();
+			v = t;
 
 		}
 	}
 
 	class MultiMap<K, V> {
-		
-		HashMap<K, Set<V>> map = new HashMap<K, Set<V>>(); 
-		
-		void add(K key, V value) {
-			Set<V> list = map.get(key); 
-			if (list == null)
-				map.put(key, list = new HashSet<V>());
-			list.add(value); 
-		}
+
+		HashMap<K, Set<V>> map = new HashMap<K, Set<V>>();
 
 		public Set<V> get(K v) {
-			return map.get(v); 
+			return map.get(v);
 		}
 
 		public boolean isEmpty() {
-			for (Map.Entry<K, Set<V>> entry: map.entrySet()) 
-				if (!entry.getValue().isEmpty())
-					return false; 
+			for(Map.Entry<K, Set<V>> entry : map.entrySet())
+				if(!entry.getValue().isEmpty())
+					return false;
 			return true;
 		}
-		
-	}
 
-	public Set<OWLAxiom> getPropertyAssertions(Map<Variable, Term> assignment) {
-		OWLIndividual sub, obj;
-		Set<OWLAxiom> axioms = new HashSet<OWLAxiom>(); 
-		for (Map.Entry<Term, Set<ObjectEdge>> entry: edges.map.entrySet()) {
-			sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI())); 
-			for (ObjectEdge edge: entry.getValue()) {
-				obj = factory.getOWLNamedIndividual(IRI.create(getIndividual(edge.v, assignment).getIRI())); 
-				axioms.add(factory.getOWLObjectPropertyAssertionAxiom(edge.p, sub, obj)); 
-			}
+		void add(K key, V value) {
+			Set<V> list = map.get(key);
+			if(list == null)
+				map.put(key, list = new HashSet<V>());
+			list.add(value);
 		}
-		return axioms; 
-	}
-	
-	public Set<OWLAxiom> getAssertions(Map<Variable, Term> assignment) {
-		if (!rollable_edges.isEmpty()) return null; 
-		
-		OWLIndividual sub;
-		Visitor visitor = new Visitor(factory, assignment); 
-		Set<OWLAxiom> axioms = getPropertyAssertions(assignment);
-		for (Map.Entry<Term, Set<OWLClassExpression>> entry: concepts.map.entrySet()) {
-			if (existVars.contains(entry.getKey())) continue; 
-			sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
-			for (OWLClassExpression clsExp: entry.getValue()) {
-				axioms.add(factory.getOWLClassAssertionAxiom(clsExp.accept(visitor), sub)); 
-			}
-		}
-		return axioms; 
-	}
 
-	private Individual getIndividual(Term key, Map<Variable, Term> assignment) {
-		if (key instanceof Individual) 
-			return (Individual) key; 
-		else 
-			return (Individual) assignment.get(key);
 	}
 }
 

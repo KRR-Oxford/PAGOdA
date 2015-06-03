@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.rules.approximators;
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageUpperProgram;
 import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
+import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
@@ -53,12 +54,22 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
 
     }
 
+    public int getMaxDepth(Tuple<Individual> violationTuple) {
+        int maxDepth = 0;
+        for(Individual individual : violationTuple)
+            maxDepth = Integer.max(maxDepth, skolemTermsManager.getDepthOf(individual));
+
+        return maxDepth;
+    }
+
     private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         ArrayList<DLClause> result = new ArrayList<>();
 
         for (Tuple<Individual> violationTuple : violationTuples)
-            if (getMaxDepth(violationTuple) > maxTermDepth)
+            if(getMaxDepth(violationTuple) > maxTermDepth) {
                 result.addAll(alternativeApproximator.convert(clause, originalClause, null));
+                Utility.logDebug("Approximating maximal individual by a constant in rule:" + originalClause);
+            }
             else
                 result.addAll(getGroundSkolemisation(clause, originalClause, violationTuple));
 
@@ -137,14 +148,5 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         return ret;
 
         // END: copy and paste
-    }
-
-
-    public int getMaxDepth(Tuple<Individual> violationTuple) {
-        int maxDepth = 0;
-        for (Individual individual : violationTuple)
-            maxDepth = Integer.max(maxDepth, skolemTermsManager.getDepthOf(individual));
-
-        return maxDepth;
     }
 }

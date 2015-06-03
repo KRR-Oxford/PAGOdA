@@ -2,14 +2,14 @@ package uk.ac.ox.cs.pagoda.reasoner.full;
 
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
+import uk.ac.ox.cs.pagoda.util.disposable.Disposable;
 
-public interface Checker {
+public abstract class Checker extends Disposable {
 
-	public int check(AnswerTuples answers);
-	
-	public boolean check(AnswerTuple answer);
+	public abstract int check(AnswerTuples answers);
 
-	public boolean isConsistent();
+	public abstract boolean check(AnswerTuple answer);
 
-	public void dispose(); 
+	public abstract boolean isConsistent();
+
 }

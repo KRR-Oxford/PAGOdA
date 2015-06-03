@@ -1,11 +1,8 @@
 package uk.ac.ox.cs.pagoda.endomorph;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 import org.semanticweb.owlapi.model.OWLOntology;
-
-import uk.ac.ox.cs.pagoda.endomorph.plan.*;
+import uk.ac.ox.cs.pagoda.endomorph.plan.CheckPlan;
+import uk.ac.ox.cs.pagoda.endomorph.plan.OpenEndPlan;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
@@ -14,8 +11,12 @@ import uk.ac.ox.cs.pagoda.summary.Graph;
 import uk.ac.ox.cs.pagoda.summary.NodeTuple;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
-public class Endomorph implements Checker {
+import java.util.Collection;
+import java.util.LinkedList;
+
+public class Endomorph extends Checker {
 	
 	Checker fullReasoner; 
 	DependencyGraph dGraph; 
@@ -36,6 +37,8 @@ public class Endomorph implements Checker {
 	
 	@Override
 	public int check(AnswerTuples answerTuples) {
+		if(isDisposed()) throw new DisposedException();
+
 		Collection<NodeTuple> nodes = new LinkedList<NodeTuple>(); 
 		int counter = 0; 
 		
@@ -62,33 +65,47 @@ public class Endomorph implements Checker {
 	}
 
 	public OWLOntology getOntology() {
+		if(isDisposed()) throw new DisposedException();
+
 		return m_record.getRelevantOntology(); 
 	}
 
 	@Override
 	public boolean check(AnswerTuple answerTuple) {
+		if(isDisposed()) throw new DisposedException();
+
 		return fullReasoner.check(answerTuple);
 	}
 
 	@Override
 	public boolean isConsistent() {
+		if(isDisposed()) throw new DisposedException();
+
 		return fullReasoner.isConsistent();
 	}
 
 	@Override
 	public void dispose() {
+		super.dispose();
+
 		fullReasoner.dispose();
 	}
 	
 	public Graph getGraph() {
+		if(isDisposed()) throw new DisposedException();
+
 		return graph; 
 	}
 	
 	public Checker getChecker() {
+		if(isDisposed()) throw new DisposedException();
+
 		return fullReasoner; 
 	}
 
 	public DependencyGraph getDependencyGraph() {
+		if(isDisposed()) throw new DisposedException();
+
 		return dGraph;
 	}
 	
