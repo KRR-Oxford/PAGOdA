@@ -168,6 +168,9 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 store.makeFactsExplicit();
                 subTimer.reset();
                 oldTripleCount = store.getTriplesCount();
+
+                Utility.logInfo("Number of violations: " + violations.size());
+
                 for(Violation v : violations) {
 
                     Utility.logDebug("Dealing with violation: " + v.constraint);

@@ -1,6 +1,7 @@
 package uk.ac.ox.cs.pagoda.util.tuples;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -11,10 +12,9 @@ public class Tuple<T> implements Iterable<T> {
 
     Tuple() { }
 
+    @SafeVarargs
     public Tuple(T... elements) {
-        for(T t: elements) {
-            this.elements.add(t);
-        }
+        Collections.addAll(this.elements, elements);
     }
     
     public Tuple(Iterable<T> iterable) {
@@ -40,5 +40,10 @@ public class Tuple<T> implements Iterable<T> {
     @Override
     public Spliterator<T> spliterator() {
         return elements.spliterator();
+    }
+
+    @Override
+    public int hashCode() {
+        return elements.hashCode() + getClass().hashCode();
     }
 }

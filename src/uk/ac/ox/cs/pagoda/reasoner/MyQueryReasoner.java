@@ -190,7 +190,7 @@ class MyQueryReasoner extends QueryReasoner {
             return;
 
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
-        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/fragment_query" + queryRecord.getQueryID() + ".owl");
+//        queryRecord.saveRelevantOntology("./fragment_query" + queryRecord.getQueryID() + ".owl");
 
         if(PagodaProperties.getDefaultUseSkolemUpperBound() &&
                 querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))

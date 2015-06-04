@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class TestPagodaFLY {
 
-	@Test(groups = {"light"})
+	//	@Test(groups = {"light"})
 	public void answersCorrectness_withGJFC() throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 		Path answers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
