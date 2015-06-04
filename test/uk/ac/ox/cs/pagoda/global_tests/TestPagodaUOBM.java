@@ -99,6 +99,4 @@ public class TestPagodaUOBM {
 //		CheckAnswers.assertSameAnswers(answers, givenAnswers);
 	}
 
-
-	
 }
