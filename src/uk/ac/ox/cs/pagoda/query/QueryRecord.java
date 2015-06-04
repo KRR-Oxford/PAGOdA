@@ -707,7 +707,7 @@ public class QueryRecord extends Disposable {
         UPPER_BOUND,
         SIMPLE_UPPER_BOUND,
         LAZY_UPPER_BOUND,
-        L_SKOLEM_UPPER_BOUND,
+        SKOLEM_UPPER_BOUND,
         EL_LOWER_BOUND,
         FRAGMENT,
         FRAGMENT_REFINEMENT,

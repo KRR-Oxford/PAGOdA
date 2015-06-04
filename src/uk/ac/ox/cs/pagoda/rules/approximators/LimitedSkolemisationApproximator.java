@@ -18,7 +18,7 @@ import java.util.Collection;
  * it Skolemises the rule
  * if all the terms in the substitution have depth less than a given depth,
  * otherwise it approximates using an alternative <tt>TupleDependentApproximator</tt>.
- * */
+ */
 public class LimitedSkolemisationApproximator implements TupleDependentApproximator {
 
     private static final Atom[] EMPTY_BODY = new Atom[0];
@@ -41,7 +41,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     public Collection<DLClause> convert(DLClause clause,
                                         DLClause originalClause,
                                         Collection<Tuple<Individual>> violationTuples) {
-        switch (clause.getHeadLength()) {
+        switch(clause.getHeadLength()) {
             case 1:
                 return overApprox(clause, originalClause, violationTuples);
             case 0:
@@ -65,7 +65,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         ArrayList<DLClause> result = new ArrayList<>();
 
-        for (Tuple<Individual> violationTuple : violationTuples)
+        for(Tuple<Individual> violationTuple : violationTuples)
             if(getMaxDepth(violationTuple) > maxTermDepth) {
                 result.addAll(alternativeApproximator.convert(clause, originalClause, null));
                 Utility.logDebug("Approximating maximal individual by a constant in rule:" + originalClause);
@@ -84,7 +84,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
 
         // TODO check: strong assumption, the first tuples are the common ones
         TupleBuilder<Individual> commonIndividualsBuilder = new TupleBuilder<>();
-        for (int i = 0; i < commonVars.length; i++)
+        for(int i = 0; i < commonVars.length; i++)
             commonIndividualsBuilder.append(violationTuple.get(i));
         Tuple<Individual> commonIndividuals = commonIndividualsBuilder.build();
 
@@ -96,54 +96,55 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         // BEGIN: copy and paste
         ArrayList<DLClause> ret = new ArrayList<>();
         DLPredicate predicate = headAtom.getDLPredicate();
-        if (predicate instanceof AtLeastConcept) {
+        if(predicate instanceof AtLeastConcept) {
             AtLeastConcept atLeastConcept = (AtLeastConcept) predicate;
             LiteralConcept concept = atLeastConcept.getToConcept();
             Role role = atLeastConcept.getOnRole();
             AtomicConcept atomicConcept;
 
-            if (concept instanceof AtomicNegationConcept) {
+            if(concept instanceof AtomicNegationConcept) {
                 // TODO CHECK: is this already in MultiStageUpperProgram?
-                Atom atom1 = Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
+                Atom atom1 =
+                        Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
                 Atom atom2 = Atom.create(atomicConcept = OverApproxExist.getNegationConcept(atomicConcept), X);
-                ret.add(DLClause.create(new Atom[0], new Atom[] {atom1, atom2}));
+                ret.add(DLClause.create(new Atom[0], new Atom[]{atom1, atom2}));
             }
             else {
                 atomicConcept = (AtomicConcept) concept;
-                if (atomicConcept.equals(AtomicConcept.THING))
+                if(atomicConcept.equals(AtomicConcept.THING))
                     atomicConcept = null;
             }
 
             int card = atLeastConcept.getNumber();
             Individual[] individuals = new Individual[card];
             SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
-            for (int i = 0; i < card; ++i)
+            for(int i = 0; i < card; ++i)
                 individuals[i] = termsManager.getFreshIndividual(originalClause,
                                                                  offset + i,
                                                                  commonIndividuals);
 
-            for (int i = 0; i < card; ++i) {
-                if (atomicConcept != null)
-                    ret.add(DLClause.create(new Atom[] {Atom.create(atomicConcept, individuals[i])}, EMPTY_BODY));
+            for(int i = 0; i < card; ++i) {
+                if(atomicConcept != null)
+                    ret.add(DLClause.create(new Atom[]{Atom.create(atomicConcept, individuals[i])}, EMPTY_BODY));
 
                 Atom atom = role instanceof AtomicRole ?
                         Atom.create((AtomicRole) role, commonIndividuals.get(0), individuals[i]) :
                         Atom.create(((InverseRole) role).getInverseOf(), individuals[i], commonIndividuals.get(0));
 
-                ret.add(DLClause.create(new Atom[] {atom}, EMPTY_BODY));
+                ret.add(DLClause.create(new Atom[]{atom}, EMPTY_BODY));
             }
 
-            for (int i = 0; i < card; ++i)
-                for (int j = i + 1; j < card; ++j)
+            for(int i = 0; i < card; ++i)
+                for(int j = i + 1; j < card; ++j)
                     // TODO to be checked ... different as
-                    ret.add(DLClause.create(new Atom[] {Atom.create(Inequality.INSTANCE, individuals[i], individuals[j])}, EMPTY_BODY));
+                    ret.add(DLClause.create(new Atom[]{Atom.create(Inequality.INSTANCE, individuals[i], individuals[j])}, EMPTY_BODY));
 
         }
-        else if (predicate instanceof AtLeastDataRange) {
+        else if(predicate instanceof AtLeastDataRange) {
             // TODO to be implemented ...
         }
         else
-            ret.add(DLClause.create(new Atom[] {headAtom}, EMPTY_BODY));
+            ret.add(DLClause.create(new Atom[]{headAtom}, EMPTY_BODY));
 
         return ret;
 

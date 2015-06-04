@@ -370,10 +370,10 @@ class MyQueryReasoner extends QueryReasoner {
 
         relevantStore.importDataFromABoxOf(relevantSubset);
 
-        int queryDependentMaxTermDepth = 10; // TODO make it dynamic
+        int queryDependentMaxTermDepth = 1; // TODO make it dynamic
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);
-        queryRecord.addProcessingTime(Step.L_SKOLEM_UPPER_BOUND, t.duration());
+        queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());
         if(materialisationTag == -1) {
             throw new Error("A consistent ontology has turned out to be " +
                                     "inconsistent in the Skolemises-relevant-upper-store");
@@ -385,7 +385,7 @@ class MyQueryReasoner extends QueryReasoner {
 
         boolean isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
                                                    queryRecord.getExtendedQueryText(),
-                                                   Step.L_SKOLEM_UPPER_BOUND);
+                                                   Step.SKOLEM_UPPER_BOUND);
         Utility.logInfo("Semi-Skolemised relevant upper store has been evaluated");
         return isFullyProcessed;
     }
