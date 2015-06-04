@@ -370,7 +370,7 @@ class MyQueryReasoner extends QueryReasoner {
 
         relevantStore.importDataFromABoxOf(relevantSubset);
 
-        int queryDependentMaxTermDepth = 1; // TODO make it dynamic
+        int queryDependentMaxTermDepth = 10; // TODO make it dynamic
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);
         queryRecord.addProcessingTime(Step.L_SKOLEM_UPPER_BOUND, t.duration());

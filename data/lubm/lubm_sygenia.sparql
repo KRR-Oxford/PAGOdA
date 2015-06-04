@@ -1,0 +1,670 @@
+^[query1]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:worksFor ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query2]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:undergraduateDegreeFrom ?y 
+}
+
+^[query3]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Software 
+}
+
+^[query4]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:member ?x .
+  ?y rdf:type ub:Program 
+}
+
+^[query5]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:worksFor ?y .
+  ?y rdf:type ub:ResearchGroup 
+}
+
+^[query6]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:memberOf ?y .
+  ?y rdf:type ub:ResearchGroup 
+}
+
+^[query7]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:takesCourse ?y .
+  ?y rdf:type ub:Course 
+}
+
+^[query8]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Article 
+}
+
+^[query9]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:headOf ?y .
+  ?y rdf:type ub:College 
+}
+
+^[query10]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:teachingAssistantOf ?y .
+  ?y rdf:type ub:Course 
+}
+
+^[query11]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:University 
+}
+
+^[query12]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Employee 
+}
+
+^[query13]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x ub:hasAlumnus ?y 
+}
+
+^[query14]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:member ?x .
+  ?y rdf:type ub:ResearchGroup 
+}
+
+^[query15]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:teachingAssistantOf ?y .
+  ?y rdf:type ub:Work 
+}
+
+^[query16]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:member ?y .
+  ?y rdf:type ub:Person 
+}
+
+^[query17]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:worksFor ?y 
+}
+
+^[query18]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:TeachingAssistant 
+}
+
+^[query19]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:memberOf ?x .
+  ?y rdf:type ub:Person 
+}
+
+^[query20]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:mastersDegreeFrom ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query21]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x ub:memberOf ?y 
+}
+
+^[query22]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:member ?y 
+}
+
+^[query23]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:hasAlumnus ?x .
+  ?y rdf:type ub:University 
+}
+
+^[query24]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:member ?x .
+  ?y rdf:type ub:Organization 
+}
+
+^[query25]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:degreeFrom ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query26]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x ub:degreeFrom ?y 
+}
+
+^[query27]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:undergraduateDegreeFrom ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query28]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Course 
+}
+
+^[query29]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:worksFor ?y .
+  ?y rdf:type ub:College 
+}
+
+^[query30]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:degreeFrom ?x 
+}
+
+^[query31]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x ub:worksFor ?y 
+}
+
+^[query32]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:degreeFrom ?y 
+}
+
+^[query33]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Person 
+}
+
+^[query34]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:hasAlumnus ?x .
+  ?y rdf:type ub:Organization 
+}
+
+^[query35]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:degreeFrom ?y .
+  ?y rdf:type ub:University 
+}
+
+^[query36]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:teachingAssistantOf ?y 
+}
+
+^[query37]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:doctoralDegreeFrom ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query38]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Research 
+}
+
+^[query39]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:member ?x .
+  ?y rdf:type ub:Department 
+}
+
+^[query40]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Faculty 
+}
+
+^[query41]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:hasAlumnus ?y .
+  ?y rdf:type ub:Person 
+}
+
+^[query42]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:memberOf ?y 
+}
+
+^[query43]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:memberOf ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query44]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Organization 
+}
+
+^[query45]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:headOf ?y .
+  ?y rdf:type ub:Department 
+}
+
+^[query46]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y ub:member ?x 
+}
+
+^[query47]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:degreeFrom ?x .
+  ?y rdf:type ub:Person 
+}
+
+^[query48]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:takesCourse ?y .
+  ?y rdf:type ub:GraduateCourse 
+}
+
+^[query49]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:doctoralDegreeFrom ?y 
+}
+
+^[query50]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:member ?x .
+  ?y rdf:type ub:College 
+}
+
+^[query51]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x ub:member ?y 
+}
+
+^[query52]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:memberOf ?y .
+  ?y rdf:type ub:College 
+}
+
+^[query53]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:member ?x 
+}
+
+^[query54]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Publication 
+}
+
+^[query55]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Student 
+}
+
+^[query56]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y ub:memberOf ?x 
+}
+
+^[query57]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:memberOf ?y .
+  ?y rdf:type ub:Program 
+}
+
+^[query58]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:headOf ?y 
+}
+
+^[query59]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:memberOf ?x 
+}
+
+^[query60]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:takesCourse ?y .
+  ?y rdf:type ub:Work 
+}
+
+^[query61]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:headOf ?y .
+  ?y rdf:type ub:Program 
+}
+
+^[query62]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Work 
+}
+
+^[query63]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:doctoralDegreeFrom ?y .
+  ?y rdf:type ub:University 
+}
+
+^[query64]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:AdministrativeStaff 
+}
+
+^[query65]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:memberOf ?y .
+  ?y rdf:type ub:Department 
+}
+
+^[query66]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:takesCourse ?y 
+}
+
+^[query67]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:ResearchGroup 
+}
+
+^[query68]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Professor 
+}
+
+^[query69]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:worksFor ?y .
+  ?y rdf:type ub:Program 
+}
+
+^[query70]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:headOf ?y .
+  ?y rdf:type ub:Organization 
+}
+
+^[query71]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:hasAlumnus ?y 
+}
+
+^[query72]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type ub:Schedule 
+}
+
+^[query73]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y ub:degreeFrom ?x 
+}
+
+^[query74]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:undergraduateDegreeFrom ?y .
+  ?y rdf:type ub:University 
+}
+
+^[query75]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:mastersDegreeFrom ?y .
+  ?y rdf:type ub:University 
+}
+
+^[query76]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?y ub:hasAlumnus ?x 
+}
+
+^[query77]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y ub:hasAlumnus ?x 
+}
+
+^[query78]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:mastersDegreeFrom ?y 
+}
+
+^[query79]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ub:  <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
+SELECT ?x
+WHERE {
+  ?x ub:worksFor ?y .
+  ?y rdf:type ub:Department 
+}
+

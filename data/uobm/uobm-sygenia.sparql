@@ -1,0 +1,1724 @@
+^[query1]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query2]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x 
+}
+
+^[query3]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?z benchmark:hasStudent ?y 
+}
+
+^[query4]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:AcademicSubject 
+}
+
+^[query5]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:isFriendOf ?x 
+}
+
+^[query6]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?y benchmark:isMemberOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query7]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y 
+}
+
+^[query8]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:SupportingStaff 
+}
+
+^[query9]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y 
+}
+
+^[query10]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x 
+}
+
+^[query11]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:ResearchGroup 
+}
+
+^[query12]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasMember ?x .
+  ?y rdf:type benchmark:ResearchGroup 
+}
+
+^[query13]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?z benchmark:hasMember ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query14]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y benchmark:isMemberOf ?z 
+}
+
+^[query15]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasUndergraduateDegreeFrom ?y 
+}
+
+^[query16]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query17]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?y benchmark:isMemberOf ?z 
+}
+
+^[query18]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasSameHomeTownWith ?y 
+}
+
+^[query19]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:hasAlumnus ?y 
+}
+
+^[query20]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y benchmark:worksFor ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query21]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasMember ?x .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query22]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?y benchmark:isStudentOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query23]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasStudent ?x .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query24]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y .
+  ?y rdf:type benchmark:Insterest 
+}
+
+^[query25]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?y benchmark:isStudentOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query26]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query27]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?y benchmark:isMemberOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query28]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:enrollIn ?y .
+  ?y rdf:type benchmark:Department 
+}
+
+^[query29]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Article 
+}
+
+^[query30]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasAlumnus ?y .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query31]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isFriendOf ?y .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query32]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y .
+  ?y rdf:type benchmark:TennisClass 
+}
+
+^[query33]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasDegreeFrom ?x 
+}
+
+^[query34]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y .
+  ?y rdf:type benchmark:SwimmingClass 
+}
+
+^[query35]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasStudent ?x 
+}
+
+^[query36]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:hasAlumnus ?x 
+}
+
+^[query37]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?y benchmark:isStudentOf ?z 
+}
+
+^[query38]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?z benchmark:hasStudent ?y 
+}
+
+^[query39]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isMemberOf ?y .
+  ?y rdf:type benchmark:ResearchGroup 
+}
+
+^[query40]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?y benchmark:isStudentOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query41]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMasterDegreeFrom ?y .
+  ?y rdf:type benchmark:University 
+}
+
+^[query42]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Department 
+}
+
+^[query43]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y .
+  ?y rdf:type benchmark:BasketBallClass 
+}
+
+^[query44]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?y benchmark:isStudentOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query45]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:enrollIn ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query46]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?y benchmark:isMemberOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query47]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Science 
+}
+
+^[query48]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?y benchmark:isMemberOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query49]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:like ?y 
+}
+
+^[query50]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Sports 
+}
+
+^[query51]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasAlumnus ?x 
+}
+
+^[query52]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isHeadOf ?y .
+  ?y rdf:type benchmark:Department 
+}
+
+^[query53]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:teacherOf ?y 
+}
+
+^[query54]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:isTaughtBy ?y 
+}
+
+^[query55]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y .
+  ?y rdf:type benchmark:BasketBallClass 
+}
+
+^[query56]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y benchmark:isMemberOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query57]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasDegreeFrom ?y 
+}
+
+^[query58]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasSameHomeTownWith ?y .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query59]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isHeadOf ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query60]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?z benchmark:hasMember ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query61]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isHeadOf ?y .
+  ?y rdf:type benchmark:College 
+}
+
+^[query62]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasDoctoralDegreeFrom ?y .
+  ?y rdf:type benchmark:University 
+}
+
+^[query63]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?z benchmark:hasMember ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query64]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y .
+  ?y rdf:type benchmark:BaseballClass 
+}
+
+^[query65]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y .
+  ?y rdf:type benchmark:Sports 
+}
+
+^[query66]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasDegreeFrom ?x .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query67]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:hasMember ?y 
+}
+
+^[query68]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Software 
+}
+
+^[query69]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasSameHomeTownWith ?x 
+}
+
+^[query70]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Professor 
+}
+
+^[query71]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:worksFor ?y .
+  ?y rdf:type benchmark:ResearchGroup 
+}
+
+^[query72]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?z benchmark:hasMember ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query73]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y rdf:type benchmark:Employee 
+}
+
+^[query74]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Work 
+}
+
+^[query75]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y benchmark:worksFor ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query76]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:worksFor ?y 
+}
+
+^[query77]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:TeachingAssistant 
+}
+
+^[query78]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasDegreeFrom ?y .
+  ?y rdf:type benchmark:University 
+}
+
+^[query79]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y .
+  ?y rdf:type benchmark:Insterest 
+}
+
+^[query80]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?y benchmark:isMemberOf ?z 
+}
+
+^[query81]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?z benchmark:hasMember ?y 
+}
+
+^[query82]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:FineArts 
+}
+
+^[query83]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isStudentOf ?y 
+}
+
+^[query84]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isFriendOf ?x .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query85]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isFriendOf ?x 
+}
+
+^[query86]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:worksFor ?y .
+  ?y rdf:type benchmark:Program 
+}
+
+^[query87]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMasterDegreeFrom ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query88]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Engineering 
+}
+
+^[query89]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasDoctoralDegreeFrom ?y 
+}
+
+^[query90]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?z benchmark:hasMember ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query91]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y .
+  ?y rdf:type benchmark:BaseballClass 
+}
+
+^[query92]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:worksFor ?y 
+}
+
+^[query93]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Faculty 
+}
+
+^[query94]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:hasStudent ?x 
+}
+
+^[query95]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMajor ?y .
+  ?y rdf:type benchmark:Science 
+}
+
+^[query96]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:worksFor ?y .
+  ?y rdf:type benchmark:Department 
+}
+
+^[query97]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isFriendOf ?y 
+}
+
+^[query98]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y benchmark:worksFor ?z 
+}
+
+^[query99]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?y benchmark:isStudentOf ?z 
+}
+
+^[query100]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isCrazyAbout ?y .
+  ?y rdf:type benchmark:Sports 
+}
+
+^[query101]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?y rdf:type benchmark:Student 
+}
+
+^[query102]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?z benchmark:hasMember ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query103]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasDoctoralDegreeFrom ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query104]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?y rdf:type benchmark:Student 
+}
+
+^[query105]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:isStudentOf ?x 
+}
+
+^[query106]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?z benchmark:hasStudent ?y 
+}
+
+^[query107]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:hasMember ?x 
+}
+
+^[query108]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?y rdf:type benchmark:Student 
+}
+
+^[query109]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Course 
+}
+
+^[query110]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isHeadOf ?y .
+  ?y rdf:type benchmark:Program 
+}
+
+^[query111]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y 
+}
+
+^[query112]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasMember ?x .
+  ?y rdf:type benchmark:Program 
+}
+
+^[query113]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isMemberOf ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query114]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Student 
+}
+
+^[query115]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?y benchmark:isStudentOf ?z 
+}
+
+^[query116]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:hasStudent ?y 
+}
+
+^[query117]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?y rdf:type benchmark:Student 
+}
+
+^[query118]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:College 
+}
+
+^[query119]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:teacherOf ?y .
+  ?y rdf:type benchmark:Work 
+}
+
+^[query120]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isMemberOf ?y 
+}
+
+^[query121]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasAlumnus ?y 
+}
+
+^[query122]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y benchmark:isMemberOf ?z 
+}
+
+^[query123]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y .
+  ?y rdf:type benchmark:SwimmingClass 
+}
+
+^[query124]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasMember ?x 
+}
+
+^[query125]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isHeadOf ?y 
+}
+
+^[query126]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?y benchmark:isStudentOf ?z 
+}
+
+^[query127]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isStudentOf ?y .
+  ?y rdf:type benchmark:Department 
+}
+
+^[query128]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:worksFor ?y .
+  ?y rdf:type benchmark:College 
+}
+
+^[query129]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:teacherOf ?y .
+  ?y rdf:type benchmark:Course 
+}
+
+^[query130]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:teacherOf ?x 
+}
+
+^[query131]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Organization 
+}
+
+^[query132]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?z benchmark:hasMember ?y 
+}
+
+^[query133]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query134]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasSameHomeTownWith ?x .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query135]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?z benchmark:hasStudent ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query136]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isMemberOf ?y .
+  ?y rdf:type benchmark:Program 
+}
+
+^[query137]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?y benchmark:isMemberOf ?z 
+}
+
+^[query138]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:teachingAssistantOf ?y .
+  ?y rdf:type benchmark:Course 
+}
+
+^[query139]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?z benchmark:hasStudent ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query140]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y 
+}
+
+^[query141]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:enrollIn ?y 
+}
+
+^[query142]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?z benchmark:hasMember ?y 
+}
+
+^[query143]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:hasSameHomeTownWith ?y 
+}
+
+^[query144]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasAlumnus ?x .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query145]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Dean 
+}
+
+^[query146]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isTaughtBy ?x .
+  ?y rdf:type benchmark:Course 
+}
+
+^[query147]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y rdf:type benchmark:Faculty 
+}
+
+^[query148]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isStudentOf ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query149]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMajor ?y .
+  ?y rdf:type benchmark:AcademicSubject 
+}
+
+^[query150]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:isStudentOf ?y 
+}
+
+^[query151]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?z benchmark:hasStudent ?y 
+}
+
+^[query152]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasUndergraduateDegreeFrom ?y .
+  ?y rdf:type benchmark:University 
+}
+
+^[query153]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?z benchmark:hasStudent ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query154]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:hasSameHomeTownWith ?x 
+}
+
+^[query155]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?z benchmark:hasMember ?y 
+}
+
+^[query156]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Employee 
+}
+
+^[query157]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:teachingAssistantOf ?y 
+}
+
+^[query158]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y 
+}
+
+^[query159]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Research 
+}
+
+^[query160]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:isMemberOf ?x 
+}
+
+^[query161]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?z benchmark:hasMember ?y 
+}
+
+^[query162]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isTaughtBy ?x 
+}
+
+^[query163]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y benchmark:isMemberOf ?z .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query164]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isMemberOf ?y .
+  ?y rdf:type benchmark:College 
+}
+
+^[query165]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:isFriendOf ?y 
+}
+
+^[query166]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:hasDegreeFrom ?y 
+}
+
+^[query167]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isTaughtBy ?x .
+  ?y rdf:type benchmark:Work 
+}
+
+^[query168]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:isTaughtBy ?x 
+}
+
+^[query169]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasAlumnus ?x .
+  ?y rdf:type benchmark:University 
+}
+
+^[query170]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Person 
+}
+
+^[query171]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isTaughtBy ?y .
+  ?y benchmark:worksFor ?z 
+}
+
+^[query172]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMasterDegreeFrom ?y 
+}
+
+^[query173]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x .
+  ?z benchmark:hasMember ?y 
+}
+
+^[query174]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:teacherOf ?y 
+}
+
+^[query175]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:isMemberOf ?y .
+  ?y rdf:type benchmark:Department 
+}
+
+^[query176]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x benchmark:isMemberOf ?y 
+}
+
+^[query177]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasStudent ?y .
+  ?z benchmark:hasStudent ?y .
+  ?z rdf:type benchmark:Organization 
+}
+
+^[query178]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMajor ?y 
+}
+
+^[query179]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Insterest 
+}
+
+^[query180]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isStudentOf ?x .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query181]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasDegreeFrom ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query182]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:HumanitiesAndSocial 
+}
+
+^[query183]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y rdf:type benchmark:Faculty 
+}
+
+^[query184]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Publication 
+}
+
+^[query185]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:like ?y .
+  ?y rdf:type benchmark:TennisClass 
+}
+
+^[query186]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:isMemberOf ?x 
+}
+
+^[query187]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y benchmark:hasDegreeFrom ?x 
+}
+
+^[query188]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasMember ?y .
+  ?y benchmark:isMemberOf ?z 
+}
+
+^[query189]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y rdf:type benchmark:Person 
+}
+
+^[query190]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:teacherOf ?x .
+  ?y rdf:type benchmark:Employee 
+}
+
+^[query191]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasStudent ?x .
+  ?y rdf:type benchmark:Department 
+}
+
+^[query192]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:teachingAssistantOf ?y .
+  ?y rdf:type benchmark:Work 
+}
+
+^[query193]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:University 
+}
+
+^[query194]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:hasUndergraduateDegreeFrom ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query195]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type benchmark:Schedule 
+}
+
+^[query196]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?x benchmark:worksFor ?y .
+  ?y rdf:type benchmark:Organization 
+}
+
+^[query197]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasMember ?x .
+  ?y rdf:type benchmark:College 
+}
+
+^[query198]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX benchmark: <http://semantics.crl.ibm.com/univ-bench-dl.owl#>
+SELECT ?x
+WHERE {
+  ?y benchmark:hasMember ?x .
+  ?y rdf:type benchmark:Department 
+}
