@@ -9,6 +9,7 @@ import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
 import uk.ac.ox.cs.pagoda.util.Utility;
+import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
 public class RDFoxAnswerTuples extends AnswerTuples {
 
@@ -35,11 +36,15 @@ public class RDFoxAnswerTuples extends AnswerTuples {
 
 	@Override
 	public boolean isValid() {
+		if(isDisposed()) throw new DisposedException();
+
 		return multi != 0;
 	}
 
 	@Override
 	public int getArity() {
+		if(isDisposed()) throw new DisposedException();
+
 		try {
 			return m_iter.getArity();
 		} catch (JRDFStoreException e) {
@@ -50,6 +55,8 @@ public class RDFoxAnswerTuples extends AnswerTuples {
 
 	@Override
 	public void moveNext() {
+		if(isDisposed()) throw new DisposedException();
+
 		try {
 			multi = m_iter.getNext();
 		} catch (JRDFStoreException e) {
@@ -65,11 +72,15 @@ public class RDFoxAnswerTuples extends AnswerTuples {
 	
 	@Override
 	public AnswerTuple getTuple() {
+		if(isDisposed()) throw new DisposedException();
+
 		return new AnswerTuple(m_iter, m_answerVars.length); 
 	}
 
 	@Override
 	public void reset() {
+		if(isDisposed()) throw new DisposedException();
+
 		try {
 			multi = m_iter.open();
 		} catch (JRDFStoreException e) {
@@ -79,17 +90,23 @@ public class RDFoxAnswerTuples extends AnswerTuples {
 
 	@Override
 	public boolean contains(AnswerTuple t) {
+		if(isDisposed()) throw new DisposedException();
+
 		Utility.logError("Unsupported operation in RDFoxAnswerTuples"); 
 		return false;
 	}
 
 	@Override
 	public void remove() {
+		if(isDisposed()) throw new DisposedException();
+
 		Utility.logError("Unsupported operation in RDFoxAnswerTuples"); 
 	}
 
 	@Override
 	public String[] getAnswerVariables() {
+		if(isDisposed()) throw new DisposedException();
+
 		return m_answerVars;
 	}
 

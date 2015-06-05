@@ -25,15 +25,6 @@ public abstract class Disposable {
     }
 
     private class AlreadyDisposedException extends RuntimeException {
-
-        public AlreadyDisposedException() {
-            super();
-        }
-
-        public AlreadyDisposedException(String msg) {
-            super(msg);
-        }
     }
-
 
 }

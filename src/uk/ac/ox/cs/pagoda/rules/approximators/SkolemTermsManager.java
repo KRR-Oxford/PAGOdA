@@ -87,6 +87,13 @@ public class SkolemTermsManager {
         return individualToDepth_map.keySet().size();
     }
 
+    /**
+     * Just for reading the clause id from <tt>LimitedSkolemisationApproximator</tt>.
+     */
+    int getClauseId(DLClause clause) {
+        return clauseToId_map.get(clause);
+    }
+
     private int mapClauseToId(DLClause clause) {
         if(!clauseToId_map.containsKey(clause)) {
             clauseToId_map.put(clause, termsCounter);

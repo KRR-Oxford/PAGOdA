@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class PagodaProperties {
@@ -13,6 +15,7 @@ public class PagodaProperties {
 	public static final boolean DEFAULT_DEBUG = false;
 	private static final boolean DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
 	private static final boolean DEFAULT_USE_SKOLEM_UPPER_BOUND;
+	private static final Path DEFAULT_STATISTICS_DIR;
 
 	public static boolean shellModeDefault = false;
 	private static boolean debug = DEFAULT_DEBUG;
@@ -20,6 +23,7 @@ public class PagodaProperties {
 	static {
 		boolean defaultUseAlwaysSimpleUpperBound = false;
 		boolean defaultUseSkolemUpperBound = true;
+		Path defaultStatisticsDir = null;
 
 		try(InputStream in = PagodaProperties.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
 			Properties config = new Properties();
@@ -28,8 +32,12 @@ public class PagodaProperties {
 			Logger logger = Logger.getLogger("PagodaProperties");
 			if(config.containsKey("debug")) {
 				debug = Boolean.parseBoolean(config.getProperty("debug"));
-//			  	logger.info("Debugging mode is enabled (you can disable it from file \"pagoda.properties\")");
 				logger.info("Debugging mode is enabled");
+
+				if(config.containsKey("statisticsDir")) {
+					defaultStatisticsDir = Paths.get(config.getProperty("statisticsDir"));
+					logger.info("The directory where statistics are saved is: \"" + defaultStatisticsDir + "\"");
+				}
 			}
 			if(config.containsKey("useAlwaysSimpleUpperBound")) {
 				defaultUseAlwaysSimpleUpperBound =
@@ -40,11 +48,13 @@ public class PagodaProperties {
 				defaultUseSkolemUpperBound = Boolean.parseBoolean(config.getProperty("useSkolemUpperBound"));
 				logger.info("The Skolem upper bound is enabled");
 			}
+
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 		DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND = defaultUseAlwaysSimpleUpperBound;
 		DEFAULT_USE_SKOLEM_UPPER_BOUND = defaultUseSkolemUpperBound;
+		DEFAULT_STATISTICS_DIR = defaultStatisticsDir;
 	}
 
 	String dataPath = null;
@@ -56,6 +66,8 @@ public class PagodaProperties {
 	boolean shellMode = shellModeDefault;
 	private boolean useAlwaysSimpleUpperBound = DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
 	private boolean useSkolemUpperBound = DEFAULT_USE_SKOLEM_UPPER_BOUND;
+	private Path statisticsDir = DEFAULT_STATISTICS_DIR;
+
 	public PagodaProperties(String path) {
 		java.util.Properties m_properties = new java.util.Properties();
 		InputStream inputStream = null;
@@ -90,6 +102,10 @@ public class PagodaProperties {
 
 	public static boolean getDefaultUseAlwaysSimpleUpperBound() {
 		return DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
+	}
+
+	public static Path getDefaultStatisticsDir() {
+		return DEFAULT_STATISTICS_DIR;
 	}
 
 	public static boolean getDefaultUseSkolemUpperBound() {
@@ -166,5 +182,13 @@ public class PagodaProperties {
 
 	public void setUseSkolemUpperBound(boolean flag) {
 		useSkolemUpperBound = flag;
+	}
+
+	public Path getStatisticsDir() {
+		return statisticsDir;
+	}
+
+	public void setStatisticsDir(Path statisticsDir) {
+		this.statisticsDir = statisticsDir;
 	}
 }

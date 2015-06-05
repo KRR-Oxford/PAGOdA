@@ -7,3 +7,5 @@
 /*.pdf
 test_reports
 .idea
+logs
+statistics

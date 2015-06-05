@@ -370,7 +370,7 @@ class MyQueryReasoner extends QueryReasoner {
 
         relevantStore.importDataFromABoxOf(relevantSubset);
 
-        int queryDependentMaxTermDepth = 1; // TODO make it dynamic
+        int queryDependentMaxTermDepth = 5; // TODO make it dynamic
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);
         queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());
@@ -386,6 +386,8 @@ class MyQueryReasoner extends QueryReasoner {
         boolean isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
                                                    queryRecord.getExtendedQueryText(),
                                                    Step.SKOLEM_UPPER_BOUND);
+
+        relevantStore.dispose();
         Utility.logInfo("Semi-Skolemised relevant upper store has been evaluated");
         return isFullyProcessed;
     }

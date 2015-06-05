@@ -1,5 +1,6 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
+import org.semanticweb.HermiT.model.DLClause;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.multistage.treatement.Pick4NegativeConceptNaive;
@@ -9,13 +10,25 @@ import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.rules.Program;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MultiStageQueryEngine extends StageQueryEngine {
+
+    private HashMap<String, List> statistics = new HashMap<>();
 
     public MultiStageQueryEngine(String name, boolean checkValidity) {
         super(name, checkValidity);
@@ -94,6 +107,14 @@ public class MultiStageQueryEngine extends StageQueryEngine {
         return ret;
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        if(PagodaProperties.isDebuggingMode())
+            outputStatistics();
+    }
+
     private int materialise(MultiStageUpperProgram program, Treatment treatment, GapByStore4ID gap) {
         if(gap != null)
             treatment.addAdditionalGapTuples();
@@ -169,7 +190,11 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 subTimer.reset();
                 oldTripleCount = store.getTriplesCount();
 
-                Utility.logInfo("Number of violations: " + violations.size());
+                Utility.logDebug("Number of violations: " + violations.size());
+
+                updateStatistics("violationClauses", violations.stream()
+                                                               .map(Violation::getClause)
+                                                               .collect(Collectors.toList()));
 
                 for(Violation v : violations) {
 
@@ -196,6 +221,22 @@ public class MultiStageQueryEngine extends StageQueryEngine {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private void updateStatistics(String key, List<DLClause> value) {
+        if(!statistics.containsKey(key))
+            statistics.put(key, new ArrayList<List>());
+        statistics.get(key).add(value.stream().map(DLClause::toString).collect(Collectors.toList()));
+    }
+
+    private void outputStatistics() {
+        Path statisticsPath = PagodaProperties.getDefaultStatisticsDir()
+                                              .resolve(Paths.get("MultiStageQueryEngine-ViolationSequence.json"));
+        try(BufferedWriter writer = Files.newBufferedWriter(statisticsPath)) {
+            QueryRecord.GsonCreator.getInstance().toJson(statistics, writer);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
