@@ -8,8 +8,8 @@ import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Approximates existential rules through a limited form of Skolemisation.
@@ -45,7 +45,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
             case 1:
                 return overApprox(clause, originalClause, violationTuples);
             case 0:
-                return Arrays.asList(clause);
+                return Collections.singletonList(clause);
             default:
                 throw new IllegalArgumentException(
                         "Expected clause with head length < 1, but it is " + clause.getHeadLength());
