@@ -17,7 +17,7 @@ class Cleaner:
             self._used_words = 0
             self._cache = {}
 
-    def clean(self, violation, prefix):
+    def clean(self, violation, prefix, query_predicate=None):
         j = 0
         atoms = []
         for i in range(3):
@@ -25,8 +25,11 @@ class Cleaner:
             j = violation.find('>', i)
             atom = violation[i:j]
             if atom not in self._cache:
-                self._cache[atom] = str(prefix) + self._words[self._used_words]
-                self._used_words += 1
+                if atom == query_predicate:
+                    self._cache[atom] = 'Q'
+                else:
+                    self._cache[atom] = str(prefix) + self._words[self._used_words]
+                    self._used_words += 1
             atoms.append(self._cache[atom])
         return '%10s(X) -> %10s(X,Y), %10s(Y)' % (atoms[2], atoms[0], atoms[1])
 
@@ -34,6 +37,7 @@ class Cleaner:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Transform violations (as output by PAGOdA) into a very readable form.')
     parser.add_argument('input', help='json file containing violations')
+    parser.add_argument('-q', help='query predicate')
     args = parser.parse_args()
 
     cleaner = Cleaner()
@@ -42,7 +46,7 @@ if __name__ == '__main__':
         clean_rules_list_list = []
         i = 0
         for violations_list in violations_list_list:
-            clean_rules_list_list.append(sorted(map(lambda x: cleaner.clean(x, i), violations_list)))
+            clean_rules_list_list.append(sorted(map(lambda x: cleaner.clean(x, i, args.q), violations_list)))
             i += 1
     print json.dumps(clean_rules_list_list, indent=2)
         

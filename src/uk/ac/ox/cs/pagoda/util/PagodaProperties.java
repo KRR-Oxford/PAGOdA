@@ -42,11 +42,15 @@ public class PagodaProperties {
 			if(config.containsKey("useAlwaysSimpleUpperBound")) {
 				defaultUseAlwaysSimpleUpperBound =
 						Boolean.parseBoolean(config.getProperty("useAlwaysSimpleUpperBound"));
-				logger.info("The simple upper bound is always used");
+				if(defaultUseAlwaysSimpleUpperBound)
+					logger.info("By default the simple upper bound is always used");
 			}
 			if(config.containsKey("useSkolemUpperBound")) {
 				defaultUseSkolemUpperBound = Boolean.parseBoolean(config.getProperty("useSkolemUpperBound"));
-				logger.info("The Skolem upper bound is enabled");
+				if(defaultUseSkolemUpperBound)
+					logger.info("By default the Skolem upper bound is enabled");
+				else
+					logger.info("By default the Skolem upper bound is disabled");
 			}
 
 		} catch(IOException e) {
