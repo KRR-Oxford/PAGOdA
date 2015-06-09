@@ -172,11 +172,11 @@
 			<artifactId>jrdfox</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>commons-lang</groupId>-->
-			<!--<artifactId>commons-lang</artifactId>-->
-			<!--<version>2.1</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.1</version>
+		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.codehaus.plexus</groupId>-->
 			<!--<artifactId>plexus-utils</artifactId>-->

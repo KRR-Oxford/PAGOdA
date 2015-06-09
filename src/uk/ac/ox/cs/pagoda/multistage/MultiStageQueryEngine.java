@@ -10,6 +10,7 @@ import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.rules.Program;
+import uk.ac.ox.cs.pagoda.rules.approximators.SkolemTermsManager;
 import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
@@ -216,6 +217,9 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 Utility.logDebug(name + " store after adding facts for violations: " + (tripleCount =
                         store.getTriplesCount()) + " (" + (tripleCount - oldTripleCount) + " new)");
                 Utility.logDebug("Time to add triples for violations: " + subTimer.duration());
+
+                Utility.logDebug("Number of Skolem individuals: " + SkolemTermsManager.getInstance()
+                                                                                      .getSkolemIndividualsCount());
             }
         } catch(JRDFStoreException e) {
             e.printStackTrace();

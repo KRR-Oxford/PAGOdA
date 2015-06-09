@@ -177,6 +177,12 @@ public class Pagoda implements Runnable {
             return this;
         }
 
+        public PagodaBuilder skolem(Boolean isEnabled) {
+            if(instance == null) return null;
+            instance.properties.setUseSkolemUpperBound(isEnabled);
+            return this;
+        }
+
         public Pagoda build() {
             Pagoda builtInstance = instance;
             instance = null;

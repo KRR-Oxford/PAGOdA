@@ -19,7 +19,6 @@ import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
-import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
@@ -192,7 +191,7 @@ class MyQueryReasoner extends QueryReasoner {
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
 //        queryRecord.saveRelevantOntology("./fragment_query" + queryRecord.getQueryID() + ".owl");
 
-        if(PagodaProperties.getDefaultUseSkolemUpperBound() &&
+        if(properties.getUseSkolemUpperBound() &&
                 querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
             return;
 
@@ -297,7 +296,7 @@ class MyQueryReasoner extends QueryReasoner {
 
         Tuple<String> extendedQueryTexts = queryRecord.getExtendedQueryText();
 
-        if(PagodaProperties.getDefaultUseAlwaysSimpleUpperBound() || lazyUpperStore == null) {
+        if(properties.getUseAlwaysSimpleUpperBound() || lazyUpperStore == null) {
             Utility.logDebug("Tracking store");
             if(queryUpperStore(trackingStore, queryRecord, extendedQueryTexts, Step.SIMPLE_UPPER_BOUND))
                 return true;
@@ -369,8 +368,10 @@ class MyQueryReasoner extends QueryReasoner {
                 new MultiStageQueryEngine("Relevant-store", true); // checkValidity is true
 
         relevantStore.importDataFromABoxOf(relevantSubset);
+        String relevantOriginalMarkProgram = OWLHelper.getOriginalMarkProgram(relevantSubset);
 
         int queryDependentMaxTermDepth = 5; // TODO make it dynamic
+        relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);
         queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());

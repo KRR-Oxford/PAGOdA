@@ -22,7 +22,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class TestUtil {
 
     public static final String CONFIG_FILE = "test.properties";
-
+    private static final Logger LOGGER = Logger.getLogger("Tester");
     private static boolean isConfigLoaded = false;
     private static Properties config;
 
@@ -69,6 +69,22 @@ public class TestUtil {
                                             .getResource(name);
         if(givenAnswersURL == null) throw new RuntimeException("Missing answers file:" + name);
         return Paths.get(givenAnswersURL.getPath());
+    }
+
+    public static void logInfo(Object msg) {
+        LOGGER.info(msg);
+    }
+
+    public static void logDebug(Object msg) {
+        LOGGER.debug(msg);
+    }
+
+    public static void logError(Object msg) {
+        LOGGER.error(msg);
+    }
+
+    public static void logError(Object msg, Throwable t) {
+        LOGGER.error(msg, t);
     }
 
 }

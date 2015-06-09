@@ -2,6 +2,7 @@ package uk.ac.ox.cs.pagoda.query;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.lang.WordUtils;
 import org.semanticweb.HermiT.model.*;
 import org.semanticweb.owlapi.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
@@ -713,7 +714,12 @@ public class QueryRecord extends Disposable {
         FRAGMENT_REFINEMENT,
         SUMMARISATION,
         DEPENDENCY,
-        FULL_REASONING
+        FULL_REASONING;
+
+        @Override
+        public String toString() {
+            return WordUtils.capitalizeFully(super.toString(), new char[]{'_'}).replace("_", "");
+        }
     }
 
     /**

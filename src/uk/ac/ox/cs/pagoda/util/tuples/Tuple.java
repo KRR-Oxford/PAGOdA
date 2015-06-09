@@ -46,4 +46,9 @@ public class Tuple<T> implements Iterable<T> {
     public int hashCode() {
         return elements.hashCode() + getClass().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return elements.toString();
+    }
 }

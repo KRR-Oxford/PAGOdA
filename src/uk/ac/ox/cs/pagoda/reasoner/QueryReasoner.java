@@ -193,6 +193,7 @@ public abstract class QueryReasoner extends Disposable {
                 if(!record.isProcessed())
                     evaluate(record);
                 Utility.logInfo("Total time to answer this query: " + t.duration());
+                Utility.logInfo("Difficulty of this query: " + record.getDifficulty());
                 if(!fullReasoner && !record.isProcessed()) {
                     Utility.logInfo("The query has not been fully answered in " + t.duration() + " seconds.");
                     continue;
