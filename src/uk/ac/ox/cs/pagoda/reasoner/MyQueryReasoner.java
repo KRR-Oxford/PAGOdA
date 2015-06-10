@@ -370,7 +370,7 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.importDataFromABoxOf(relevantSubset);
         String relevantOriginalMarkProgram = OWLHelper.getOriginalMarkProgram(relevantSubset);
 
-        int queryDependentMaxTermDepth = 5; // TODO make it dynamic
+        int queryDependentMaxTermDepth = 10; // TODO make it dynamic
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);

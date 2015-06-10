@@ -79,7 +79,7 @@ public class TestPagodaUOBM {
 		answersCorrectness_sygenia(1);
 	}
 
-	@Test(groups = {"heavy",}, dataProvider = "UOBMNumbers")
+	@Test(groups = {"heavy"}, dataProvider = "UOBMNumbers")
 	public void answersCorrectness_sygenia_allBlanks(int number) throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 //		Path answers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
@@ -99,4 +99,19 @@ public class TestPagodaUOBM {
 //		CheckAnswers.assertSameAnswers(answers, givenAnswers);
 	}
 
+	@Test(groups = {"justExecute"})
+	public void justExecute_existentialQueries() throws IOException {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
+
+		Pagoda.builder()
+			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
+			  .data(Paths.get(ontoDir, "uobm/data/uobm1.ttl"))
+				.query(Paths.get(ontoDir, "uobm/queries/existential_queries.sparql"))
+//			  .answer(answers)
+				.classify(true)
+				.hermit(true)
+				.skolem(false)
+				.build()
+				.run();
+	}
 }
