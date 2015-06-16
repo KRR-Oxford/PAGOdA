@@ -111,6 +111,11 @@ public class HermitSummaryFilter extends Checker {
 	}
 
 	@Override
+	public int getNoOfCalls() {
+		return summarisedHermiT.getNoOfCalls() + endomorphismChecker.getNoOfCalls();
+	}
+
+	@Override
 	public int check(AnswerTuples answers) {
 		if(isDisposed()) throw new DisposedException();
 
@@ -183,8 +188,14 @@ public class HermitSummaryFilter extends Checker {
 	public void dispose() {
 		super.dispose();
 
-		if(summarisedHermiT != null) summarisedHermiT.dispose();
-		endomorphismChecker.dispose();
+		if(summarisedHermiT != null) {
+			Utility.logInfo("SummarisedHermit was called " + summarisedHermiT.getNoOfCalls() + " times");
+			summarisedHermiT.dispose();
+		}
+		if(endomorphismChecker != null) {
+			Utility.logInfo("Hermit was called " + endomorphismChecker.getNoOfCalls() + " times");
+			endomorphismChecker.dispose();
+		}
 	}
 
 	private void initialiseSummarisedReasoner() {

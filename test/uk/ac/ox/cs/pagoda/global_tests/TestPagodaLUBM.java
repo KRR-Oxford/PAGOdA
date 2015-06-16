@@ -31,7 +31,7 @@ public class TestPagodaLUBM {
 		CheckAnswers.assertSameAnswers(answers, givenAnswers);
 	}
 
-	@Test(groups = {"light"})
+	@Test(groups = {"light", "correctness"})
 	public void answersCorrectness_1() throws IOException {
 		answersCorrectness(1);
 	}

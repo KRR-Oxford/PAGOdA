@@ -206,7 +206,7 @@ public abstract class QueryReasoner extends Disposable {
 		   if you call twice, you will end up with a json file with multiple roots */
         if(answerWriter != null) gson.toJson(queryRecords, answerWriter);
 //		queryRecords.stream().forEach(record -> Utility.logDebug(gson.toJson(record)));
-        queryRecords.stream().forEach(record -> record.dispose());
+        queryRecords.stream().forEach(QueryRecord::dispose);
     }
 
     @Override

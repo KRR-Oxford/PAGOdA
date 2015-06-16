@@ -12,4 +12,6 @@ public abstract class Checker extends Disposable {
 
 	public abstract boolean isConsistent();
 
+	public abstract int getNoOfCalls();
+
 }

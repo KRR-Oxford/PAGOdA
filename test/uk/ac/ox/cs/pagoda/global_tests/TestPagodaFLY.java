@@ -32,7 +32,7 @@ public class TestPagodaFLY {
         CheckAnswers.assertSameAnswers(answers, givenAnswers);
     }
 
-    @Test(groups = {"light"})
+    @Test(groups = {"light", "correctness"})
     public void answersCorrectness_rolledUp() throws IOException {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
         Path answers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
@@ -43,7 +43,7 @@ public class TestPagodaFLY {
                               .ontology(Paths.get(ontoDir, "fly/fly_rolledUp.owl"))
                               .query(Paths.get(ontoDir, "fly/queries/fly_rolledUp.sparql"))
                               .answer(answers)
-                              .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
+//                              .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                               .classify(false)
                               .hermit(true)
                               .build();
@@ -68,7 +68,7 @@ public class TestPagodaFLY {
                 .run();
     }
 
-    @Test(groups = {"light", "comparison"})
+    @Test(groups = {"comparison"})
     public void compare_newQueries() throws IOException {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 

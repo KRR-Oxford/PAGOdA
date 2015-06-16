@@ -81,6 +81,44 @@ public class QueryGraph {
 		return axioms;
 	}
 
+//	public Set<OWLClassExpression> getExistentialConditions(Map<Variable, Term> assignment) {
+//		if(!rollable_edges.isEmpty()) return null;
+//
+//		OWLIndividual sub;
+//		Visitor visitor = new Visitor(factory, assignment);
+//		Set<OWLClassExpression> axioms = new HashSet<>();
+//		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
+//			// TODO check correctness!!!
+//			if(existVars.contains(entry.getKey())) {
+//				OWLClassExpression conjunction =
+//						factory.getOWLObjectIntersectionOf(factory.getOWLThing());
+//				for(OWLClassExpression owlClassExpression : entry.getValue()) {
+//					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression.accept(visitor));
+//				}
+//				axioms.add(conjunction);
+////				continue; // previously the "then" contained only this
+//			}
+//		}
+//		return axioms;
+//	}
+
+	public Set<OWLAxiom> getExistentialAxioms() {
+		if(!rollable_edges.isEmpty()) return null;
+
+		Set<OWLAxiom> axioms = new HashSet<>();
+		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
+			if(existVars.contains(entry.getKey())) {
+				OWLClassExpression conjunction =
+						factory.getOWLObjectIntersectionOf(factory.getOWLThing());
+				for(OWLClassExpression owlClassExpression : entry.getValue()) {
+					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression);
+				}
+				axioms.add(factory.getOWLSubClassOfAxiom(conjunction, factory.getOWLNothing()));
+			}
+		}
+		return axioms;
+	}
+
 	public Set<OWLAxiom> getAssertions(Map<Variable, Term> assignment) {
 		if(!rollable_edges.isEmpty()) return null;
 
@@ -88,10 +126,21 @@ public class QueryGraph {
 		Visitor visitor = new Visitor(factory, assignment);
 		Set<OWLAxiom> axioms = getPropertyAssertions(assignment);
 		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
-			if(existVars.contains(entry.getKey())) continue;
-			sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
-			for(OWLClassExpression clsExp : entry.getValue()) {
-				axioms.add(factory.getOWLClassAssertionAxiom(clsExp.accept(visitor), sub));
+			// TODO check correctness!!!
+			if(existVars.contains(entry.getKey())) {
+//				OWLClassExpression conjunction =
+//						factory.getOWLObjectIntersectionOf(factory.getOWLThing());
+//				for(OWLClassExpression owlClassExpression : entry.getValue()) {
+//					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression.accept(visitor));
+//				}
+//				axioms.add(factory.getOWLSubClassOfAxiom(conjunction, factory.getOWLNothing()));
+				continue; // previously the "then" contained only this
+			}
+			else {
+				sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
+				for(OWLClassExpression clsExp : entry.getValue()) {
+					axioms.add(factory.getOWLClassAssertionAxiom(clsExp.accept(visitor), sub));
+				}
 			}
 		}
 		return axioms;

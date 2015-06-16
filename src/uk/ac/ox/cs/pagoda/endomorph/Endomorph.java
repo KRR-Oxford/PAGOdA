@@ -85,10 +85,18 @@ public class Endomorph extends Checker {
 	}
 
 	@Override
+	public int getNoOfCalls() {
+		return fullReasoner.getNoOfCalls();
+	}
+
+	@Override
 	public void dispose() {
 		super.dispose();
 
-		fullReasoner.dispose();
+		if(fullReasoner != null) {
+//			Utility.logInfo("Hermit was called " + fullReasoner.getNoOfCalls() + " times");
+			fullReasoner.dispose();
+		}
 	}
 	
 	public Graph getGraph() {

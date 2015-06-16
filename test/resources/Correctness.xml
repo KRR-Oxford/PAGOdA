@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="LightTests">
-    <test name="light">
+<suite name="Correctness">
+
+    <test name="correctness">
         <groups>
             <run>
-                <include name="light"/>
-                <!--<include name="justExecute"/>-->
+                <include name="correctness"/>
+                <exclude name="heavy"/>
             </run>
         </groups>
         <classes>
             <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>
             <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaLUBM"/>-->
-            <!--Fly does not terminate: query-5 looks really hard-->
             <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaFLY"/>-->
         </classes>
     </test>
+
 </suite>

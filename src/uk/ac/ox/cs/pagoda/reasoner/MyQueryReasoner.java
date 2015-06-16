@@ -10,7 +10,6 @@ import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID2;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.query.QueryRecord.Step;
-import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.reasoner.light.KarmaQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
@@ -189,19 +188,21 @@ class MyQueryReasoner extends QueryReasoner {
             return;
 
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
-//        queryRecord.saveRelevantOntology("./fragment_query" + queryRecord.getQueryID() + ".owl");
+//        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/test-relevant-ontology.owl");
 
         if(properties.getUseSkolemUpperBound() &&
-                querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
+                querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord)) {
             return;
+        }
 
         Timer t = new Timer();
-        Checker summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());
+        HermitSummaryFilter summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());
         summarisedChecker.check(queryRecord.getGapAnswers());
-        summarisedChecker.dispose();
+//        summarisedChecker.checkByFullReasoner(queryRecord.getGapAnswers());
         Utility.logDebug("Total time for full reasoner: " + t.duration());
+
         queryRecord.markAsProcessed();
-        Utility.logDebug("Difficulty of this query: " + queryRecord.getDifficulty());
+        summarisedChecker.dispose();
     }
 
     @Override
