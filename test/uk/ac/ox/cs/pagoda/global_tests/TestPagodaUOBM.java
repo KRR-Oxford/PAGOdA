@@ -65,13 +65,11 @@ public class TestPagodaUOBM {
 							  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
 							  .data(Paths.get(ontoDir, "uobm/data/uobm" + number + ".ttl"))
 				.query(Paths.get(ontoDir, "uobm/queries/uobm_sygenia.sparql"))
-//							  .answer(answers)
 				.classify(true)
 				.hermit(true)
 				.build();
 
 		pagoda.run();
-//		CheckAnswers.assertSameAnswers(answers, givenAnswers);
 	}
 
 	@Test(groups = {"sygenia"})
@@ -82,21 +80,14 @@ public class TestPagodaUOBM {
 	@Test(groups = {"heavy"}, dataProvider = "UOBMNumbers")
 	public void answersCorrectness_sygenia_allBlanks(int number) throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
-//		Path answers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
-//		new File(answers.toString()).deleteOnExit();
-//		Path givenAnswers = TestUtil.getAnswersFilePath("answers/pagoda-uobm" + number + ".json");
 
-		Pagoda pagoda = Pagoda.builder()
-							  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
-							  .data(Paths.get(ontoDir, "uobm/data/uobm" + number + ".ttl"))
-				.query(Paths.get(ontoDir, "uobm/queries/uobm_sygenia_all-blanks.sparql"))
-//							  .answer(answers)
-				.classify(true)
-				.hermit(true)
-				.build();
-
-		pagoda.run();
-//		CheckAnswers.assertSameAnswers(answers, givenAnswers);
+		Pagoda.builder()
+			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
+			  .data(Paths.get(ontoDir, "uobm/data/uobm" + number + ".ttl"))
+			  .query(Paths.get(ontoDir, "uobm/queries/uobm_sygenia_all-blanks.sparql"))
+			  .classify(true)
+			  .hermit(true)
+			  .build().run();
 	}
 
 	@Test(groups = {"justExecute"})
@@ -104,14 +95,12 @@ public class TestPagodaUOBM {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 
 		Pagoda.builder()
-			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
+			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl-modified.owl"))
 			  .data(Paths.get(ontoDir, "uobm/data/uobm1.ttl"))
-				.query(Paths.get(ontoDir, "uobm/queries/existential_queries.sparql"))
-//			  .answer(answers)
-				.classify(true)
-				.hermit(true)
-				.skolem(false)
-				.build()
-				.run();
+			  .query(Paths.get(ontoDir, "uobm/queries/existential_queries.sparql"))
+			  .classify(true)
+			  .hermit(true)
+			  .build()
+			  .run();
 	}
 }

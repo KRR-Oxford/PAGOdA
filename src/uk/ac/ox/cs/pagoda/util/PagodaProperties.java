@@ -43,14 +43,14 @@ public class PagodaProperties {
 				defaultUseAlwaysSimpleUpperBound =
 						Boolean.parseBoolean(config.getProperty("useAlwaysSimpleUpperBound"));
 				if(defaultUseAlwaysSimpleUpperBound)
-					logger.info("By default the simple upper bound is always used");
+					logger.debug("By default the simple upper bound is always used");
 			}
 			if(config.containsKey("useSkolemUpperBound")) {
 				defaultUseSkolemUpperBound = Boolean.parseBoolean(config.getProperty("useSkolemUpperBound"));
 				if(defaultUseSkolemUpperBound)
-					logger.info("By default the Skolem upper bound is enabled");
+					logger.debug("By default the Skolem upper bound is enabled");
 				else
-					logger.info("By default the Skolem upper bound is disabled");
+					logger.debug("By default the Skolem upper bound is disabled");
 			}
 
 		} catch(IOException e) {

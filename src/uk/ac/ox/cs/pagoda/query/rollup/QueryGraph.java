@@ -88,10 +88,20 @@ public class QueryGraph {
 		Visitor visitor = new Visitor(factory, assignment);
 		Set<OWLAxiom> axioms = getPropertyAssertions(assignment);
 		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
-			if(existVars.contains(entry.getKey())) continue;
-			sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
-			for(OWLClassExpression clsExp : entry.getValue()) {
-				axioms.add(factory.getOWLClassAssertionAxiom(clsExp.accept(visitor), sub));
+			// TODO check correctness!!!
+			if(existVars.contains(entry.getKey())) {
+				OWLClassExpression conjunction =
+						factory.getOWLObjectIntersectionOf(factory.getOWLThing());
+				for(OWLClassExpression owlClassExpression : entry.getValue()) {
+					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression.accept(visitor));
+				}
+				axioms.add(factory.getOWLSubClassOfAxiom(conjunction, factory.getOWLNothing()));
+			}
+			else {
+				sub = factory.getOWLNamedIndividual(IRI.create(getIndividual(entry.getKey(), assignment).getIRI()));
+				for(OWLClassExpression clsExp : entry.getValue()) {
+					axioms.add(factory.getOWLClassAssertionAxiom(clsExp.accept(visitor), sub));
+				}
 			}
 		}
 		return axioms;

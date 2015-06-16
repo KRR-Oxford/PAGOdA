@@ -188,6 +188,10 @@ public class QueryRecord extends Disposable {
         return new AnswerTuplesImp(answerVariables[0], gapAnswerTuples);
     }
 
+    public int getGapAnswersCount() {
+        return gapAnswerTuples.size();
+    }
+
     public String toString() {
         if(isDisposed()) throw new DisposedException();
 

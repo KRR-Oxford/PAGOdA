@@ -21,8 +21,6 @@ public abstract class StageQueryEngine extends BasicQueryEngine {
 
 	public abstract int materialiseRestrictedly(DatalogProgram dProgram, GapByStore4ID gap);
 
-	public abstract int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap);
-
 	public boolean isValid() {
 		if (!checkValidity) return true; 
 		if (validMaterialisation != null) return validMaterialisation; 

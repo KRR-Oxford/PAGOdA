@@ -189,11 +189,17 @@ class MyQueryReasoner extends QueryReasoner {
             return;
 
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
-//        queryRecord.saveRelevantOntology("./fragment_query" + queryRecord.getQueryID() + ".owl");
+        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/test-relevant-ontology.owl");
 
+//        int gapAnswersCount = queryRecord.getGapAnswersCount();
         if(properties.getUseSkolemUpperBound() &&
                 querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
             return;
+
+//        // TODO extract from the previous relevant ontology
+//        // TODO implement details or remove it
+//        if(queryRecord.getGapAnswersCount() < gapAnswersCount)
+//            extractRelevantOntologySubset(queryRecord); // takes the relevant ontology from the record
 
         Timer t = new Timer();
         Checker summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());

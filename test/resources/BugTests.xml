@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="BugTests">
+
+    <test name="BugTest">
+        <groups>
+            <run>
+                <include name="BugTesters"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="uk.ac.ox.cs.pagoda.global_tests.MinimumCardinalityTest"/>
+        </classes>
+    </test>
+
+</suite>

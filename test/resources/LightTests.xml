@@ -5,8 +5,8 @@
     <test name="light">
         <groups>
             <run>
-                <!--<include name="light"/>-->
-                <include name="justExecute"/>
+                <include name="light"/>
+                <!--<include name="justExecute"/>-->
             </run>
         </groups>
         <classes>

@@ -119,7 +119,7 @@ protected PredicateDependency dependencyGraph;
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		Utility.logDebug("The rules are saved in " + getOutputPath() + ".");
+		Utility.logInfo("The rules are saved in " + getOutputPath() + ".");
 	}
 
 	@Override

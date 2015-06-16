@@ -101,6 +101,7 @@ public class HermitChecker extends Checker {
 
 //		for (OWLAxiom axiom: toCheckAxioms)	System.out.println(axiom.toString());
 
+//		Utility.logInfo(toCheckAxioms);
 		if(hermit.isEntailed(toCheckAxioms)) {
 			Utility.logDebug("@TIME to check one tuple: " + t.duration());
 			return true;
