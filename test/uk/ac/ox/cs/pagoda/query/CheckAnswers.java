@@ -25,8 +25,7 @@ public class CheckAnswers {
 
         Gson gson = QueryRecord.GsonCreator.getInstance();
 
-        Type cqType = new TypeToken<Set<QueryRecord>>() {
-        }.getType();
+        Type cqType = new TypeToken<Set<QueryRecord>>() {}.getType();
         Set<QueryRecord> computedAnswersRecords = gson.fromJson(computedReader, cqType);
         Set<QueryRecord> givenAnswersRecords = gson.fromJson(givenReader, cqType);
 

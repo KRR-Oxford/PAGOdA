@@ -27,7 +27,9 @@ public class HermitSummaryFilter extends Checker {
 	HermitChecker summarisedHermiT = null;
 	boolean summarisedConsistency;
 	Endomorph endomorphismChecker = null;
-	
+	private HashSet<AnswerTuple> passed;
+	private int counter;
+
 	public HermitSummaryFilter(QueryRecord record, boolean toCallHermiT) {
 		m_record = record;
 		HermitChecker hermitChecker = new HermitChecker(record.getRelevantOntology(), record, toCallHermiT);
@@ -115,6 +117,20 @@ public class HermitSummaryFilter extends Checker {
 		return summarisedHermiT.getNoOfCalls() + endomorphismChecker.getNoOfCalls();
 	}
 
+	public int checkByFullReasoner(AnswerTuples answers) {
+		if(isDisposed()) throw new DisposedException();
+		if(m_record.isProcessed())
+			return 0;
+
+		Utility.logDebug("The number of answers to be checked with HermiT: " + passed.size() + "/" + counter);
+		m_record.setDifficulty(Step.FULL_REASONING);
+
+		if(summarisedConsistency)
+			return endomorphismChecker.check(new AnswerTuplesImp(m_record.getAnswerVariables(), passed));
+		else
+			return endomorphismChecker.check(answers);
+	}
+
 	@Override
 	public int check(AnswerTuples answers) {
 		if(isDisposed()) throw new DisposedException();
@@ -125,10 +141,11 @@ public class HermitSummaryFilter extends Checker {
 		initialiseSummarisedReasoner();
 
 		if(summarisedConsistency) {
-			Set<AnswerTuple> passed = new HashSet<AnswerTuple>(), succ = new HashSet<AnswerTuple>();
+			passed = new HashSet<AnswerTuple>();
+			Set<AnswerTuple> succ = new HashSet<AnswerTuple>();
 			Set<AnswerTuple> falsified = new HashSet<AnswerTuple>(), fail = new HashSet<AnswerTuple>();
 
-			int counter = 0;
+			counter = 0;
 			AnswerTuple representative;
 			for(AnswerTuple answer; answers.isValid(); answers.moveNext()) {
 				++counter;
@@ -158,20 +175,14 @@ public class HermitSummaryFilter extends Checker {
 				m_record.addProcessingTime(Step.SUMMARISATION, t.duration());
 				return 0;
 			}
-
-			Utility.logDebug("The number of answers to be checked with HermiT: " + passed.size() + "/" + counter);
-
-			m_record.setDifficulty(Step.FULL_REASONING);
 			m_record.addProcessingTime(Step.SUMMARISATION, t.duration());
-
-			return endomorphismChecker.check(new AnswerTuplesImp(m_record.getAnswerVariables(), passed));
 		}
 		else {
 			m_record.addProcessingTime(Step.SUMMARISATION, t.duration());
 //			m_record.saveRelevantOntology("fragment.owl");
-			m_record.setDifficulty(Step.FULL_REASONING);
-			return endomorphismChecker.check(answers);
 		}
+
+		return 1;
 	}
 
 	@Override

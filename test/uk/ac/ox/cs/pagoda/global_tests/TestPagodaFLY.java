@@ -52,7 +52,7 @@ public class TestPagodaFLY {
         CheckAnswers.assertSameAnswers(answers, givenAnswers);
     }
 
-    @Test(groups = {"light", "justExecute"})
+    @Test(groups = {"light", "justExecute", "nonOriginal"})
     public void justExecute_newQueries() throws IOException {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 

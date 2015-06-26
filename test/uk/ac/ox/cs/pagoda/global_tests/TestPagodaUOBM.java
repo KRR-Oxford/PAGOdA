@@ -87,7 +87,8 @@ public class TestPagodaUOBM {
 			  .query(Paths.get(ontoDir, "uobm/queries/uobm_sygenia_all-blanks.sparql"))
 			  .classify(true)
 			  .hermit(true)
-			  .build().run();
+			  .build()
+			  .run();
 	}
 
 	@Test(groups = {"justExecute"})
