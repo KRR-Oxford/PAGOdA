@@ -1,16 +1,6 @@
 package uk.ac.ox.cs.pagoda.hermit;
 
-import org.semanticweb.HermiT.model.AnnotatedEquality;
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicRole;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.DLPredicate;
-import org.semanticweb.HermiT.model.Equality;
-import org.semanticweb.HermiT.model.Inequality;
-import org.semanticweb.HermiT.model.NodeIDLessEqualThan;
-import org.semanticweb.HermiT.model.NodeIDsAscendingOrEqual;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
+import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
@@ -47,7 +37,7 @@ public class RuleHelper {
 		boolean lastSpace = true;
 		for (Atom headAtom: clause.getHeadAtoms()) {
 			if ((atomText = getText(headAtom)) == null) continue; 
-			if (!lastSpace)	buf.append(" v "); 
+			if (!lastSpace)	buf.append(" | ");
 			buf.append(atomText);
 			lastSpace = false;
 		}

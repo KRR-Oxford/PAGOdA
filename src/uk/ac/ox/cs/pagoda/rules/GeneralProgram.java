@@ -1,12 +1,13 @@
 package uk.ac.ox.cs.pagoda.rules;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-
+import org.apache.commons.io.FilenameUtils;
 import org.semanticweb.HermiT.model.DLClause;
 import org.semanticweb.owlapi.model.OWLOntology;
 import uk.ac.ox.cs.pagoda.constraints.UnaryBottom;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 public class GeneralProgram extends Program {
 	
@@ -28,7 +29,7 @@ public class GeneralProgram extends Program {
 
 	@Override
 	public String getOutputPath() {
-		return getDirectory() + "rules.dlog";
+		return FilenameUtils.concat(getDirectory(), "rules.dlog");
 	}
 
 //	@Override

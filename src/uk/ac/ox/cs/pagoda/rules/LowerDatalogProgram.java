@@ -1,5 +1,6 @@
 package uk.ac.ox.cs.pagoda.rules;
 
+import org.apache.commons.io.FilenameUtils;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.HermiT.model.*;
 import org.semanticweb.owlapi.model.*;
@@ -76,7 +77,7 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 
 	@Override
 	public String getOutputPath() {
-		return getDirectory() + "lower.dlog";
+		return FilenameUtils.concat(getDirectory(), "lower.dlog");
 	}
 	
 //	@Override

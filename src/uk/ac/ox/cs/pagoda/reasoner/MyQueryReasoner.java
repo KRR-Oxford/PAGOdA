@@ -68,9 +68,9 @@ class MyQueryReasoner extends QueryReasoner {
 
         ontology = o;
         program = new DatalogProgram(ontology, properties.getToClassify());
-//		program.getLower().save();
-//		program.getUpper().save();
-//		program.getGeneral().save();
+		program.getLower().save();
+		program.getUpper().save();
+		program.getGeneral().save();
 
         if(!program.getGeneral().isHorn())
             lazyUpperStore = new MultiStageQueryEngine("lazy-upper-bound", true);

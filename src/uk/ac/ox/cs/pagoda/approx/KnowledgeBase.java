@@ -7,12 +7,12 @@ public interface KnowledgeBase {
 
 	void load(OWLOntology ontology, BottomStrategy botStrategy); 
 
-	public void transform();
+	void transform();
 	
-	public void save();
+	void save();
 	
-	public String getOutputPath();
+	String getOutputPath();
 	
-	public String getDirectory(); 
+	String getDirectory();
 	
 }

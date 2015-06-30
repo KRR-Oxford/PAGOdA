@@ -1,22 +1,13 @@
  package uk.ac.ox.cs.pagoda.endomorph;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
+ import uk.ac.ox.cs.pagoda.summary.Edge;
+ import uk.ac.ox.cs.pagoda.summary.Graph;
+ import uk.ac.ox.cs.pagoda.summary.Node;
+ import uk.ac.ox.cs.pagoda.summary.NodeTuple;
+ import uk.ac.ox.cs.pagoda.util.Timer;
+ import uk.ac.ox.cs.pagoda.util.Utility;
 
-import uk.ac.ox.cs.pagoda.summary.Edge;
-import uk.ac.ox.cs.pagoda.summary.Graph;
-import uk.ac.ox.cs.pagoda.summary.Node;
-import uk.ac.ox.cs.pagoda.summary.NodeTuple;
-import uk.ac.ox.cs.pagoda.util.Timer;
-import uk.ac.ox.cs.pagoda.util.Utility;
+ import java.util.*;
 
 public class DependencyGraph {
 
@@ -82,7 +73,7 @@ public class DependencyGraph {
 	private int compareNode(Node o1, Node o2) {
 		int result = o1.getConcepts().size() - o2.getConcepts().size();
 		if (result != 0) return dir(result);
-		Edge[] edge1 = graph.getOutGoingEdges(o1), edge2 = graph.getOutGoingEdges(o2);;
+		Edge[] edge1 = graph.getOutGoingEdges(o1), edge2 = graph.getOutGoingEdges(o2);
 		int len1 = edge1 == null ? 0 : edge1.length, len2 = edge2 == null ? 0 : edge2.length; 
 		result = len1 - len2; 
 		if (result != 0) return dir(result);
@@ -124,7 +115,7 @@ public class DependencyGraph {
 //		print(); 
 		
 		topolocialOrder = null;
-		Utility.logInfo("link: " + link);
+		Utility.logDebug("link: " + link);
 	}
 	
 	LinkedList<Clique> topolocialOrder = null; 
