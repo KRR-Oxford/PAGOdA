@@ -1,0 +1,649 @@
+^[query1]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:CellVocabulary 
+}
+
+^[query2]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:cofactor _:y 
+}
+
+^[query3]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:participant _:y .
+  _:y rdf:type reactome:PhysicalEntity 
+}
+
+^[query4]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:SequenceRegionVocabulary 
+}
+
+^[query5]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x reactome:bindsTo ?y 
+}
+
+^[query6]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:EntityFeature 
+}
+
+^[query7]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Score 
+}
+
+^[query8]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:ExperimentalForm 
+}
+
+^[query9]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:stepProcess _:y .
+  _:y rdf:type reactome:Conversion 
+}
+
+^[query10]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:stepProcess _:y .
+  _:y rdf:type reactome:Entity 
+}
+
+^[query11]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:PathwayStep 
+}
+
+^[query12]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:RelationshipTypeVocabulary 
+}
+
+^[query13]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:TissueVocabulary 
+}
+
+^[query14]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  _:y reactome:bindsTo ?x 
+}
+
+^[query15]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:stepConversion _:y 
+}
+
+^[query16]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Conversion 
+}
+
+^[query17]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Control 
+}
+
+^[query18]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Catalysis 
+}
+
+^[query19]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:stepConversion _:y .
+  _:y rdf:type reactome:Conversion 
+}
+
+^[query20]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:right _:y .
+  _:y rdf:type reactome:Entity 
+}
+
+^[query21]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x reactome:participant ?y 
+}
+
+^[query22]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:left _:y 
+}
+
+^[query23]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:product _:y 
+}
+
+^[query24]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:PhenotypeVocabulary 
+}
+
+^[query25]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:stepProcess _:y 
+}
+
+^[query26]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  _:y reactome:bindsTo ?x .
+  _:y rdf:type reactome:EntityFeature 
+}
+
+^[query27]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:cofactor _:y .
+  _:y rdf:type reactome:PhysicalEntity 
+}
+
+^[query28]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x ?y
+WHERE {
+  ?x reactome:stepProcess ?y 
+}
+
+^[query29]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Stoichiometry 
+}
+
+^[query30]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:UtilityClass 
+}
+
+^[query31]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:ChemicalStructure 
+}
+
+^[query32]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:SequenceSite 
+}
+
+^[query33]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:BioSource 
+}
+
+^[query34]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  _:y reactome:bindsTo ?x .
+  _:y rdf:type reactome:UtilityClass 
+}
+
+^[query35]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:ControlledVocabulary 
+}
+
+^[query36]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Transport 
+}
+
+^[query37]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:bindsTo _:y 
+}
+
+^[query38]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:template _:y 
+}
+
+^[query39]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:participant _:y 
+}
+
+^[query40]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:controlled _:y 
+}
+
+^[query41]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:ModificationFeature 
+}
+
+^[query42]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x ?y
+WHERE {
+  ?y reactome:bindsTo ?x 
+}
+
+^[query43]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:InteractionVocabulary 
+}
+
+^[query44]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:SequenceModificationVocabulary 
+}
+
+^[query45]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:right _:y .
+  _:y rdf:type reactome:PhysicalEntity 
+}
+
+^[query46]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:participant _:y .
+  _:y rdf:type reactome:Entity 
+}
+
+^[query47]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:EvidenceCodeVocabulary 
+}
+
+^[query48]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Complex 
+}
+
+^[query49]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Provenance 
+}
+
+^[query50]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:SequenceLocation 
+}
+
+^[query51]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:right _:y 
+}
+
+^[query52]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Evidence 
+}
+
+^[query53]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:TemplateReaction 
+}
+
+^[query54]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Entity 
+}
+
+^[query55]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:bindsTo _:y .
+  _:y rdf:type reactome:BindingFeature 
+}
+
+^[query56]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Xref 
+}
+
+^[query57]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:BiochemicalReaction 
+}
+
+^[query58]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:stepProcess _:y .
+  _:y rdf:type reactome:Interaction 
+}
+
+^[query59]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:BindingFeature 
+}
+
+^[query60]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:RelationshipXref 
+}
+
+^[query61]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:PhysicalEntity 
+}
+
+^[query62]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:CellularLocationVocabulary 
+}
+
+^[query63]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:EntityReference 
+}
+
+^[query64]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:bindsTo _:y .
+  _:y rdf:type reactome:UtilityClass 
+}
+
+^[query65]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:left _:y .
+  _:y rdf:type reactome:Entity 
+}
+
+^[query66]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:KPrime 
+}
+
+^[query67]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:GeneticInteraction 
+}
+
+^[query68]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:bindsTo _:y .
+  _:y rdf:type reactome:EntityFeature 
+}
+
+^[query69]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Interaction 
+}
+
+^[query70]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:ExperimentalFormVocabulary 
+}
+
+^[query71]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:left _:y .
+  _:y rdf:type reactome:PhysicalEntity 
+}
+
+^[query72]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:SequenceInterval 
+}
+
+^[query73]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:BiochemicalPathwayStep 
+}
+
+^[query74]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:Pathway 
+}
+
+^[query75]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x reactome:controller _:y 
+}
+
+^[query76]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  _:y reactome:bindsTo ?x .
+  _:y rdf:type reactome:BindingFeature 
+}
+
+^[query77]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:SmallMoleculeReference 
+}
+
+^[query78]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:DeltaG 
+}
+
+^[query79]
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX reactome: <http://www.biopax.org/release/biopax-level3.owl#>
+SELECT ?x
+WHERE {
+  ?x rdf:type reactome:EntityReferenceTypeVocabulary 
+}
+

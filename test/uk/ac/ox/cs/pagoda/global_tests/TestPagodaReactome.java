@@ -23,4 +23,18 @@ public class TestPagodaReactome {
               .run();
     }
 
+    @Test(groups = {"sygenia"})
+    public void justExecute_sygenia() throws IOException {
+        String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
+
+        Pagoda.builder()
+              .ontology(Paths.get(ontoDir, "reactome/biopax-level3-processed.owl"))
+              .data(Paths.get(ontoDir, "reactome/data/sample_10.ttl"))
+              .query(Paths.get(ontoDir, "reactome/reactome_sygenia_queries.sparql"))
+              .classify(true)
+              .hermit(true)
+              .build()
+              .run();
+    }
+
 }
