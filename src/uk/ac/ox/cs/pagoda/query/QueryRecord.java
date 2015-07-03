@@ -171,14 +171,10 @@ public class QueryRecord extends Disposable {
     }
 
     public String getQueryText() {
-        if(isDisposed()) throw new DisposedException();
-
         return queryText;
     }
 
     public String getQueryID() {
-        if(isDisposed()) throw new DisposedException();
-
         return stringQueryID;
     }
 
@@ -193,8 +189,6 @@ public class QueryRecord extends Disposable {
     }
 
     public String toString() {
-        if(isDisposed()) throw new DisposedException();
-
         return queryText;
     }
 
@@ -281,6 +275,20 @@ public class QueryRecord extends Disposable {
         }
     }
 
+    public Map<String, String> getStatistics() {
+        HashMap<String, String> result = new HashMap<>();
+
+        double totalTime = 0.0;
+        for(Step step : Step.values()) {
+            result.put(step.toString(), Double.toString(timer[step.ordinal()]));
+            totalTime += timer[step.ordinal()];
+        }
+        result.put("totalTime", Double.toString(totalTime));
+        result.put("difficulty", difficulty.toString());
+
+        return result;
+    }
+
     public String outputSoundAnswerTuple() {
         if(isDisposed()) throw new DisposedException();
 
@@ -359,6 +367,8 @@ public class QueryRecord extends Disposable {
                 Utility.logError("The answer (" + answer + ") cannot be removed, because it is not in the upper bound.");
             gapAnswerTuples.remove(answer);
         }
+        int numOfUpperBoundAnswers = soundAnswerTuples.size() + gapAnswerTuples.size();
+        Utility.logInfo("Upper bound answers updated: " + numOfUpperBoundAnswers);
     }
 
     public void addLowerBoundAnswers(Collection<AnswerTuple> answers) {
@@ -722,7 +732,9 @@ public class QueryRecord extends Disposable {
 
         @Override
         public String toString() {
-            return WordUtils.capitalizeFully(super.toString(), new char[]{'_'}).replace("_", "");
+            String s = super.toString();
+            if(s == null) return null;
+            return WordUtils.capitalizeFully(s, new char[]{'_'}).replace("_", "");
         }
     }
 

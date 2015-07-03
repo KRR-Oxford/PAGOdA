@@ -102,16 +102,17 @@ public class QueryGraph {
 //		return axioms;
 //	}
 
-	public Set<OWLAxiom> getExistentialAxioms() {
+	public Set<OWLAxiom> getExistentialAxioms(Map<Variable, Term> assignment) {
 		if(!rollable_edges.isEmpty()) return null;
 
+		Visitor visitor = new Visitor(factory, assignment);
 		Set<OWLAxiom> axioms = new HashSet<>();
 		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
 			if(existVars.contains(entry.getKey())) {
 				OWLClassExpression conjunction =
 						factory.getOWLObjectIntersectionOf(factory.getOWLThing());
 				for(OWLClassExpression owlClassExpression : entry.getValue()) {
-					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression);
+					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression.accept(visitor));
 				}
 				axioms.add(factory.getOWLSubClassOfAxiom(conjunction, factory.getOWLNothing()));
 			}

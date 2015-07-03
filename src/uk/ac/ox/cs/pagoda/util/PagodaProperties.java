@@ -15,6 +15,7 @@ public class PagodaProperties {
 	public static final boolean DEFAULT_DEBUG = false;
 	private static final boolean DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
 	private static final boolean DEFAULT_USE_SKOLEM_UPPER_BOUND;
+	private static final boolean DEFAULT_TO_CALL_HERMIT;
 	private static final Path DEFAULT_STATISTICS_DIR;
 
 	public static boolean shellModeDefault = false;
@@ -23,6 +24,7 @@ public class PagodaProperties {
 	static {
 		boolean defaultUseAlwaysSimpleUpperBound = false;
 		boolean defaultUseSkolemUpperBound = true;
+		boolean toCallHermit = true;
 		Path defaultStatisticsDir = null;
 
 		try(InputStream in = PagodaProperties.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
@@ -52,12 +54,20 @@ public class PagodaProperties {
 				else
 					logger.debug("By default the Skolem upper bound is disabled");
 			}
+			if(config.containsKey("toCallHermit")) {
+				toCallHermit = Boolean.parseBoolean(config.getProperty("toCallHermit"));
+				if(toCallHermit)
+					logger.debug("By default Hermit is enabled");
+				else
+					logger.debug("By default Hermit is disabled");
+			}
 
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 		DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND = defaultUseAlwaysSimpleUpperBound;
 		DEFAULT_USE_SKOLEM_UPPER_BOUND = defaultUseSkolemUpperBound;
+		DEFAULT_TO_CALL_HERMIT = toCallHermit;
 		DEFAULT_STATISTICS_DIR = defaultStatisticsDir;
 	}
 
@@ -66,7 +76,7 @@ public class PagodaProperties {
 	String queryPath = null;
 	String answerPath = null;
 	boolean toClassify = true;
-	boolean toCallHermiT = true;
+	boolean toCallHermiT = DEFAULT_TO_CALL_HERMIT;
 	boolean shellMode = shellModeDefault;
 	private boolean useAlwaysSimpleUpperBound = DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
 	private boolean useSkolemUpperBound = DEFAULT_USE_SKOLEM_UPPER_BOUND;

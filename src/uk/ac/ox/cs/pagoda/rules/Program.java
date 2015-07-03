@@ -316,9 +316,10 @@ protected PredicateDependency dependencyGraph;
 	private Atom getAtom(OWLObjectPropertyExpression exp, Variable x, Variable y) {
 		if(exp instanceof OWLObjectProperty)
 			return Atom.create(AtomicRole.create(((OWLObjectProperty) exp).toStringID()), x, y);
-		OWLObjectInverseOf inverseOf;
-		if(exp instanceof OWLObjectInverseOf && (inverseOf =
-				(OWLObjectInverseOf) exp).getInverse() instanceof OWLObjectProperty)
+		// TODO fixed, test it
+		OWLObjectPropertyExpression inverseOf;
+		if(exp instanceof OWLObjectInverseOf && (inverseOf = (
+				(OWLObjectInverseOf) exp).getInverse()) instanceof OWLObjectProperty)
 			return Atom.create(AtomicRole.create(((OWLObjectProperty) inverseOf).toStringID()), x, y);
 		return null;
 	}

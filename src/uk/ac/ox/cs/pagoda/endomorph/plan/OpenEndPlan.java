@@ -7,6 +7,7 @@ import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.query.QueryRecord.Step;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.summary.NodeTuple;
+import uk.ac.ox.cs.pagoda.util.SimpleProgressBar;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -40,7 +41,11 @@ public class OpenEndPlan implements CheckPlan {
 		Timer t = new Timer(); 
 		
 		AnswerTuple answerTuple;
-		while (!topo.isEmpty()) { 
+		int initialTopoSize = topo.size();
+		// TODO test progress bar
+		SimpleProgressBar progressBar = new SimpleProgressBar("Checking", initialTopoSize);
+		while (!topo.isEmpty()) {
+			progressBar.update(initialTopoSize - topo.size());
 			if (flag) {
 				clique = topo.removeFirst();
 				if (redundant(clique)) continue; 
@@ -70,6 +75,8 @@ public class OpenEndPlan implements CheckPlan {
 				}
 			}
 		}
+		progressBar.update(initialTopoSize - topo.size());
+		progressBar.dispose();
 		
 //		Utility.logDebug("HermiT was called " + times + " times."); 
 		

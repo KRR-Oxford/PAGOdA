@@ -68,9 +68,9 @@ class MyQueryReasoner extends QueryReasoner {
 
         ontology = o;
         program = new DatalogProgram(ontology, properties.getToClassify());
-		program.getLower().save();
-		program.getUpper().save();
-		program.getGeneral().save();
+//		program.getLower().save();
+//		program.getUpper().save();
+//		program.getGeneral().save();
 
         if(!program.getGeneral().isHorn())
             lazyUpperStore = new MultiStageQueryEngine("lazy-upper-bound", true);
@@ -195,19 +195,24 @@ class MyQueryReasoner extends QueryReasoner {
 
         Utility.logInfo("Summarisation...");
         HermitSummaryFilter summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());
-        if(summarisedChecker.check(queryRecord.getGapAnswers()) == 0)
+        if(summarisedChecker.check(queryRecord.getGapAnswers()) == 0) {
+            summarisedChecker.dispose();
             return;
+        }
 
         if(properties.getUseSkolemUpperBound() &&
-                querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord))
+                querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord)) {
+            summarisedChecker.dispose();
             return;
+        }
 
         Utility.logInfo("Full reasoning...");
         Timer t = new Timer();
         summarisedChecker.checkByFullReasoner(queryRecord.getGapAnswers());
         Utility.logDebug("Total time for full reasoner: " + t.duration());
 
-        queryRecord.markAsProcessed();
+        if(properties.getToCallHermiT())
+            queryRecord.markAsProcessed();
         summarisedChecker.dispose();
     }
 
@@ -377,7 +382,7 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.importDataFromABoxOf(relevantSubset);
         String relevantOriginalMarkProgram = OWLHelper.getOriginalMarkProgram(relevantSubset);
 
-        int queryDependentMaxTermDepth = 5; // TODO make it dynamic
+        int queryDependentMaxTermDepth = 1; // TODO make it dynamic
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);

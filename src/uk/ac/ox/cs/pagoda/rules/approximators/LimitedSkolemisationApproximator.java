@@ -64,14 +64,14 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
 
     private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         ArrayList<DLClause> result = new ArrayList<>();
-        for(Tuple<Individual> violationTuple : violationTuples)
+        for(Tuple<Individual> violationTuple : violationTuples) {
             if(getMaxDepth(violationTuple) < maxTermDepth) {
                 result.addAll(getGroundSkolemisation(clause, originalClause, violationTuple));
                 Utility.logDebug("Approximating maximal individual by a constant in rule:" + originalClause);
             }
             else
                 result.addAll(alternativeApproximator.convert(clause, originalClause, null));
-
+        }
 
         return result;
     }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="MainTests">
+    <test name="main">
+        <groups>
+            <run>
+                <!--<include name="correctness"/>-->
+                <!--<include name="light"/>-->
+                <!--<include name="justExecute"/>-->
+                <!--&lt;!&ndash;<include name="heavy"/>&ndash;&gt;-->
+                <include name="nonOriginal"/>
+            </run>
+        </groups>
+        <classes>
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaReactome"/>-->
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>-->
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaLUBM"/>-->
+            <!--Fly does not terminate: query-5 looks really hard-->
+            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaFLY"/>
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.SkolemisationTests"/>-->
+            <!--<class name="uk.ac.ox.cs.pagoda.util.SimpleProgressBarTester" />-->
+        </classes>
+    </test>
+</suite>

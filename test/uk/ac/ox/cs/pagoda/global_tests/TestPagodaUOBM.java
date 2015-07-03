@@ -41,8 +41,6 @@ public class TestPagodaUOBM {
 							  .data(Paths.get(ontoDir, "uobm/data/uobm" + number + ".ttl"))
 							  .query(Paths.get(ontoDir, "uobm/queries/test.sparql"))
 							  .answer(answers)
-							  .classify(true)
-							  .hermit(true)
 							  .build();
 
 		pagoda.run();
@@ -65,8 +63,6 @@ public class TestPagodaUOBM {
 							  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
 							  .data(Paths.get(ontoDir, "uobm/data/uobm" + number + ".ttl"))
 				.query(Paths.get(ontoDir, "uobm/queries/uobm_sygenia.sparql"))
-				.classify(true)
-				.hermit(true)
 				.build();
 
 		pagoda.run();
@@ -85,22 +81,30 @@ public class TestPagodaUOBM {
 			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
 			  .data(Paths.get(ontoDir, "uobm/data/uobm" + number + ".ttl"))
 			  .query(Paths.get(ontoDir, "uobm/queries/uobm_sygenia_all-blanks.sparql"))
-			  .classify(true)
-			  .hermit(true)
+			  .build()
+			  .run();
+	}
+
+	@Test(groups = {"justExecute", "heavy", "nonOriginal"})
+	public void justExecute_modifiedUOBM() throws IOException {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
+
+		Pagoda.builder()
+			  .ontology(Paths.get(ontoDir, "uobm_modified/univ-bench-dl-modified.owl"))
+			  .data(Paths.get(ontoDir, "uobm_modified/data/uobm1.ttl"))
+			  .query(Paths.get(ontoDir, "uobm_modified/queries/additional_queries.sparql"))
 			  .build()
 			  .run();
 	}
 
 	@Test(groups = {"justExecute"})
-	public void justExecute_existentialQueries() throws IOException {
+	public void justExecute_additionalQueries() throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 
 		Pagoda.builder()
-			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl-modified.owl"))
+			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
 			  .data(Paths.get(ontoDir, "uobm/data/uobm1.ttl"))
-			  .query(Paths.get(ontoDir, "uobm/queries/existential_queries.sparql"))
-			  .classify(true)
-			  .hermit(true)
+			  .query(Paths.get(ontoDir, "uobm/queries/additional_queries.sparql"))
 			  .build()
 			  .run();
 	}

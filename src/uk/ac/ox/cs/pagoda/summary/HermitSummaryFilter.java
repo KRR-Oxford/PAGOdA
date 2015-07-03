@@ -6,12 +6,12 @@ import uk.ac.ox.cs.pagoda.endomorph.Endomorph;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.query.AnswerTuple;
 import uk.ac.ox.cs.pagoda.query.AnswerTuples;
-import uk.ac.ox.cs.pagoda.query.AnswerTuplesImp;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.query.QueryRecord.Step;
 import uk.ac.ox.cs.pagoda.reasoner.full.Checker;
 import uk.ac.ox.cs.pagoda.reasoner.full.HermitChecker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
+import uk.ac.ox.cs.pagoda.util.SimpleProgressBar;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
@@ -122,12 +122,12 @@ public class HermitSummaryFilter extends Checker {
 		if(m_record.isProcessed())
 			return 0;
 
-		Utility.logDebug("The number of answers to be checked with HermiT: " + passed.size() + "/" + counter);
+//		Utility.logDebug("The number of answers to be checked with HermiT: " + passed.size() + "/" + counter);
 		m_record.setDifficulty(Step.FULL_REASONING);
 
-		if(summarisedConsistency)
-			return endomorphismChecker.check(new AnswerTuplesImp(m_record.getAnswerVariables(), passed));
-		else
+//		if(summarisedConsistency)
+//			return endomorphismChecker.check(new AnswerTuplesImp(m_record.getAnswerVariables(), passed));
+//		else
 			return endomorphismChecker.check(answers);
 	}
 
@@ -145,9 +145,17 @@ public class HermitSummaryFilter extends Checker {
 			Set<AnswerTuple> succ = new HashSet<AnswerTuple>();
 			Set<AnswerTuple> falsified = new HashSet<AnswerTuple>(), fail = new HashSet<AnswerTuple>();
 
+			int numOfAnswers = 0;
+			for(; answers.isValid(); answers.moveNext()) {
+				numOfAnswers++;
+			}
+			answers.reset();
+
 			counter = 0;
 			AnswerTuple representative;
+			SimpleProgressBar progressBar = new SimpleProgressBar("Summarised checking", numOfAnswers);
 			for(AnswerTuple answer; answers.isValid(); answers.moveNext()) {
+				progressBar.update(counter);
 				++counter;
 				answer = answers.getTuple();
 				representative = summary.getSummary(answer);
@@ -164,6 +172,7 @@ public class HermitSummaryFilter extends Checker {
 					falsified.add(answer);
 				}
 			}
+			progressBar.dispose();
 			answers.dispose();
 
 			Utility.logDebug("@TIME to filter out non-answers by summarisation: " + t.duration());

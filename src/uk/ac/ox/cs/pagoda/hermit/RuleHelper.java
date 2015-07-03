@@ -37,7 +37,7 @@ public class RuleHelper {
 		boolean lastSpace = true;
 		for (Atom headAtom: clause.getHeadAtoms()) {
 			if ((atomText = getText(headAtom)) == null) continue; 
-			if (!lastSpace)	buf.append(" | ");
+			if (!lastSpace)	buf.append(" v ");
 			buf.append(atomText);
 			lastSpace = false;
 		}

@@ -1,12 +1,21 @@
 package uk.ac.ox.cs.pagoda;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FilenameUtils;
+import uk.ac.ox.cs.pagoda.query.QueryRecord;
 import uk.ac.ox.cs.pagoda.reasoner.QueryReasoner;
 import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Executable command line user interface.
@@ -23,7 +32,7 @@ public class Pagoda implements Runnable {
 
     /**
      * Do not use it
-     * */
+     */
     private Pagoda() {
         properties = new PagodaProperties();
     }
@@ -85,7 +94,7 @@ public class Pagoda implements Runnable {
 
     /**
      * Get a builder.
-     * */
+     */
     public static PagodaBuilder builder() {
         return new PagodaBuilder();
     }
@@ -102,21 +111,48 @@ public class Pagoda implements Runnable {
         try {
             Timer t = new Timer();
             pagoda = QueryReasoner.getInstance(properties);
-            if (pagoda == null) return;
+            if(pagoda == null) return;
 
-            Utility.logInfo("Preprocessing Done in " + t.duration()	+ " seconds.");
+            Utility.logInfo("Preprocessing Done in " + t.duration() + " seconds.");
 
-            if (properties.getQueryPath() != null)
-                for (String queryFile: properties.getQueryPath().split(";"))
-                    pagoda.evaluate(pagoda.getQueryManager().collectQueryRecords(queryFile));
+            if(properties.getQueryPath() != null) {
+                for(String queryFile : properties.getQueryPath().split(";")) {
+                    Collection<QueryRecord> queryRecords = pagoda.getQueryManager().collectQueryRecords(queryFile);
+                    pagoda.evaluate(queryRecords);
+
+                    if(PagodaProperties.isDebuggingMode()) {
+                        HashMap<String, Map<String, String>> statistics = new HashMap<>();
+                        for(QueryRecord queryRecord : queryRecords) {
+                            statistics.put(queryRecord.getQueryID(), queryRecord.getStatistics());
+                        }
+                        String statisticsFilename = getStatisticsFilename(properties, queryFile);
+                        try(BufferedWriter writer = Files.newBufferedWriter(Paths.get(statisticsFilename))) {
+                            QueryRecord.GsonCreator.getInstance().toJson(statistics, writer);
+                        } catch(IOException e) {
+                            Utility.logError("Unable to save statistics");
+                        }
+                    }
+                }
+            }
         } finally {
-            if (pagoda != null) pagoda.dispose();
+            if(pagoda != null) pagoda.dispose();
         }
+    }
+
+    private String getStatisticsFilename(PagodaProperties properties, String queryFile) {
+        String statisticsFilename = "statistics_" +
+                FilenameUtils.removeExtension(FilenameUtils.getName(properties.getOntologyPath().replaceAll("_", "-")));
+        statisticsFilename += "_" + FilenameUtils.removeExtension(FilenameUtils.getName(queryFile).replaceAll("_", "-"));
+        statisticsFilename += "_" + ((properties.getUseSkolemUpperBound()) ? "skolem" : "");
+        statisticsFilename += ".json";
+        statisticsFilename = FilenameUtils.concat(properties.getStatisticsDir().toString(),
+                                                  statisticsFilename);
+        return statisticsFilename;
     }
 
     /**
      * Allows to set the parameters before creating a Pagoda instance.
-     * */
+     */
     public static class PagodaBuilder {
 
         private Pagoda instance;

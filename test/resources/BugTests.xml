@@ -4,13 +4,8 @@
 <suite name="BugTests">
 
     <test name="BugTest">
-        <groups>
-            <run>
-                <include name="BugTesters"/>
-            </run>
-        </groups>
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.global_tests.MinimumCardinalityTest"/>
+            <class name="uk.ac.ox.cs.pagoda.global_tests.BugTests"/>
         </classes>
     </test>
 

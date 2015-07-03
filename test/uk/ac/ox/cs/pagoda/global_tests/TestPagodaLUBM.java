@@ -23,8 +23,6 @@ public class TestPagodaLUBM {
 							  .data(Paths.get(ontoDir, "lubm/data/lubm" + number + ".ttl"))
 							  .query(Paths.get(ontoDir, "lubm/queries/test.sparql"))
 							  .answer(answers)
-							  .classify(true)
-							  .hermit(true)
 							  .build();
 
 		pagoda.run();
@@ -45,11 +43,9 @@ public class TestPagodaLUBM {
 		Pagoda pagoda = Pagoda.builder()
 							  .ontology(Paths.get(ontoDir, "lubm/univ-bench.owl"))
 							  .data(Paths.get(ontoDir, "lubm/data/lubm" + number + ".ttl"))
-				.query(Paths.get(ontoDir, "lubm/queries/lubm_sygenia.sparql"))
+				              .query(Paths.get(ontoDir, "lubm/queries/lubm_sygenia.sparql"))
 //							  .answer(answers)
-				.classify(true)
-				.hermit(true)
-				.build();
+				              .build();
 
 		pagoda.run();
 //		CheckAnswers.assertSameAnswers(answers, givenAnswers);
@@ -71,8 +67,6 @@ public class TestPagodaLUBM {
 							  .data(Paths.get(ontoDir, "lubm/data/lubm" + number + ".ttl"))
 				.query(Paths.get(ontoDir, "lubm/queries/lubm_sygenia_all-blanks.sparql"))
 //							  .answer(answers)
-				.classify(true)
-				.hermit(true)
 				.build();
 
 		pagoda.run();

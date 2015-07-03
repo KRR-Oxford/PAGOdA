@@ -25,7 +25,6 @@ public class TestPagodaFLY {
                               .query(Paths.get(ontoDir, "fly/queries/fly.sparql"))
                               .answer(answers)
                               .classify(false)
-                              .hermit(true)
                               .build();
 
         pagoda.run();
@@ -45,7 +44,6 @@ public class TestPagodaFLY {
                               .answer(answers)
 //                              .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                               .classify(false)
-                              .hermit(true)
                               .build();
 
         pagoda.run();
@@ -57,8 +55,8 @@ public class TestPagodaFLY {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 
         Pagoda.builder()
-                .ontology(Paths.get(ontoDir, "fly/fly_rolledUp.owl"))
-//			  .ontology(Paths.get(ontoDir, "fly/fly_anatomy_XP_with_GJ_FC_individuals.owl"))
+//                .ontology(Paths.get(ontoDir, "fly/fly_rolledUp.owl"))
+			  .ontology(Paths.get(ontoDir, "fly/fly_anatomy_XP_with_GJ_FC_individuals.owl"))
                 .query(Paths.get(ontoDir, "fly/queries/new_queries.sparql"))
 //			  .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                 .classify(false)
