@@ -43,7 +43,7 @@ class MyQueryReasoner extends QueryReasoner {
     private Collection<String> predicatesWithGap = null;
     private ConsistencyStatus isConsistent;
     private ConsistencyManager consistency = new ConsistencyManager(this);
-    private int relevantOntologiesCounter = 0;
+//    private int relevantOntologiesCounter = 0;
 
     public MyQueryReasoner() {
         setup(true);
@@ -190,10 +190,10 @@ class MyQueryReasoner extends QueryReasoner {
 
         OWLOntology relevantOntologySubset = extractRelevantOntologySubset(queryRecord);
 
-        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/test-relevant-ontology-"+relevantOntologiesCounter+".owl");
-        relevantOntologiesCounter++;
+//        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/test-relevant-ontology-"+relevantOntologiesCounter+".owl");
+//        relevantOntologiesCounter++;
 
-        Utility.logInfo("Summarisation...");
+        Utility.logInfo(">> Summarisation <<");
         HermitSummaryFilter summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());
         if(summarisedChecker.check(queryRecord.getGapAnswers()) == 0) {
             summarisedChecker.dispose();
@@ -206,7 +206,7 @@ class MyQueryReasoner extends QueryReasoner {
             return;
         }
 
-        Utility.logInfo("Full reasoning...");
+        Utility.logInfo(">> Full reasoning <<");
         Timer t = new Timer();
         summarisedChecker.checkByFullReasoner(queryRecord.getGapAnswers());
         Utility.logDebug("Total time for full reasoner: " + t.duration());
@@ -276,11 +276,16 @@ class MyQueryReasoner extends QueryReasoner {
                                     Tuple<String> extendedQuery, Step step) {
         t.reset();
 
+        Utility.logDebug("First query type");
         queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-        if(!queryRecord.isProcessed() && !queryRecord.getQueryText().equals(extendedQuery.get(0)))
+        if(!queryRecord.isProcessed() && !queryRecord.getQueryText().equals(extendedQuery.get(0))) {
+            Utility.logDebug("Second query type");
             queryUpperBound(upperStore, queryRecord, extendedQuery.get(0), queryRecord.getAnswerVariables());
-        if(!queryRecord.isProcessed() && queryRecord.hasNonAnsDistinguishedVariables())
+        }
+        if(!queryRecord.isProcessed() && queryRecord.hasNonAnsDistinguishedVariables()) {
+            Utility.logDebug("Third query type");
             queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
+        }
 
         queryRecord.addProcessingTime(step, t.duration());
         if(queryRecord.isProcessed()) {
@@ -294,6 +299,9 @@ class MyQueryReasoner extends QueryReasoner {
      * Returns the part of the ontology relevant for Hermit, while computing the bound answers.
      */
     private boolean queryLowerAndUpperBounds(QueryRecord queryRecord) {
+
+        Utility.logInfo(">> Base bounds <<");
+
         AnswerTuples rlAnswer = null, elAnswer = null;
 
         t.reset();
@@ -341,7 +349,7 @@ class MyQueryReasoner extends QueryReasoner {
     }
 
     private OWLOntology extractRelevantOntologySubset(QueryRecord queryRecord) {
-        Utility.logInfo("Extracting relevant ontology-subset...");
+        Utility.logInfo(">> Relevant ontology-subset extraction <<");
 
         t.reset();
 
@@ -371,7 +379,7 @@ class MyQueryReasoner extends QueryReasoner {
     }
 
     private boolean querySkolemisedRelevantSubset(OWLOntology relevantSubset, QueryRecord queryRecord) {
-        Utility.logInfo("Evaluating semi-Skolemised relevant upper store");
+        Utility.logInfo(">> Semi-Skolemisation <<");
         t.reset();
 
         DatalogProgram relevantProgram = new DatalogProgram(relevantSubset, false); // toClassify is false
@@ -382,7 +390,7 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.importDataFromABoxOf(relevantSubset);
         String relevantOriginalMarkProgram = OWLHelper.getOriginalMarkProgram(relevantSubset);
 
-        int queryDependentMaxTermDepth = 1; // TODO make it dynamic
+        int queryDependentMaxTermDepth = 3; // TODO make it dynamic
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);
@@ -396,6 +404,7 @@ class MyQueryReasoner extends QueryReasoner {
             return false;
         }
 
+        Utility.logInfo("Querying semi-Skolemised upper store...");
         boolean isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
                                                    queryRecord.getExtendedQueryText(),
                                                    Step.SKOLEM_UPPER_BOUND);
