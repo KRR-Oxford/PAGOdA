@@ -114,23 +114,23 @@ public class DependencyGraph {
 		
 //		print(); 
 		
-		topolocialOrder = null;
+		topologicalOrder = null;
 		Utility.logDebug("link: " + link);
 	}
 	
-	LinkedList<Clique> topolocialOrder = null; 
+	LinkedList<Clique> topologicalOrder = null;
 
 	public LinkedList<Clique> getTopologicalOrder() {
-		if (topolocialOrder != null) return topolocialOrder;
+		if (topologicalOrder != null) return topologicalOrder;
 		
-		topolocialOrder = new LinkedList<Clique>(); 
+		topologicalOrder = new LinkedList<Clique>();
 		Queue<Clique> toVisit = new LinkedList<Clique>(entrances); 
 		Map<Clique, Integer> toVisitedInComingDegree = new HashMap<Clique, Integer>();
 		
 		int count; 
 		while (!toVisit.isEmpty()) {
 			Clique cu = toVisit.remove();
-			topolocialOrder.add(cu); 
+			topologicalOrder.add(cu);
 			if (outGoingEdges.containsKey(cu))
 				for (Clique cv: outGoingEdges.get(cu)) {
 					if (toVisitedInComingDegree.containsKey(cv)) {
@@ -144,7 +144,7 @@ public class DependencyGraph {
 				}
 		}
 		
-		return topolocialOrder; 
+		return topologicalOrder;
 	}
 
 	private void addNodeTuple(NodeTuple u) {

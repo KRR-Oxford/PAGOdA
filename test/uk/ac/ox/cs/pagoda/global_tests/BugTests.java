@@ -23,6 +23,64 @@ public class BugTests {
     }
 
     @Test
+    public void minimumCardinalityAxiom2() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
+
+        /*
+         * Build test ontology
+         * */
+
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        OWLDataFactory factory = manager.getOWLDataFactory();
+        OWLOntology ontology = manager.createOntology();
+
+//        OWLClass student = factory.getOWLClass(getEntityIRI("Student"));
+//        manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(student));
+//        OWLClass course = factory.getOWLClass(getEntityIRI("Course"));
+//        manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(course));
+        OWLClass hardWorkingStudent = factory.getOWLClass(getEntityIRI("HardWorkingStudent"));
+        manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(hardWorkingStudent));
+        OWLNamedIndividual a = factory.getOWLNamedIndividual(getEntityIRI("a"));
+        OWLNamedIndividual b = factory.getOWLNamedIndividual(getEntityIRI("b"));
+        OWLObjectProperty takesCourse = factory.getOWLObjectProperty(IRI.create(String.format(NS, "takesCourse")));
+        manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(takesCourse));
+
+        // Class assertions
+        manager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(hardWorkingStudent, a));	// HardWorkingStudent(a)
+        manager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(hardWorkingStudent, b));	// HardWorkingStudent(b)
+
+        // Minimum cardinality axiom
+        manager.addAxiom(ontology,
+                factory.getOWLEquivalentClassesAxiom(hardWorkingStudent,
+                        factory.getOWLObjectMinCardinality(3,
+                                takesCourse)));
+
+//        manager.saveOntology(ontology, Files.newOutputStream(Paths.get("/home/alessandro/Desktop/test-ontology.owl")));
+
+        /*
+         * Test one query
+         * */
+
+        QueryReasoner pagoda = QueryReasoner.getInstance(ontology);
+        pagoda.loadOntology(ontology);
+        if (pagoda.preprocess()) {
+            String query = "select distinct ?x ?y " +
+                    " where { "
+                    + " ?x <" + takesCourse.toStringID() + "> _:z . "
+                    + " ?y <" + takesCourse.toStringID() + "> _:z " +
+                    " }";
+            AnswerTuples answers = pagoda.evaluate(query);
+            int count = 0;
+            for (AnswerTuple ans; answers.isValid(); answers.moveNext()) {
+                ans = answers.getTuple();
+                TestUtil.logInfo(ans);
+                count++;
+            }
+            Assert.assertEquals(count, 2);
+        }
+        pagoda.dispose();
+    }
+
+//    @Test
     public void minimumCardinalityAxiom() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
 
         /*
@@ -107,7 +165,7 @@ public class BugTests {
      * @throws IOException
      * @throws OWLOntologyStorageException
      */
-    @Test
+//    @Test
     public void rTest() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
 
         /*

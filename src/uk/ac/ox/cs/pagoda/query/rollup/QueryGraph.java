@@ -109,8 +109,7 @@ public class QueryGraph {
 		Set<OWLAxiom> axioms = new HashSet<>();
 		for(Map.Entry<Term, Set<OWLClassExpression>> entry : concepts.map.entrySet()) {
 			if(existVars.contains(entry.getKey())) {
-				OWLClassExpression conjunction =
-						factory.getOWLObjectIntersectionOf(factory.getOWLThing());
+				OWLClassExpression conjunction = factory.getOWLThing();
 				for(OWLClassExpression owlClassExpression : entry.getValue()) {
 					conjunction = factory.getOWLObjectIntersectionOf(conjunction, owlClassExpression.accept(visitor));
 				}

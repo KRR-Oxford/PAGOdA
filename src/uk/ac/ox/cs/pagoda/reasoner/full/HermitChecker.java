@@ -106,19 +106,23 @@ public class HermitChecker extends Checker {
         Map<Variable, Term> sub = answerTuple.getAssignment(answerVariable[1]);
         Set<OWLAxiom> toCheckAxioms = qGraph.getAssertions(sub);
 
-//        // TODO complete
-//        Set<OWLAxiom> toCheckExistentialAxioms = qGraph.getExistentialAxioms(sub);
-//
-//        // TODO possibly inefficient
-//        for(OWLAxiom subclassAxiom : toCheckExistentialAxioms) {
-//            Utility.logInfo("Checking consistency of ontology union " + subclassAxiom);
-//            ontology.getOWLOntologyManager().addAxiom(ontology, subclassAxiom);
-//            if(hermit.isConsistent()) {
-//                Utility.logDebug("@TIME to check one tuple: " + t.duration());
-//                return false;
-//            }
-//            ontology.getOWLOntologyManager().removeAxiom(ontology, subclassAxiom);
-//        }
+        // TODO complete
+        Set<OWLAxiom> toCheckExistentialAxioms = qGraph.getExistentialAxioms(sub);
+
+        // TODO possibly inefficient
+        for(OWLAxiom subclassAxiom : toCheckExistentialAxioms) {
+            Utility.logDebug("Checking consistency of ontology union " + subclassAxiom);
+            ontology.getOWLOntologyManager().addAxiom(ontology, subclassAxiom);
+            hermit.flush();
+            if(hermit.isConsistent()) {
+                ontology.getOWLOntologyManager().removeAxiom(ontology, subclassAxiom);
+                hermit.flush();
+                Utility.logDebug("@TIME to check one tuple: " + t.duration());
+                return false;
+            }
+            ontology.getOWLOntologyManager().removeAxiom(ontology, subclassAxiom);
+            hermit.flush();
+        }
 
 
 //		for (OWLAxiom axiom: toCheckAxioms)	System.out.println(axiom.toString());

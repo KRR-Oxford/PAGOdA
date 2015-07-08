@@ -34,7 +34,11 @@ public class Endomorph extends Checker {
 		graph = new Graph(record.getRelevantOntology());
 		dGraph = new DependencyGraph(graph); 
 	}
-	
+
+    /*
+    * FIXME
+    * The result is unsound. The output is not deterministic.
+    * */
 	@Override
 	public int check(AnswerTuples answerTuples) {
 		if(isDisposed()) throw new DisposedException();
@@ -57,11 +61,26 @@ public class Endomorph extends Checker {
 		Utility.logInfo("The number of individuals to be checked by Homomorphism checker: " + counter);
 //		CheckPlan plan = new PlainPlan(this.checker, dGraph.cliques);
 //		CheckPlan plan = new OpenEndMultiThreadPlan(this.checker, dGraph); 		
-		CheckPlan plan = new OpenEndPlan(fullReasoner, dGraph, m_record); 		
-		int answerCounter = plan.check(); 
-		
+
+		CheckPlan plan = new OpenEndPlan(fullReasoner, dGraph, m_record);
+		int answerCounter = plan.check();
+
+
+//        // BEGIN: debugging code
+//        Set<AnswerTuple> validatedAnswers = new HashSet<>();
+//        for (answerTuples.reset(); answerTuples.isValid(); answerTuples.moveNext()) {
+//            if(fullReasoner.check(answerTuples.getTuple())) {
+//                validatedAnswers.add(answerTuples.getTuple());
+//            }
+//        }
+//        m_record.addLowerBoundAnswers(validatedAnswers);
+//
+//		Utility.logDebug("The number of correct answers: " + validatedAnswers.size());
+//		return validatedAnswers.size();
+////         END: debugging code
+
 		Utility.logDebug("The number of correct answers: " + answerCounter);
-		return answerCounter; 
+		return answerCounter;
 	}
 
 	public OWLOntology getOntology() {
