@@ -14,13 +14,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static uk.ac.ox.cs.pagoda.util.TestUtil.getEntityIRI;
+
 public class BugTests {
 
-    public static final String NS = "http://example.org/test#%s";
 
-    private IRI getEntityIRI(String name) {
-        return IRI.create(String.format(NS, name));
-    }
 
     @Test
     public void minimumCardinalityAxiom2() throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
@@ -41,7 +39,7 @@ public class BugTests {
         manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(hardWorkingStudent));
         OWLNamedIndividual a = factory.getOWLNamedIndividual(getEntityIRI("a"));
         OWLNamedIndividual b = factory.getOWLNamedIndividual(getEntityIRI("b"));
-        OWLObjectProperty takesCourse = factory.getOWLObjectProperty(IRI.create(String.format(NS, "takesCourse")));
+        OWLObjectProperty takesCourse = factory.getOWLObjectProperty(IRI.create(String.format(TestUtil.NS, "takesCourse")));
         manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(takesCourse));
 
         // Class assertions
@@ -105,7 +103,7 @@ public class BugTests {
         OWLNamedIndividual d1 = factory.getOWLNamedIndividual(getEntityIRI("d1"));
         OWLNamedIndividual d2 = factory.getOWLNamedIndividual(getEntityIRI("d2"));
         OWLNamedIndividual d3 = factory.getOWLNamedIndividual(getEntityIRI("d3"));
-        OWLObjectProperty takesCourse = factory.getOWLObjectProperty(IRI.create(String.format(NS, "takesCourse")));
+        OWLObjectProperty takesCourse = factory.getOWLObjectProperty(IRI.create(String.format(TestUtil.NS, "takesCourse")));
         manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(takesCourse));
 
         // Class assertions
@@ -183,9 +181,9 @@ public class BugTests {
         OWLNamedIndividual a = factory.getOWLNamedIndividual(getEntityIRI("a"));
         OWLNamedIndividual b = factory.getOWLNamedIndividual(getEntityIRI("b"));
         OWLNamedIndividual c = factory.getOWLNamedIndividual(getEntityIRI("c"));
-        OWLObjectProperty roleR = factory.getOWLObjectProperty(IRI.create(String.format(NS, "R")));
+        OWLObjectProperty roleR = factory.getOWLObjectProperty(IRI.create(String.format(TestUtil.NS, "R")));
         manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(roleR));
-        OWLObjectProperty roleP = factory.getOWLObjectProperty(IRI.create(String.format(NS, "P")));
+        OWLObjectProperty roleP = factory.getOWLObjectProperty(IRI.create(String.format(TestUtil.NS, "P")));
         manager.addAxiom(ontology, factory.getOWLDeclarationAxiom(roleP));
 
         // Class assertions

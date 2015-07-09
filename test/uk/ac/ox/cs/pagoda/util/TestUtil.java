@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.util;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
+import org.semanticweb.owlapi.model.IRI;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,6 +86,12 @@ public class TestUtil {
 
     public static void logError(Object msg, Throwable t) {
         LOGGER.error(msg, t);
+    }
+
+    public static final String NS = "http://example.org/test#%s";
+
+    public static IRI getEntityIRI(String name) {
+        return IRI.create(String.format(NS, name));
     }
 
 }

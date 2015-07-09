@@ -11,4 +11,5 @@ public interface EndomorphChecker {
 
 	boolean check(Node next, Node next2);
 
+	boolean isMappingTo(NodeTuple u, NodeTuple v);
 }

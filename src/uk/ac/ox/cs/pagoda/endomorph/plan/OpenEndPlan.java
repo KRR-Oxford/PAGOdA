@@ -71,7 +71,8 @@ public class OpenEndPlan implements CheckPlan {
 				else {
 					Utility.logDebug(answerTuple.toString() + " is verified.");
 					addProjections(clique); 
-					flag = true; 
+					flag = true;
+					validated.add(clique);
 				}
 			}
 		}

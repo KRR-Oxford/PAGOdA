@@ -1,16 +1,12 @@
 package uk.ac.ox.cs.pagoda.endomorph;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import uk.ac.ox.cs.pagoda.summary.Edge;
 import uk.ac.ox.cs.pagoda.summary.Graph;
 import uk.ac.ox.cs.pagoda.summary.Node;
 import uk.ac.ox.cs.pagoda.summary.NodeTuple;
 import uk.ac.ox.cs.pagoda.util.Timer;
+
+import java.util.*;
 
 public class EndomorphChecker2 implements EndomorphChecker {
 	
@@ -24,7 +20,8 @@ public class EndomorphChecker2 implements EndomorphChecker {
 	private Timer timer = new Timer();
 	private boolean time_out = false; 
 	private static final int TIME_OUT = 60;
-	
+//	private static final int TIME_OUT = 99999999;
+
 	public boolean check(NodeTuple u, NodeTuple v) {
 		int length = u.getNodes().size(); 
 		Edge[][] ss = new Edge[1][length], tt = new Edge[1][length];
@@ -39,15 +36,35 @@ public class EndomorphChecker2 implements EndomorphChecker {
 	}
 	
 	public boolean check(Node u, Node v) {
-		if (!u.isSubConceptOf(v)) return false; 
-		if (!checkSortedEdges(new Edge[][] {graph.getOutGoingEdges(u), graph.getInComingEdges(u) }, 
-				new Edge[][] {graph.getOutGoingEdges(v), graph.getInComingEdges(v)}, 0, 0)) {
-			return false; 
-		}
-		return true; 
-	}
+		if (!u.isSubConceptOf(v)) return false;
+        return checkSortedEdges(new Edge[][]{graph.getOutGoingEdges(u), graph.getInComingEdges(u)},
+                new Edge[][]{graph.getOutGoingEdges(v), graph.getInComingEdges(v)}, 0, 0);
+    }
 
-	Map<Node, Node> mappings = new HashMap<Node, Node>();
+    /***
+     * Checks whether the found mapping is actually a mapping from tuple u to tuple v.
+     *
+     * @param u
+     * @param v
+     * @return
+     */
+    @Override
+    public boolean isMappingTo(NodeTuple u, NodeTuple v) {
+        Iterator<Node> uIterator = u.getNodes().iterator();
+        Iterator<Node> vIterator = v.getNodes().iterator();
+
+        while(uIterator.hasNext() && vIterator.hasNext()) {
+            Node uNode = uIterator.next();
+            Node vNode = vIterator.next();
+            if(mappings.containsKey(uNode) && !mappings.get(uNode).equals(vNode))
+                return false;
+            else if(!mappings.containsKey(uNode) && !uNode.equals(vNode))
+                return false;
+        }
+        return !uIterator.hasNext() && !vIterator.hasNext();
+    }
+
+    Map<Node, Node> mappings = new HashMap<Node, Node>();
 
 	public void clearMappings() {
 		mappings.clear();
@@ -100,9 +117,9 @@ public class EndomorphChecker2 implements EndomorphChecker {
 				return true; 
 			mappings.remove(u);
 			return false; 
-		}; 
-	
-		for (Node v: candidates) {
+		}
+
+        for (Node v: candidates) {
 			mappings.put(u, v); 
 			if (check(u, v) && checkSortedEdges(ss, st, dim, index + 1))
 				return true; 

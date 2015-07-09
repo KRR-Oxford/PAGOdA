@@ -15,9 +15,13 @@ public class EndomorphChecker1 implements EndomorphChecker {
 	
 	public boolean check(Node u, Node v) {
 		if (!u.isSubConceptOf(v)) return false; 
-		if (!isSubsetOf(graph.getOutGoingEdges(u), graph.getOutGoingEdges(v), true)) return false; 
-		if (!isSubsetOf(graph.getInComingEdges(u), graph.getInComingEdges(v), false)) return false; 
-		return true; 
+		if (!isSubsetOf(graph.getOutGoingEdges(u), graph.getOutGoingEdges(v), true)) return false;
+		return isSubsetOf(graph.getInComingEdges(u), graph.getInComingEdges(v), false);
+	}
+
+	@Override
+	public boolean isMappingTo(NodeTuple u, NodeTuple v) {
+		throw new UnsupportedOperationException();
 	}
 
 	private boolean isSubsetOf(Edge[] e1, Edge[] e2, boolean out) {

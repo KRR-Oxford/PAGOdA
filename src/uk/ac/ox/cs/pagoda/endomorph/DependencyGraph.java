@@ -240,6 +240,11 @@ public class DependencyGraph {
 	private boolean checkHomomorphism(NodeTuple u, NodeTuple v) {
 		++homomorphismCheckCounter; 
 		homomorphismChecker.setMapping(u, v);
+
+		// TODO recently added, test it
+		if(!homomorphismChecker.isMappingTo(u, v))
+			return false;
+
 		try {
 			Node node1, node2; 
 			for (Iterator<Node> iter1 = u.getNodes().iterator(), iter2 = v.getNodes().iterator(); iter1.hasNext(); ) {
@@ -251,7 +256,7 @@ public class DependencyGraph {
 			}
 			return true;
 		} finally {
-			homomorphismChecker.clearMappings(); 
+			homomorphismChecker.clearMappings();
 		}
 	}
 
