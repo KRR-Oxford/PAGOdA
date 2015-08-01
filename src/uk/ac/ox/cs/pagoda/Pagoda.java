@@ -143,7 +143,9 @@ public class Pagoda implements Runnable {
         String statisticsFilename = "statistics_" +
                 FilenameUtils.removeExtension(FilenameUtils.getName(properties.getOntologyPath().replaceAll("_", "-")));
         statisticsFilename += "_" + FilenameUtils.removeExtension(FilenameUtils.getName(queryFile).replaceAll("_", "-"));
-        statisticsFilename += "_" + ((properties.getUseSkolemUpperBound()) ? "skolem" : "");
+        statisticsFilename += "_" + ((properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.DISABLED)
+                ? "" : (properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.BEFORE_SUMMARISATION)
+                ? "before" : "after");
         statisticsFilename += ".json";
         statisticsFilename = FilenameUtils.concat(properties.getStatisticsDir().toString(),
                                                   statisticsFilename);
@@ -213,9 +215,15 @@ public class Pagoda implements Runnable {
             return this;
         }
 
-        public PagodaBuilder skolem(Boolean isEnabled) {
+        public PagodaBuilder skolem(PagodaProperties.SkolemUpperBoundOptions option) {
             if(instance == null) return null;
-            instance.properties.setUseSkolemUpperBound(isEnabled);
+            instance.properties.setSkolemUpperBound(option);
+            return this;
+        }
+
+        public PagodaBuilder skolemDepth(int depth) {
+            if(instance == null) return null;
+            instance.properties.setSkolemDepth(depth);
             return this;
         }
 

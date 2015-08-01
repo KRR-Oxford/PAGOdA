@@ -18,6 +18,7 @@ import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
@@ -193,6 +194,11 @@ class MyQueryReasoner extends QueryReasoner {
 //        queryRecord.saveRelevantOntology("/home/alessandro/Desktop/test-relevant-ontology-"+relevantOntologiesCounter+".owl");
 //        relevantOntologiesCounter++;
 
+        if(properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.BEFORE_SUMMARISATION
+                && querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord)) {
+            return;
+        }
+
         Utility.logInfo(">> Summarisation <<");
         HermitSummaryFilter summarisedChecker = new HermitSummaryFilter(queryRecord, properties.getToCallHermiT());
         if(summarisedChecker.check(queryRecord.getGapAnswers()) == 0) {
@@ -200,8 +206,8 @@ class MyQueryReasoner extends QueryReasoner {
             return;
         }
 
-        if(properties.getUseSkolemUpperBound() &&
-                querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord)) {
+        if(properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.AFTER_SUMMARISATION
+                && querySkolemisedRelevantSubset(relevantOntologySubset, queryRecord)) {
             summarisedChecker.dispose();
             return;
         }
@@ -390,7 +396,7 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.importDataFromABoxOf(relevantSubset);
         String relevantOriginalMarkProgram = OWLHelper.getOriginalMarkProgram(relevantSubset);
 
-        int queryDependentMaxTermDepth = 3; // TODO make it dynamic
+        int queryDependentMaxTermDepth = properties.getSkolemDepth();
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);

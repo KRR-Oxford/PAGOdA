@@ -3,6 +3,7 @@ package uk.ac.ox.cs.pagoda.global_tests;
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.Pagoda;
 import uk.ac.ox.cs.pagoda.query.CheckAnswers;
+import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.TestUtil;
 import uk.ac.ox.cs.pagoda.util.Timer;
 
@@ -61,7 +62,7 @@ public class TestPagodaFLY {
 //			  .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                 .classify(false)
                 .hermit(true)
-                .skolem(true)
+                .skolem(PagodaProperties.SkolemUpperBoundOptions.AFTER_SUMMARISATION)
                 .build()
                 .run();
     }
@@ -76,7 +77,7 @@ public class TestPagodaFLY {
               .query(Paths.get(ontoDir, "fly/queries/new_queries.sparql"))
               .classify(false)
               .hermit(true)
-                .skolem(true) // <----<< Skolem upper bound is ENABLED <<<
+                .skolem(PagodaProperties.SkolemUpperBoundOptions.AFTER_SUMMARISATION) // <----<< Skolem upper bound is ENABLED <<<
                 .build()
                 .run();
         double t1 = timer.duration();
@@ -88,7 +89,7 @@ public class TestPagodaFLY {
               .query(Paths.get(ontoDir, "fly/queries/new_queries.sparql"))
               .classify(false)
               .hermit(true)
-                .skolem(false) // <----<< Skolem upper bound is DISABLED <<<
+                .skolem(PagodaProperties.SkolemUpperBoundOptions.DISABLED) // <----<< Skolem upper bound is DISABLED <<<
                 .build()
                 .run();
         double t2 = timer.duration();

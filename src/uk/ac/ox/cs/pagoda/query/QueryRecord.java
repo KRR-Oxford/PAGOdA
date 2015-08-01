@@ -802,7 +802,7 @@ public class QueryRecord extends Disposable {
         }
 
         public static Gson getInstance() {
-            if(gson == null) {
+            if (gson == null) {
                 gson = new GsonBuilder()
                         .registerTypeAdapter(AnswerTuple.class, new AnswerTuple.AnswerTupleSerializer())
                         .registerTypeAdapter(QueryRecord.class, new QueryRecord.QueryRecordSerializer())
@@ -820,4 +820,5 @@ public class QueryRecord extends Disposable {
 //		}
 
     }
+
 }

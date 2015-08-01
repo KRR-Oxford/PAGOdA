@@ -3,7 +3,6 @@ package uk.ac.ox.cs.pagoda.rules.approximators;
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageUpperProgram;
 import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
-import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
@@ -65,10 +64,8 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         ArrayList<DLClause> result = new ArrayList<>();
         for(Tuple<Individual> violationTuple : violationTuples) {
-            if(getMaxDepth(violationTuple) < maxTermDepth) {
+            if(getMaxDepth(violationTuple) < maxTermDepth)
                 result.addAll(getGroundSkolemisation(clause, originalClause, violationTuple));
-                Utility.logDebug("Approximating maximal individual by a constant in rule:" + originalClause);
-            }
             else
                 result.addAll(alternativeApproximator.convert(clause, originalClause, null));
         }
