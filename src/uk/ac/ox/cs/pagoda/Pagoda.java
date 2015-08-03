@@ -23,11 +23,13 @@ import java.util.Map;
 public class Pagoda implements Runnable {
 
     private static final String OPTION_ONTOLOGY = "o";
-    private static final String OPTION_DATA = "d";
+    private static final String OPTION_DATA = "t";
     private static final String OPTION_QUERY = "q";
     private static final String OPTION_ANSWER = "a";
     private static final String OPTION_CLASSIFY = "c";
     private static final String OPTION_HERMIT = "f";
+    private static final String OPTION_SKOLEM = "s";
+    private static final String OPTION_SKOLEM_DEPTH = "d";
     private final PagodaProperties properties;
 
     /**
@@ -69,6 +71,16 @@ public class Pagoda implements Runnable {
                                 .desc("Tell whether to call Hermit")
                                 .type(Boolean.class)
                                 .build());
+        options.addOption(Option.builder(OPTION_SKOLEM)
+                .argName(OPTION_SKOLEM)
+                .hasArg()
+                .desc("Tell if and how to apply Skolemisation")
+                .build());
+        options.addOption(Option.builder(OPTION_SKOLEM_DEPTH)
+                .argName(OPTION_SKOLEM_DEPTH)
+                .hasArg()
+                .desc("Tell how deep to skolemise")
+                .build());
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -82,6 +94,10 @@ public class Pagoda implements Runnable {
                 pagodaBuilder.classify(Boolean.parseBoolean(cmd.getOptionValue(OPTION_CLASSIFY)));
             if(cmd.hasOption(OPTION_HERMIT))
                 pagodaBuilder.hermit(Boolean.parseBoolean(cmd.getOptionValue(OPTION_HERMIT)));
+            if(cmd.hasOption(OPTION_SKOLEM))
+                pagodaBuilder.skolem(PagodaProperties.SkolemUpperBoundOptions.valueOf(cmd.getOptionValue(OPTION_SKOLEM)));
+            if(cmd.hasOption(OPTION_SKOLEM_DEPTH))
+                pagodaBuilder.skolemDepth(Integer.parseInt(cmd.getOptionValue(OPTION_SKOLEM_DEPTH)));
 
             pagodaBuilder.build().run();
         } catch(ParseException exp) {
@@ -105,6 +121,8 @@ public class Pagoda implements Runnable {
         Utility.logInfo("Data files: " + properties.getDataPath());
         Utility.logInfo("Query files: " + properties.getQueryPath());
         Utility.logInfo("Answer file: " + properties.getAnswerPath());
+        Utility.logInfo("Skolemisation: " + properties.getSkolemUpperBound());
+        Utility.logInfo("Skolemisation depth: " + properties.getSkolemDepth());
 
         QueryReasoner pagoda = null;
 
@@ -146,6 +164,7 @@ public class Pagoda implements Runnable {
         statisticsFilename += "_" + ((properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.DISABLED)
                 ? "" : (properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.BEFORE_SUMMARISATION)
                 ? "before" : "after");
+        statisticsFilename += "_" + properties.getSkolemDepth();
         statisticsFilename += ".json";
         statisticsFilename = FilenameUtils.concat(properties.getStatisticsDir().toString(),
                                                   statisticsFilename);
