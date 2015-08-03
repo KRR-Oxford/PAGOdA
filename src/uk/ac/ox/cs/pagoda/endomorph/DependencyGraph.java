@@ -241,7 +241,6 @@ public class DependencyGraph {
 		++homomorphismCheckCounter; 
 		homomorphismChecker.setMapping(u, v);
 
-		// TODO recently added, test it
 		if(!homomorphismChecker.isMappingTo(u, v))
 			return false;
 

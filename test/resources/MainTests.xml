@@ -7,9 +7,9 @@
             <run>
                 <!--<include name="correctness"/>-->
                 <!--<include name="light"/>-->
-                <!--<include name="justExecute"/>-->
+                <include name="justExecute"/>
                 <!--&lt;!&ndash;<include name="heavy"/>&ndash;&gt;-->
-                <include name="nonOriginal"/>
+                <!--<include name="nonOriginal"/>-->
             </run>
         </groups>
         <classes>

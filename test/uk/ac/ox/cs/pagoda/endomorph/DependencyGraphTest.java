@@ -2,6 +2,7 @@ package uk.ac.ox.cs.pagoda.endomorph;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.JRDFox.model.GroundTerm;
 import uk.ac.ox.cs.JRDFox.model.Individual;
@@ -54,6 +55,6 @@ public class DependencyGraphTest {
 
         dependencyGraph.build(tuples);
 
-        System.out.println(dependencyGraph.getTopologicalOrder());
+        Assert.assertTrue(dependencyGraph.getTopologicalOrder().size() >= 2);
     }
 }

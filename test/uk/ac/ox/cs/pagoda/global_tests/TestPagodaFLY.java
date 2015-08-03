@@ -62,7 +62,7 @@ public class TestPagodaFLY {
 //			  .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                 .classify(false)
                 .hermit(true)
-                .skolem(PagodaProperties.SkolemUpperBoundOptions.AFTER_SUMMARISATION)
+                .skolem(PagodaProperties.SkolemUpperBoundOptions.BEFORE_SUMMARISATION)
                 .build()
                 .run();
     }

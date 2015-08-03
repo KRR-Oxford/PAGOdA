@@ -13,6 +13,7 @@ import java.util.Map;
 public class SkolemTermsManager {
 
     public static final String SKOLEMISED_INDIVIDUAL_PREFIX = Namespace.PAGODA_ANONY + "individual";
+    public static final String RULE_UNIQUE_SKOLEMISED_INDIVIDUAL_PREFIX = SKOLEMISED_INDIVIDUAL_PREFIX + "_unique";
 
     private static SkolemTermsManager skolemTermsManager;
 
@@ -54,10 +55,29 @@ public class SkolemTermsManager {
                 + "_" + mapDependencyToId(dependency);
         Individual newIndividual = Individual.create(SKOLEMISED_INDIVIDUAL_PREFIX + termId);
 
-        int depth = 0;
-        for(Individual individual : dependency)
-            depth = Integer.max(depth, getDepthOf(individual));
-        individualToDepth_map.put(newIndividual, depth + 1);
+        if(!individualToDepth_map.containsKey(newIndividual)) {
+            int depth = 0;
+            for (Individual individual : dependency)
+                depth = Integer.max(depth, getDepthOf(individual));
+            individualToDepth_map.put(newIndividual, depth + 1);
+        }
+
+        return newIndividual;
+    }
+
+    /***
+     * Create a term of a given depth, unique for the clause and the depth.
+     *
+     * @param originalClause
+     * @param offset
+     * @param depth
+     * @return
+     */
+    public Individual getFreshIndividual(DLClause originalClause, int offset, int depth) {
+        String termId = Integer.toString(mapClauseToId(originalClause) + offset) + "_depth_" + depth;
+        Individual newIndividual = Individual.create(RULE_UNIQUE_SKOLEMISED_INDIVIDUAL_PREFIX + termId);
+
+        individualToDepth_map.putIfAbsent(newIndividual, depth);
 
         return newIndividual;
     }

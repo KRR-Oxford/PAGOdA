@@ -2,7 +2,6 @@ package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageUpperProgram;
-import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
@@ -23,16 +22,10 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     private static final Atom[] EMPTY_BODY = new Atom[0];
     private static final Variable X = Variable.create("X");
     private final int maxTermDepth;
-    private final TupleDependentApproximator alternativeApproximator;
     private final SkolemTermsManager skolemTermsManager;
 
     public LimitedSkolemisationApproximator(int maxTermDepth) {
-        this(maxTermDepth, new ExistConstantApproximator());
-    }
-
-    public LimitedSkolemisationApproximator(int maxTermDepth, TupleDependentApproximator alternativeApproximator) {
         this.maxTermDepth = maxTermDepth;
-        this.alternativeApproximator = alternativeApproximator;
         this.skolemTermsManager = SkolemTermsManager.getInstance();
     }
 
@@ -64,10 +57,8 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
     private Collection<DLClause> overApprox(DLClause clause, DLClause originalClause, Collection<Tuple<Individual>> violationTuples) {
         ArrayList<DLClause> result = new ArrayList<>();
         for(Tuple<Individual> violationTuple : violationTuples) {
-            if(getMaxDepth(violationTuple) < maxTermDepth)
-                result.addAll(getGroundSkolemisation(clause, originalClause, violationTuple));
-            else
-                result.addAll(alternativeApproximator.convert(clause, originalClause, null));
+                result.addAll(getGroundSkolemisation(clause,
+                        originalClause, violationTuple, getMaxDepth(violationTuple) >= maxTermDepth));
         }
 
         return result;
@@ -75,7 +66,8 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
 
     private Collection<DLClause> getGroundSkolemisation(DLClause clause,
                                                         DLClause originalClause,
-                                                        Tuple<Individual> violationTuple) {
+                                                        Tuple<Individual> violationTuple,
+                                                        boolean useClauseUniqueIndividual) {
 
         String[] commonVars = MultiStageUpperProgram.getCommonVars(clause);
 
@@ -100,7 +92,6 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
             AtomicConcept atomicConcept;
 
             if(concept instanceof AtomicNegationConcept) {
-                // TODO CHECK: is this already in MultiStageUpperProgram?
                 Atom atom1 =
                         Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
                 Atom atom2 = Atom.create(atomicConcept = OverApproxExist.getNegationConcept(atomicConcept), X);
@@ -116,9 +107,14 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
             Individual[] individuals = new Individual[card];
             SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
             for(int i = 0; i < card; ++i)
-                individuals[i] = termsManager.getFreshIndividual(originalClause,
-                                                                 offset + i,
-                                                                 commonIndividuals);
+                if(useClauseUniqueIndividual)
+                    individuals[i] = termsManager.getFreshIndividual(originalClause,
+                                                                     offset + i,
+                                                                     maxTermDepth + 1);
+                else
+                    individuals[i] = termsManager.getFreshIndividual(originalClause,
+                                                                     offset + i,
+                                                                     commonIndividuals);
 
             for(int i = 0; i < card; ++i) {
                 if(atomicConcept != null)
