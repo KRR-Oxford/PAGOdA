@@ -39,6 +39,7 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 	}
 
 
+	// TODO -RULE- filter out unsafe rules
 	@Override
 	public void transform() {
 		if (m_toClassify) {
@@ -56,7 +57,7 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 		else 
 			super.transform();
 		
-		Normalisation norm = new Normalisation(dlOntology.getDLClauses(), ontology, new NullaryBottom());
+		Normalisation norm = new Normalisation(dlClauses, ontology, new NullaryBottom());
 		BottomStrategy tBottom = new NullaryBottom(); 
 		norm.process();
 		for (DLClause nClause: norm.getNormlisedClauses()) {

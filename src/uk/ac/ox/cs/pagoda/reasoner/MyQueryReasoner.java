@@ -68,7 +68,7 @@ class MyQueryReasoner extends QueryReasoner {
         }
 
         ontology = o;
-        program = new DatalogProgram(ontology, properties.getToClassify());
+        program = new DatalogProgram(ontology);
 //		program.getLower().save();
 //		program.getUpper().save();
 //		program.getGeneral().save();
@@ -154,7 +154,7 @@ class MyQueryReasoner extends QueryReasoner {
 //			encoder = new TrackingRuleEncoderDisjVar2(program.getUpper(), trackingStore);
 //			encoder = new TrackingRuleEncoderDisj2(program.getUpper(), trackingStore);
 
-        // TODO add consistency check by Skolem-upper-bound
+        // TODO? add consistency check by Skolem-upper-bound
 
         if(!isConsistent())
             return false;
@@ -225,7 +225,7 @@ class MyQueryReasoner extends QueryReasoner {
     @Override
     public void evaluateUpper(QueryRecord queryRecord) {
         if(isDisposed()) throw new DisposedException();
-        // TODO add new upper store
+        // TODO? add new upper store
         AnswerTuples rlAnswer = null;
         boolean useFull = queryRecord.isBottom() || lazyUpperStore == null;
         try {
@@ -388,7 +388,7 @@ class MyQueryReasoner extends QueryReasoner {
         Utility.logInfo(">> Semi-Skolemisation <<");
         t.reset();
 
-        DatalogProgram relevantProgram = new DatalogProgram(relevantSubset, false); // toClassify is false
+        DatalogProgram relevantProgram = new DatalogProgram(relevantSubset);
 
         MultiStageQueryEngine relevantStore =
                 new MultiStageQueryEngine("Relevant-store", true); // checkValidity is true

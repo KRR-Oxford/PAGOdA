@@ -117,7 +117,7 @@ class ELHOUQueryReasoner extends QueryReasoner {
         }
 
         OWLOntology ontology = o;
-        program = new DatalogProgram(ontology, properties.getToClassify());
+        program = new DatalogProgram(ontology);
 
         importData(program.getAdditionalDataFile());
 

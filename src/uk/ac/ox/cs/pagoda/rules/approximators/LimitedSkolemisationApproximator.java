@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
+/***
  * Approximates existential rules through a limited form of Skolemisation.
  * <p>
  * Given a rule and a ground substitution,

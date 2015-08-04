@@ -52,7 +52,7 @@ class HermiTReasoner extends QueryReasoner {
             e.printStackTrace();
         }
 
-        DatalogProgram datalogProgram = new DatalogProgram(tbox, false);
+        DatalogProgram datalogProgram = new DatalogProgram(tbox);
         importData(datalogProgram.getAdditionalDataFile());
         upperStore = new MultiStageQueryEngine("rl-upper", false);
         upperStore.importRDFData("data", getImportedData());

@@ -2,10 +2,11 @@ package uk.ac.ox.cs.pagoda.rules;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
-import uk.ac.ox.cs.pagoda.constraints.PredicateDependency;
 import uk.ac.ox.cs.pagoda.constraints.UpperUnaryBottom;
 import uk.ac.ox.cs.pagoda.util.disposable.Disposable;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
+
+import java.io.InputStream;
 
 public class DatalogProgram extends Disposable {
 
@@ -15,14 +16,36 @@ public class DatalogProgram extends Disposable {
 
     BottomStrategy upperBottom;
 
-    public DatalogProgram(OWLOntology o) {
+    public DatalogProgram(InputStream inputStream) {
         lowerProgram = new LowerDatalogProgram();
-        init(o, false);
+
+        upperProgram.load(inputStream, upperBottom = new UpperUnaryBottom());
+        lowerProgram.clone(upperProgram);
+        program.clone(upperProgram);
+
+        upperProgram.transform();
+        lowerProgram.transform();
+        program.transform();
+
+        program.buildDependencyGraph();
+        lowerProgram.dependencyGraph = upperProgram.buildDependencyGraph();
     }
 
-    public DatalogProgram(OWLOntology o, boolean toClassify) {
-        lowerProgram = new LowerDatalogProgram(toClassify);
-        init(o, toClassify);
+    public DatalogProgram(OWLOntology o) {
+        lowerProgram = new LowerDatalogProgram();
+
+        upperProgram.load(o, upperBottom = new UpperUnaryBottom());
+//		upperProgram.load(o, upperBottom = new UnaryBottom());
+        lowerProgram.clone(upperProgram);
+        program.clone(upperProgram);
+//		program.botStrategy = new UnaryBottom();
+
+        upperProgram.transform();
+        lowerProgram.transform();
+        program.transform();
+
+        program.buildDependencyGraph();
+        lowerProgram.dependencyGraph = upperProgram.buildDependencyGraph();
     }
 
     public LowerDatalogProgram getLower() {
@@ -54,21 +77,5 @@ public class DatalogProgram extends Disposable {
     public void dispose() {
         super.dispose();
         if(upperProgram != null) upperProgram.deleteABoxTurtleFile();
-    }
-
-    private void init(OWLOntology o, boolean forSemFacet) {
-        upperProgram.load(o, upperBottom = new UpperUnaryBottom());
-//		upperProgram.load(o, upperBottom = new UnaryBottom());
-        lowerProgram.clone(upperProgram);
-        program.clone(upperProgram);
-//		program.botStrategy = new UnaryBottom();
-
-        upperProgram.transform();
-        lowerProgram.transform();
-        program.transform();
-
-        program.buildDependencyGraph();
-        PredicateDependency graph = upperProgram.buildDependencyGraph();
-        lowerProgram.dependencyGraph = graph;
     }
 }

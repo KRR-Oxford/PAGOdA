@@ -49,6 +49,7 @@ public abstract class Pick4NegativeConcept extends Treatment {
             tripleManager.addTripleByID(tripleManager.getInstance(gapAtom, assignment));
     }
 
+    // TODO -RULE-
     protected boolean makeSatisfied(Violation violation, Comparator<Atom> comp) {
         LinkedList<AnswerTupleID> tuples = violation.getTuples();
         DLClause constraint = violation.getConstraint();

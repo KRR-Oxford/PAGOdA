@@ -15,7 +15,7 @@ public class GeneralProgram extends Program {
 		ontology = relevantOntology;
 		
 		ontologyDirectory = null; 
-		dlOntology = null; 
+//		dlOntology = null;
 		botStrategy = new UnaryBottom(); 
 		
 		clauses = botStrategy.process(relevantClauses); 

@@ -193,6 +193,7 @@ public abstract class MultiStageUpperProgram {
 
 	public abstract Collection<Violation> isIntegrated(MultiStageQueryEngine engine, boolean incrementally);
 
+	// TODO -RULE-
 	protected Violation violate(MultiStageQueryEngine engine, DLClause clause, boolean incrementally) {
 		Utility.logTrace("checking constraint: " + clause);
 

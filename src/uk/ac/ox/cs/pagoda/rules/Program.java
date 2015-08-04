@@ -4,6 +4,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.HermiT.model.*;
 import org.semanticweb.HermiT.structural.OWLClausification;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.simpleETL.SimpleETL;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
@@ -13,6 +14,7 @@ import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.constraints.NullaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.PredicateDependency;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -23,7 +25,9 @@ public abstract class Program implements KnowledgeBase {
 	
 	protected String ontologyDirectory = null;
 	protected OWLOntology ontology; 
-	protected DLOntology dlOntology;
+//	protected DLOntology dlOntology;
+    protected Set<DLClause> dlClauses = new HashSet<>();
+    protected Set<Atom> positiveFacts = new HashSet<>();
 	protected BottomStrategy botStrategy; 
 	protected Collection<DLClause> clauses = new HashSet<DLClause>();
 //	protected Set<DLClause> used = new HashSet<DLClause>();
@@ -39,6 +43,24 @@ protected PredicateDependency dependencyGraph;
 		sb.insert(0, MyPrefixes.PAGOdAPrefixes.prefixesText());
 		return sb.toString();
 	}
+
+	public void load(InputStream rules, BottomStrategy botStrategy) {
+//        this.botStrategy = botStrategy;
+//      // fake instantiation
+        try {
+            load(OWLManager.createOWLOntologyManager().createOntology(), botStrategy);
+        } catch (OWLOntologyCreationException e) {
+            e.printStackTrace();
+        }
+
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(rules))) {
+            String line;
+            while((line = br.readLine()) != null)
+                dlClauses.add(RuleHelper.parseClause(line));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	public void load(OWLOntology o, BottomStrategy botStrategy) {
 		this.botStrategy = botStrategy;
@@ -57,7 +79,7 @@ protected PredicateDependency dependencyGraph;
 		OWLOntology abox = OWLHelper.loadOntology(aboxOWLFile);
 		OWLOntologyManager manager = abox.getOWLOntologyManager();
 		OWLAxiom axiom;
-		for (Atom atom: dlOntology.getPositiveFacts()) {
+		for (Atom atom: positiveFacts) {
 			if ((axiom = OWLHelper.getABoxAssertion(manager.getOWLDataFactory(), atom)) != null)
 				manager.addAxiom(abox, axiom);
 		}
@@ -90,7 +112,7 @@ protected PredicateDependency dependencyGraph;
 
 	@Override
 	public void transform() {
-		for(DLClause dlClause : dlOntology.getDLClauses()) {
+		for(DLClause dlClause : dlClauses) {
 			DLClause simplifiedDLClause = DLClauseHelper.removeNominalConcept(dlClause);
 			simplifiedDLClause = removeAuxiliaryBodyAtoms(simplifiedDLClause);
 			simplifiedDLClause = DLClauseHelper.replaceWithDataValue(simplifiedDLClause);
@@ -190,7 +212,9 @@ protected PredicateDependency dependencyGraph;
 	void clone(Program program) {
 		this.ontologyDirectory = program.ontologyDirectory;
 		this.ontology = program.ontology;
-		this.dlOntology = program.dlOntology;
+//		this.dlOntology = program.dlOntology;
+        this.dlClauses = program.dlClauses;
+        this.positiveFacts = program.positiveFacts;
 		this.botStrategy = program.botStrategy;
 		this.additionalDataFile = program.additionalDataFile;
 		this.transitiveAxioms = program.transitiveAxioms;
@@ -248,8 +272,9 @@ protected PredicateDependency dependencyGraph;
 			}
 		Utility.logInfo("The number of data property range axioms that are ignored: " + noOfDataPropertyRangeAxioms + "(" + noOfAxioms + ")");
 
-		dlOntology = (DLOntology) clausifier.preprocessAndClausify(filteredOntology, null)[1];
-		clausifier = null;
+        DLOntology dlOntology = (DLOntology) clausifier.preprocessAndClausify(filteredOntology, null)[1];
+        dlClauses = dlOntology.getDLClauses();
+        positiveFacts = dlOntology.getPositiveFacts();
 	}
 
 	private DLClause removeAuxiliaryBodyAtoms(DLClause dlClause) {
