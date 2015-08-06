@@ -15,6 +15,8 @@ import uk.ac.ox.cs.pagoda.constraints.NullaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.PredicateDependency;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
 import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Utility;
 
@@ -284,7 +286,8 @@ protected PredicateDependency dependencyGraph;
 			p = bodyAtom.getDLPredicate();
 			if(p instanceof AtomicConcept ||
 					p instanceof AtomicRole || p instanceof InverseRole ||
-					p instanceof Equality || p instanceof AnnotatedEquality || p instanceof Inequality)
+					p instanceof Equality || p instanceof AnnotatedEquality || p instanceof Inequality ||
+					p instanceof UnaryPredicate || p instanceof BinaryPredicate)
 				newBodyAtoms.add(bodyAtom);
 		}
 		LinkedList<Atom> newHeadAtoms = new LinkedList<Atom>();

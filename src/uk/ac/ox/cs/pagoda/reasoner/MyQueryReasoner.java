@@ -39,11 +39,11 @@ class MyQueryReasoner extends QueryReasoner {
     TrackingRuleEncoder encoder;
 
     private boolean equalityTag;
-    private Timer t = new Timer();
+    protected Timer timer = new Timer();
 
-    private Collection<String> predicatesWithGap = null;
-    private ConsistencyStatus isConsistent;
-    private ConsistencyManager consistency = new ConsistencyManager(this);
+    protected Collection<String> predicatesWithGap = null;
+    protected ConsistencyStatus isConsistent;
+    protected ConsistencyManager consistency = new ConsistencyManager(this);
 //    private int relevantOntologiesCounter = 0;
 
     public MyQueryReasoner() {
@@ -70,7 +70,7 @@ class MyQueryReasoner extends QueryReasoner {
         ontology = o;
         program = new DatalogProgram(ontology);
 //		program.getLower().save();
-//		program.getUpper().save();
+		program.getUpper().save();
 //		program.getGeneral().save();
 
         if(!program.getGeneral().isHorn())
@@ -91,7 +91,7 @@ class MyQueryReasoner extends QueryReasoner {
     public boolean preprocess() {
         if(isDisposed()) throw new DisposedException();
 
-        t.reset();
+        timer.reset();
         Utility.logInfo("Preprocessing (and checking satisfiability)...");
 
         String name = "data", datafile = getImportedData();
@@ -99,7 +99,7 @@ class MyQueryReasoner extends QueryReasoner {
         rlLowerStore.materialise("lower program", program.getLower().toString());
 //		program.getLower().save();
         if(!consistency.checkRLLowerBound()) {
-            Utility.logDebug("time for satisfiability checking: " + t.duration());
+            Utility.logDebug("time for satisfiability checking: " + timer.duration());
             isConsistent = ConsistencyStatus.INCONSISTENT;
             return false;
         }
@@ -112,7 +112,7 @@ class MyQueryReasoner extends QueryReasoner {
         elLowerStore.materialise("lower program", program.getLower().toString());
         elLowerStore.initialiseKarma();
         if(!consistency.checkELLowerBound()) {
-            Utility.logDebug("time for satisfiability checking: " + t.duration());
+            Utility.logDebug("time for satisfiability checking: " + timer.duration());
             isConsistent = ConsistencyStatus.INCONSISTENT;
             return false;
         }
@@ -122,7 +122,7 @@ class MyQueryReasoner extends QueryReasoner {
             lazyUpperStore.materialise("saturate named individuals", originalMarkProgram);
             int tag = lazyUpperStore.materialiseRestrictedly(program, null);
             if(tag == -1) {
-                Utility.logDebug("time for satisfiability checking: " + t.duration());
+                Utility.logDebug("time for satisfiability checking: " + timer.duration());
                 isConsistent = ConsistencyStatus.INCONSISTENT;
                 return false;
             }
@@ -133,7 +133,7 @@ class MyQueryReasoner extends QueryReasoner {
         }
         if(consistency.checkUpper(lazyUpperStore)) {
             isConsistent = ConsistencyStatus.CONSISTENT;
-            Utility.logDebug("time for satisfiability checking: " + t.duration());
+            Utility.logDebug("time for satisfiability checking: " + timer.duration());
         }
 
         trackingStore.importRDFData(name, datafile);
@@ -170,7 +170,7 @@ class MyQueryReasoner extends QueryReasoner {
 
         if(isConsistent == ConsistencyStatus.UNCHECKED) {
             isConsistent = consistency.check() ? ConsistencyStatus.CONSISTENT : ConsistencyStatus.INCONSISTENT;
-            Utility.logDebug("time for satisfiability checking: " + t.duration());
+            Utility.logDebug("time for satisfiability checking: " + timer.duration());
         }
         if(isConsistent == ConsistencyStatus.CONSISTENT) {
             Utility.logInfo("The ontology is consistent!");
@@ -280,7 +280,7 @@ class MyQueryReasoner extends QueryReasoner {
      */
     private boolean queryUpperStore(BasicQueryEngine upperStore, QueryRecord queryRecord,
                                     Tuple<String> extendedQuery, Step step) {
-        t.reset();
+        timer.reset();
 
         Utility.logDebug("First query type");
         queryUpperBound(upperStore, queryRecord, queryRecord.getQueryText(), queryRecord.getAnswerVariables());
@@ -293,7 +293,7 @@ class MyQueryReasoner extends QueryReasoner {
             queryUpperBound(upperStore, queryRecord, extendedQuery.get(1), queryRecord.getDistinguishedVariables());
         }
 
-        queryRecord.addProcessingTime(step, t.duration());
+        queryRecord.addProcessingTime(step, timer.duration());
         if(queryRecord.isProcessed()) {
             queryRecord.setDifficulty(step);
             return true;
@@ -304,21 +304,21 @@ class MyQueryReasoner extends QueryReasoner {
     /**
      * Returns the part of the ontology relevant for Hermit, while computing the bound answers.
      */
-    private boolean queryLowerAndUpperBounds(QueryRecord queryRecord) {
+    protected boolean queryLowerAndUpperBounds(QueryRecord queryRecord) {
 
         Utility.logInfo(">> Base bounds <<");
 
         AnswerTuples rlAnswer = null, elAnswer = null;
 
-        t.reset();
+        timer.reset();
         try {
             rlAnswer = rlLowerStore.evaluate(queryRecord.getQueryText(), queryRecord.getAnswerVariables());
-            Utility.logDebug(t.duration());
+            Utility.logDebug(timer.duration());
             queryRecord.updateLowerBoundAnswers(rlAnswer);
         } finally {
             if(rlAnswer != null) rlAnswer.dispose();
         }
-        queryRecord.addProcessingTime(Step.LOWER_BOUND, t.duration());
+        queryRecord.addProcessingTime(Step.LOWER_BOUND, timer.duration());
 
         Tuple<String> extendedQueryTexts = queryRecord.getExtendedQueryText();
 
@@ -334,17 +334,17 @@ class MyQueryReasoner extends QueryReasoner {
                 return true;
         }
 
-        t.reset();
+        timer.reset();
         try {
             elAnswer = elLowerStore.evaluate(extendedQueryTexts.get(0),
                                              queryRecord.getAnswerVariables(),
                                              queryRecord.getLowerBoundAnswers());
-            Utility.logDebug(t.duration());
+            Utility.logDebug(timer.duration());
             queryRecord.updateLowerBoundAnswers(elAnswer);
         } finally {
             if(elAnswer != null) elAnswer.dispose();
         }
-        queryRecord.addProcessingTime(Step.EL_LOWER_BOUND, t.duration());
+        queryRecord.addProcessingTime(Step.EL_LOWER_BOUND, timer.duration());
 
         if(queryRecord.isProcessed()) {
             queryRecord.setDifficulty(Step.EL_LOWER_BOUND);
@@ -357,12 +357,12 @@ class MyQueryReasoner extends QueryReasoner {
     private OWLOntology extractRelevantOntologySubset(QueryRecord queryRecord) {
         Utility.logInfo(">> Relevant ontology-subset extraction <<");
 
-        t.reset();
+        timer.reset();
 
         QueryTracker tracker = new QueryTracker(encoder, rlLowerStore, queryRecord);
         OWLOntology relevantOntologySubset = tracker.extract(trackingStore, consistency.getQueryRecords(), true);
 
-        queryRecord.addProcessingTime(Step.FRAGMENT, t.duration());
+        queryRecord.addProcessingTime(Step.FRAGMENT, timer.duration());
 
         int numOfABoxAxioms = relevantOntologySubset.getABoxAxioms(true).size();
         int numOfTBoxAxioms = relevantOntologySubset.getAxiomCount() - numOfABoxAxioms;
@@ -377,7 +377,7 @@ class MyQueryReasoner extends QueryReasoner {
         try {
             Utility.logDebug(queryText);
             rlAnswer = upperStore.evaluate(queryText, answerVariables);
-            Utility.logDebug(t.duration());
+            Utility.logDebug(timer.duration());
             queryRecord.updateUpperBoundAnswers(rlAnswer);
         } finally {
             if(rlAnswer != null) rlAnswer.dispose();
@@ -386,7 +386,7 @@ class MyQueryReasoner extends QueryReasoner {
 
     private boolean querySkolemisedRelevantSubset(OWLOntology relevantSubset, QueryRecord queryRecord) {
         Utility.logInfo(">> Semi-Skolemisation <<");
-        t.reset();
+        timer.reset();
 
         DatalogProgram relevantProgram = new DatalogProgram(relevantSubset);
 
@@ -400,7 +400,7 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
         int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
                                                                    queryDependentMaxTermDepth);
-        queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());
+        queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, timer.duration());
         if(materialisationTag == -1) {
             throw new Error("A consistent ontology has turned out to be " +
                                     "inconsistent in the Skolemises-relevant-upper-store");
@@ -420,6 +420,6 @@ class MyQueryReasoner extends QueryReasoner {
         return isFullyProcessed;
     }
 
-    private enum ConsistencyStatus {CONSISTENT, INCONSISTENT, UNCHECKED}
+    protected enum ConsistencyStatus {CONSISTENT, INCONSISTENT, UNCHECKED}
 
 }

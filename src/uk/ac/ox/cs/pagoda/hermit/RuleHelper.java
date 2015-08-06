@@ -2,11 +2,15 @@ package uk.ac.ox.cs.pagoda.hermit;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RuleHelper {
     private static final String OR = "|";
@@ -92,7 +96,11 @@ public class RuleHelper {
 		if (p instanceof Equality || p instanceof AnnotatedEquality) return Namespace.EQUALITY_ABBR; 
 		if (p instanceof Inequality) return Namespace.INEQUALITY_ABBR;
 		if (p instanceof AtomicRole && ((AtomicRole) p).getIRI().startsWith("?"))
-			return ((AtomicRole) p).getIRI(); 
+			return ((AtomicRole) p).getIRI();
+//		if (p instanceof BinaryPredicate)
+//			return ((BinaryPredicate) p).getIri();
+//		if (p instanceof UnaryPredicate)
+//			return ((UnaryPredicate) p).getIri();
 		return MyPrefixes.PAGOdAPrefixes.abbreviateIRI(p.toString());
 	}
 
@@ -114,16 +122,18 @@ public class RuleHelper {
         String[] split = s.split("\\(");
         String predicateIri = OWLHelper.removeAngles(MyPrefixes.PAGOdAPrefixes.expandText(split[0]));
         String[] predicateArgs = split[1].substring(0, split[1].length() - 1).split(",");
-        int numOfargs = predicateArgs.length;
+        int numOfArgs = predicateArgs.length;
         Term terms[] = new Term[predicateArgs.length];
         for (int i = 0; i < terms.length; i++)
             terms[i] = parseTerm(predicateArgs[i]);
-        if(numOfargs == 1) {
-            AtomicConcept atomicConcept = AtomicConcept.create(predicateIri);
+        if(numOfArgs == 1) {
+			UnaryPredicate atomicConcept = UnaryPredicate.create(predicateIri);
+//			AtomicConcept atomicConcept = AtomicConcept.create(predicateIri);
             return Atom.create(atomicConcept, terms);
         }
-        else if(numOfargs == 2) {
-            AtomicRole atomicRole = AtomicRole.create(predicateIri);
+        else if(numOfArgs == 2) {
+			BinaryPredicate atomicRole = BinaryPredicate.create(predicateIri);
+//			AtomicRole atomicRole = AtomicRole.create(predicateIri);
             return Atom.create(atomicRole, terms);
         }
         else
@@ -170,4 +180,21 @@ public class RuleHelper {
         return result.toArray(new String[0]);
     }
 
+    public static boolean isSafe(DLClause dlClause) {
+        return getUnsafeVariables(dlClause).isEmpty();
+    }
+
+    public static Set<Variable> getUnsafeVariables(DLClause dlClause) {
+        Set<Variable> headVars = collectVariables(dlClause.getHeadAtoms());
+        Set<Variable> bodyVars = collectVariables(dlClause.getBodyAtoms());
+        headVars.removeAll(bodyVars);
+        return headVars;
+    }
+
+    public static Set<Variable> collectVariables(Atom[] atoms) {
+        Set<Variable> result = new HashSet<>();
+        for (Atom atom : atoms)
+            atom.getVariables(result);
+        return result;
+    }
 }

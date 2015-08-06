@@ -11,6 +11,11 @@ import java.util.Properties;
 
 public class PagodaProperties {
 
+    public Path getRuleOntologyPath() {
+        // TODO implement
+        return null;
+    }
+
     public enum SkolemUpperBoundOptions {DISABLED, BEFORE_SUMMARISATION, AFTER_SUMMARISATION}
 
     public static final String CONFIG_FILE = "pagoda.properties";

@@ -2,24 +2,33 @@ package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class OverApproxExist implements Approximator {
 
 	public static final String negativeSuffix = "_neg";
 	private static final Variable X = Variable.create("X");
 
+	// TODO -RULES- adapt for rules
 	static int indexOfExistential(Atom headAtom, DLClause originalClause) {
-		if (!(headAtom.getDLPredicate() instanceof AtLeast)) return -1;
-		AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate();
-		if (alc.getToConcept() instanceof AtomicConcept) {
-			AtomicConcept ac = (AtomicConcept) alc.getToConcept();
-			if (ac.getIRI().endsWith(negativeSuffix)) {
-				alc = AtLeastConcept.create(alc.getNumber(), alc.getOnRole(), AtomicNegationConcept.create(getNegationConcept(ac)));
-				headAtom = Atom.create(alc, headAtom.getArgument(0));
+		if (!(headAtom.getDLPredicate() instanceof AtLeast || headAtom.getDLPredicate() instanceof UnaryPredicate
+			|| headAtom.getDLPredicate() instanceof BinaryPredicate)) return -1;
+
+		if(headAtom.getDLPredicate() instanceof AtLeast) {
+			AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate();
+			if (alc.getToConcept() instanceof AtomicConcept) {
+				AtomicConcept ac = (AtomicConcept) alc.getToConcept();
+				if (ac.getIRI().endsWith(negativeSuffix)) {
+					alc = AtLeastConcept.create(alc.getNumber(), alc.getOnRole(), AtomicNegationConcept.create(getNegationConcept(ac)));
+					headAtom = Atom.create(alc, headAtom.getArgument(0));
+				}
 			}
 		}
 
@@ -29,6 +38,10 @@ public class OverApproxExist implements Approximator {
 				return index;
 			if (atom.getDLPredicate() instanceof AtLeast)
 				index += ((AtLeast) atom.getDLPredicate()).getNumber();
+			else if(atom.getDLPredicate() instanceof UnaryPredicate)
+				index += 1;
+			else if(atom.getDLPredicate() instanceof BinaryPredicate)
+				index += 2;
 		}
 		return -1;
 	}
@@ -78,6 +91,7 @@ public class OverApproxExist implements Approximator {
 	public Collection<DLClause> overApprox(Atom headAtom, Atom[] bodyAtoms, DLClause originalClause, int offset) {
 		Collection<DLClause> ret = new LinkedList<DLClause>(); 
 		DLPredicate predicate = headAtom.getDLPredicate();
+		Set<Variable> unsafeVars;
 		if (predicate instanceof AtLeastConcept) {
 			AtLeastConcept atLeastConcept = (AtLeastConcept) predicate;
 			LiteralConcept concept = atLeastConcept.getToConcept();
@@ -119,11 +133,37 @@ public class OverApproxExist implements Approximator {
 							//DLClauseHelper.contructor_differentAs(individuals[i], individuals[j]));  
 										
 		}
+		else if((headAtom.getDLPredicate() instanceof UnaryPredicate ||
+				headAtom.getDLPredicate() instanceof BinaryPredicate) &&
+				(unsafeVars = RuleHelper.getUnsafeVariables(DLClause.create(new Atom[]{headAtom}, bodyAtoms))) != null) {
+			// TODO check correctness
+			SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
+			if(headAtom.getDLPredicate() instanceof UnaryPredicate) {
+				Atom newHead = Atom.create(headAtom.getDLPredicate(), termsManager.getFreshIndividual(originalClause, offset));
+				ret.add(DLClause.create(new Atom[]{newHead}, bodyAtoms));
+			}
+			if(headAtom.getDLPredicate() instanceof BinaryPredicate) {
+				Variable var0 = headAtom.getArgumentVariable(0);
+				Variable var1 = headAtom.getArgumentVariable(1);
+				Term term0, term1;
+				if(unsafeVars.contains(var0))
+					term0 = termsManager.getFreshIndividual(originalClause, offset);
+				else
+					term0 = var0;
+				if(unsafeVars.contains(var1))
+					term1 = termsManager.getFreshIndividual(originalClause, offset + 1);
+				else
+					term1 = var1;
+				Atom newHead = Atom.create(headAtom.getDLPredicate(), term0, term1);
+				ret.add(DLClause.create(new Atom[]{newHead}, bodyAtoms));
+			}
+
+		}
 		else if (predicate instanceof AtLeastDataRange) {
-			// TODO to be implemented ... 
+			// TODO to be implemented ...
 		}
 		else
-			ret.add(DLClause.create(new Atom[] {headAtom}, bodyAtoms)); 
+			ret.add(DLClause.create(new Atom[] {headAtom}, bodyAtoms));
 		
 		return ret; 
 	}

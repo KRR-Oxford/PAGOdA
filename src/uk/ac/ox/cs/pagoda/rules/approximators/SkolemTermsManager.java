@@ -1,11 +1,15 @@
 package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * If you need a Skolem term (i.e. fresh individual), ask this class.
@@ -114,10 +118,23 @@ public class SkolemTermsManager {
         return clauseToId_map.get(clause);
     }
 
+    private int countVars(Atom[] atoms) {
+        int n = 0;
+        for (Atom atom : atoms) {
+            n += atom.getArity();
+            for (int i = 0; i < atom.getArity(); i++)
+                if(atom.getArgument(i) instanceof Variable)
+                    n += 1;
+        }
+        return n;
+    }
+
     private int mapClauseToId(DLClause clause) {
         if(!clauseToId_map.containsKey(clause)) {
             clauseToId_map.put(clause, termsCounter);
-            termsCounter += noOfExistential(clause);
+            int n = noOfExistential(clause);
+            if(n == 0) n = countVars(clause.getHeadAtoms());
+            termsCounter += n;
         }
         return clauseToId_map.get(clause);
     }
@@ -130,9 +147,18 @@ public class SkolemTermsManager {
 
     private int noOfExistential(DLClause originalClause) {
         int no = 0;
+        Set<Variable> unsafeVars = RuleHelper.getUnsafeVariables(originalClause);
         for(Atom atom : originalClause.getHeadAtoms())
             if(atom.getDLPredicate() instanceof AtLeast)
                 no += ((AtLeast) atom.getDLPredicate()).getNumber();
+            else if(atom.getDLPredicate() instanceof UnaryPredicate && unsafeVars.contains(atom.getArgumentVariable(0)))
+                no += 1;
+            else if(atom.getDLPredicate() instanceof BinaryPredicate) {
+                if(unsafeVars.contains(atom.getArgumentVariable(0)))
+                    no += 1;
+                if(unsafeVars.contains(atom.getArgumentVariable(1)))
+                    no += 1;
+            }
         return no;
     }
 

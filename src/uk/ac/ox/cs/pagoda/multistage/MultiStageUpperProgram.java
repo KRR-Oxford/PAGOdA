@@ -77,8 +77,7 @@ public abstract class MultiStageUpperProgram {
 			}
 		}
 
-		for (DLClause clause: m_bottom.process(introducedConstraints))
-			addDatalogRule(clause);
+		m_bottom.process(introducedConstraints).forEach(this::addDatalogRule);
 	}
 	
 	public static Atom getNegativeAtom(Atom atom) {

@@ -9,6 +9,7 @@ import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.constraints.NullaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.UnaryBottom;
 import uk.ac.ox.cs.pagoda.constraints.UpperUnaryBottom;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
 import uk.ac.ox.cs.pagoda.multistage.Normalisation;
 import uk.ac.ox.cs.pagoda.multistage.RestrictedApplication;
 import uk.ac.ox.cs.pagoda.rules.approximators.Approximator;
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LowerDatalogProgram extends ApproxProgram implements IncrementalProgram {
 	
@@ -42,6 +44,10 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 	// TODO -RULE- filter out unsafe rules
 	@Override
 	public void transform() {
+
+        // TODO check correctness
+		removeExistentialRules();
+
 		if (m_toClassify) {
 			ClassifyThread thread = new ClassifyThread(this);
 			thread.start();
@@ -74,6 +80,10 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 //				System.out.println(nClause);
 			}
 		}
+	}
+
+	private void removeExistentialRules() {
+		this.dlClauses = this.dlClauses.stream().filter(RuleHelper::isSafe).collect(Collectors.toSet());
 	}
 
 	@Override
