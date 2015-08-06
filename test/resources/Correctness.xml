@@ -8,6 +8,7 @@
             <run>
                 <include name="correctness"/>
                 <exclude name="heavy"/>
+                <!--<include name="UOBM50"/>-->
             </run>
         </groups>
         <classes>

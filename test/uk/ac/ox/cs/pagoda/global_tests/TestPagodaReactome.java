@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 public class TestPagodaReactome {
 
-    @Test(groups = {"light"})
+    @Test(groups = {"justExecute"})
     public void justExecute() throws IOException {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 

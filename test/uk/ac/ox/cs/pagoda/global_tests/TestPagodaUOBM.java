@@ -108,4 +108,15 @@ public class TestPagodaUOBM {
 			  .build()
 			  .run();
 	}
+
+	@Test(groups = {"justExecute", "UOBM50"})
+	public void justExecuteUOBM_50() throws IOException {
+		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
+		Pagoda.builder()
+			  .ontology(Paths.get(ontoDir, "uobm/univ-bench-dl.owl"))
+			  .data(Paths.get(ontoDir, "uobm/data/uobm50.ttl"))
+			  .query(Paths.get(ontoDir, "uobm/queries/test.sparql"))
+			  .build()
+			  .run();
+	}
 }
