@@ -19,7 +19,7 @@ public class UnaryPredicate implements DLPredicate {
         }
     };
 
-    public String getIri() {
+    public String getIRI() {
         return iri;
     }
 

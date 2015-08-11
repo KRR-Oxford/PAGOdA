@@ -10,7 +10,7 @@ import org.semanticweb.HermiT.model.InterningManager;
  */
 public class BinaryPredicate implements DLPredicate {
 
-    public String getIri() {
+    public String getIRI() {
         return iri;
     }
 

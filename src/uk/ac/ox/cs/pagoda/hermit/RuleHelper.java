@@ -98,9 +98,9 @@ public class RuleHelper {
 		if (p instanceof AtomicRole && ((AtomicRole) p).getIRI().startsWith("?"))
 			return ((AtomicRole) p).getIRI();
 //		if (p instanceof BinaryPredicate)
-//			return ((BinaryPredicate) p).getIri();
+//			return ((BinaryPredicate) p).getIRI();
 //		if (p instanceof UnaryPredicate)
-//			return ((UnaryPredicate) p).getIri();
+//			return ((UnaryPredicate) p).getIRI();
 		return MyPrefixes.PAGOdAPrefixes.abbreviateIRI(p.toString());
 	}
 
@@ -196,5 +196,17 @@ public class RuleHelper {
         for (Atom atom : atoms)
             atom.getVariables(result);
         return result;
+    }
+
+    public static boolean containsPredicate(DLClause cls) {
+        for (Atom atom : cls.getHeadAtoms()) {
+            if(atom.getDLPredicate() instanceof UnaryPredicate) return true;
+            if(atom.getDLPredicate() instanceof BinaryPredicate) return true;
+        }
+        for (Atom atom : cls.getBodyAtoms()) {
+            if(atom.getDLPredicate() instanceof UnaryPredicate) return true;
+            if(atom.getDLPredicate() instanceof BinaryPredicate) return true;
+        }
+        return false;
     }
 }

@@ -1,16 +1,13 @@
 package uk.ac.ox.cs.pagoda.constraints;
 
+import org.semanticweb.HermiT.model.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.semanticweb.HermiT.model.Atom;
-import org.semanticweb.HermiT.model.AtomicConcept;
-import org.semanticweb.HermiT.model.DLClause;
-import org.semanticweb.HermiT.model.Term;
-import org.semanticweb.HermiT.model.Variable;
-
+// TODO -RULES- adapt
 public class UpperUnaryBottom extends UnaryBottom {
 	
 	static final Variable X = Variable.create("X"); 

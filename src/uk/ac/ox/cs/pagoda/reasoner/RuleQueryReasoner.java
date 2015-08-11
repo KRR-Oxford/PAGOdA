@@ -8,6 +8,7 @@ import uk.ac.ox.cs.pagoda.reasoner.light.BasicQueryEngine;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
+import uk.ac.ox.cs.pagoda.util.Namespace;
 import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
@@ -22,6 +23,9 @@ import java.nio.file.Path;
  */
 public class RuleQueryReasoner extends MyQueryReasoner {
 
+    private static final String ORIGINAL_MARK_PROGRAM =
+            "<" + Namespace.PAGODA_ORIGINAL + ">(?X) :- [ ?X, ?Y, ?Z ] . " +
+            "<" + Namespace.PAGODA_ORIGINAL + ">(?Z) :- [ ?X, ?Y, ?Z ] .";
     private final Path ruleOntologyPath;
 
     public RuleQueryReasoner(PagodaProperties properties) {
@@ -37,7 +41,7 @@ public class RuleQueryReasoner extends MyQueryReasoner {
      */
     protected RuleQueryReasoner(PagodaProperties properties, Path ruleOntologyPath) {
         this.properties = properties;
-        this.ruleOntologyPath = properties.getRuleOntologyPath();
+        this.ruleOntologyPath = ruleOntologyPath;
     }
 
     @Override
@@ -78,13 +82,9 @@ public class RuleQueryReasoner extends MyQueryReasoner {
         }
         Utility.logDebug("The number of sameAs assertions in RL lower store: " + rlLowerStore.getSameAsNumber());
 
-        // todo mark original individuals (use Top)
-//        String originalMarkProgram = OWLHelper.getOriginalMarkProgram(ontology);
-        String originalMarkProgram = "";
-
         if(lazyUpperStore != null) {
             lazyUpperStore.importRDFData(name, datafile);
-            lazyUpperStore.materialise("saturate named individuals", originalMarkProgram);
+            lazyUpperStore.materialise("saturate named individuals", ORIGINAL_MARK_PROGRAM); // todo test it
             int tag = lazyUpperStore.materialiseRestrictedly(program, null);
             if(tag == -1) {
                 Utility.logDebug("time for satisfiability checking: " + timer.duration());
@@ -102,7 +102,7 @@ public class RuleQueryReasoner extends MyQueryReasoner {
         }
 
         trackingStore.importRDFData(name, datafile);
-        trackingStore.materialise("saturate named individuals", originalMarkProgram);
+        trackingStore.materialise("saturate named individuals", ORIGINAL_MARK_PROGRAM);
 
         GapByStore4ID gap = new GapByStore4ID2(trackingStore, rlLowerStore);
         trackingStore.materialiseFoldedly(program, gap);

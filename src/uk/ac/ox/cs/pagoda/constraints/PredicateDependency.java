@@ -74,7 +74,7 @@ public class PredicateDependency extends DependencyGraph<DLPredicate> {
 			if (alc.getToConcept().equals(AtomicConcept.THING)) ;
 			else set.add((AtomicConcept) alc.getToConcept());
 		else
-			set.add(OverApproxExist.getNegationConcept(((AtomicNegationConcept) alc.getToConcept()).getNegatedAtomicConcept()));
+			set.add(OverApproxExist.getNegationPredicate(((AtomicNegationConcept) alc.getToConcept()).getNegatedAtomicConcept()));
 		return set;
 	}
 	

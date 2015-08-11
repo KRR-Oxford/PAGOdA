@@ -5,8 +5,8 @@
     <test name="main">
         <groups>
             <run>
-                <!--<include name="correctness"/>-->
-                <include name="light"/>
+                <include name="correctness"/>
+                <!--<include name="light"/>-->
                 <!--<include name="justExecute"/>-->
                 <exclude name="heavy"/>
                 <!--<include name="nonOriginal"/>-->
@@ -14,10 +14,10 @@
         </groups>
         <classes>
             <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaReactome"/>-->
-            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM"/>-->
             <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaLUBM"/>-->
             <!--Fly does not terminate: query-5 looks really hard-->
-            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaFLY"/>-->
+            <class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaFLY"/>
             <!--<class name="uk.ac.ox.cs.pagoda.global_tests.SkolemisationTests"/>-->
             <!--<class name="uk.ac.ox.cs.pagoda.util.SimpleProgressBarTester" />-->
         </classes>

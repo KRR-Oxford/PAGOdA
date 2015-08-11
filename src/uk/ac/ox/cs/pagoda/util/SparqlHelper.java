@@ -9,6 +9,8 @@ import com.hp.hpl.jena.sparql.syntax.*;
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,16 +30,16 @@ public class SparqlHelper {
 			if (var != null && !var.isEmpty())
 				undistinguishedVars.remove(Variable.create(var));
 		
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder queryBuilder = new StringBuilder();
 		if (vars.length > 0)
-			buffer.append("SELECT DISTINCT ");
+			queryBuilder.append("SELECT DISTINCT ");
 		else 
-			buffer.append("SELECT *");
+			queryBuilder.append("SELECT *");
 		for (int i = 0; i < vars.length; ++i) {
 			if (vars[i] != null && !vars[i].isEmpty())
-				buffer.append("?").append(vars[i]).append(" ");
+				queryBuilder.append("?").append(vars[i]).append(" ");
 		}
-		buffer.append( " WHERE {");
+		queryBuilder.append(" WHERE {");
 		for (Atom atom: atoms) 
 			if (atom.getDLPredicate() instanceof AtLeastConcept) {
 				AtLeastConcept atLeast = (AtLeastConcept) atom.getDLPredicate();
@@ -56,37 +58,37 @@ public class SparqlHelper {
 								(AtomicRole) atLeast.getOnRole().getInverse(),
 								newVar, 
 								atom.getArgument(0)); 
-					buffer.append(" ");
-					buffer.append(toSPARQLClause(tAtom, undistinguishedVars));
-					buffer.append(" .");
+					queryBuilder.append(" ");
+					queryBuilder.append(toSPARQLClause(tAtom, undistinguishedVars));
+					queryBuilder.append(" .");
 				
 					if (!atLeast.getToConcept().equals(AtomicConcept.THING)) {
 						if (atLeast.getToConcept() instanceof AtomicConcept); 
 						
 						tAtom = Atom.create((AtomicConcept) atLeast.getToConcept(), newVar);
-						buffer.append(" ");
-						buffer.append(toSPARQLClause(tAtom, undistinguishedVars));
-						buffer.append(" .");
+						queryBuilder.append(" ");
+						queryBuilder.append(toSPARQLClause(tAtom, undistinguishedVars));
+						queryBuilder.append(" .");
 					}
 				}
 				
 				for (int i = 0; i < number; ++i)
 					for (int j = i + 1; j < number; ++j) {
 						Atom tAtom = Atom.create(Inequality.INSTANCE, Variable.create("X" + (xIndex + i)), Variable.create("X" + (xIndex + j))); 
-						buffer.append(" ");
-						buffer.append(toSPARQLClause(tAtom, undistinguishedVars));
-						buffer.append(" .");
+						queryBuilder.append(" ");
+						queryBuilder.append(toSPARQLClause(tAtom, undistinguishedVars));
+						queryBuilder.append(" .");
 					}
 				
 				xIndex += number; 
 			}
 			else {
-				buffer.append(" ");
-				buffer.append(toSPARQLClause(atom, undistinguishedVars));
-				buffer.append(" .");
+				queryBuilder.append(" ");
+				queryBuilder.append(toSPARQLClause(atom, undistinguishedVars));
+				queryBuilder.append(" .");
 			}
-		buffer.append(" ").append("}");
-		return buffer.toString();
+		queryBuilder.append(" ").append("}");
+		return queryBuilder.toString();
 	}
 	
 	private static String toSPARQLClause(Atom atom, Set<Variable> undisVars ) {
@@ -98,12 +100,12 @@ public class SparqlHelper {
 		else if (predicate instanceof Inequality)
 			atom = Atom.create(predicate = AtomicRole.create(Namespace.INEQUALITY), atom.getArgument(0), atom.getArgument(1));
 		
-		if (predicate instanceof AtomicConcept) {
+		if (predicate instanceof AtomicConcept || predicate instanceof UnaryPredicate) { // todo check correctness
 			r = Namespace.RDF_TYPE_QUOTED;
 			a = MyPrefixes.PAGOdAPrefixes.getQuotedIRI(getName(atom.getArgument(0), undisVars));
 			b = MyPrefixes.PAGOdAPrefixes.getQuotedIRI(RuleHelper.getText(predicate)); 
 		}
-		else if (predicate instanceof AtomicRole) {
+		else if (predicate instanceof AtomicRole || predicate instanceof BinaryPredicate) { // todo check correctness
 			r = MyPrefixes.PAGOdAPrefixes.getQuotedIRI(RuleHelper.getText(predicate));
 			a = MyPrefixes.PAGOdAPrefixes.getQuotedIRI(getName(atom.getArgument(0), undisVars)); 
 			b = MyPrefixes.PAGOdAPrefixes.getQuotedIRI(getName(atom.getArgument(1), undisVars)); 

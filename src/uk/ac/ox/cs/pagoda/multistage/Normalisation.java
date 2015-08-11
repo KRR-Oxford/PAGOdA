@@ -6,6 +6,8 @@ import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.approx.Clause;
 import uk.ac.ox.cs.pagoda.approx.Clausifier;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.rules.approximators.OverApproxExist;
 import uk.ac.ox.cs.pagoda.rules.approximators.SkolemTermsManager;
 import uk.ac.ox.cs.pagoda.util.Namespace;
@@ -64,7 +66,7 @@ public class Normalisation {
 			if (!c.equals(AtomicConcept.THING))
 				builder.append("_").append(getName(((AtomicConcept) c).getIRI()));
 		} else
-			builder.append("_").append(getName((OverApproxExist.getNegationConcept(((AtomicNegationConcept) c).getNegatedAtomicConcept()).getIRI())));
+			builder.append("_").append(getName((((AtomicConcept)OverApproxExist.getNegationPredicate(((AtomicNegationConcept) c).getNegatedAtomicConcept())).getIRI())));
 
 		if (individuals.length > 1)
 			builder.append("_").append(getName(individuals[0].getIRI()));
@@ -83,7 +85,7 @@ public class Normalisation {
 			if (m_botStrategy.isBottomRule(clause))
 				processBottomRule(clause);
 			else if (clause.getHeadLength() == 1) {
-				if (clause.getHeadAtom(0).getDLPredicate() instanceof AtLeast)
+				if (clause.getHeadAtom(0).getDLPredicate() instanceof AtLeast || !RuleHelper.isSafe(clause))
 					processExistentialRule(clause);
 				else
 					m_normClauses.add(clause);
@@ -92,10 +94,14 @@ public class Normalisation {
 	}
 	
 	private void processExistentialRule(DLClause clause) {
-		if (clause.getBodyLength() == 1 && clause.getBodyAtom(0).getDLPredicate() instanceof AtomicConcept) {
+		if (clause.getBodyLength() == 1 &&
+				(clause.getBodyAtom(0).getDLPredicate() instanceof AtomicConcept ||
+						clause.getBodyAtom(0).getDLPredicate() instanceof UnaryPredicate)) { // todo check correctness
 			m_normClauses.add(clause);
 			return ;
 		}
+
+        // todo implement below for rules
 
 		Atom headAtom = clause.getHeadAtom(0);
 		if (headAtom.getDLPredicate() instanceof AtLeastDataRange) {
@@ -103,9 +109,8 @@ public class Normalisation {
 			return ;
 		}
 		AtLeastConcept alc = (AtLeastConcept) headAtom.getDLPredicate();
-		// TODO test
 //		AtomicConcept ac = getRightAuxiliaryConcept(alc, OverApproxExist.getNewIndividual(clause, 0));
-		AtomicConcept ac = getRightAuxiliaryConcept(alc, SkolemTermsManager.getInstance().getFreshIndividual(clause, 0));
+		AtomicConcept ac = getRightAuxiliaryConcept(alc, SkolemTermsManager.getInstance().getFreshIndividual(clause, 0)); // TODO test
 		DLClause newClause;
 		m_normClauses.add(DLClause.create(new Atom[] {Atom.create(ac, headAtom.getArgument(0)) }, clause.getBodyAtoms()));
 		m_normClauses.add(newClause = DLClause.create(new Atom[] {Atom.create(alc, X)}, new Atom[] {Atom.create(ac, X)}));

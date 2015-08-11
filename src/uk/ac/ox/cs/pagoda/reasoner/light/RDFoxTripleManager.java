@@ -11,6 +11,8 @@ import uk.ac.ox.cs.JRDFox.store.DataStore;
 import uk.ac.ox.cs.JRDFox.store.DataStore.UpdateType;
 import uk.ac.ox.cs.JRDFox.store.Dictionary;
 import uk.ac.ox.cs.JRDFox.store.Resource;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
 import uk.ac.ox.cs.pagoda.util.Namespace;
 
@@ -161,7 +163,18 @@ public class RDFoxTripleManager {
 	
 	public int getResourceID(DLPredicate p) {
 		Integer id; 
-		String name = p instanceof AtomicConcept ? ((AtomicConcept) p).getIRI() : ((AtomicRole) p).getIRI();
+		String name;
+		if(p instanceof AtomicConcept)
+            name = ((AtomicConcept) p).getIRI();
+        else if (p instanceof AtomicRole)
+            name = ((AtomicRole) p).getIRI();
+        else if (p instanceof UnaryPredicate)
+            name = ((UnaryPredicate) p).getIRI();
+        else if (p instanceof BinaryPredicate)
+            name = ((BinaryPredicate) p).getIRI();
+        else
+            throw new IllegalArgumentException();
+
 		if ((id = predicateCache.get(name)) != null) return id;
 		try {
 			predicateCache.put(name, id = resolveResource(name, Datatype.IRI_REFERENCE.value()));

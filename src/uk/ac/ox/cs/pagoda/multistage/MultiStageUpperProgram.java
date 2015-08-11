@@ -6,6 +6,7 @@ import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
 import uk.ac.ox.cs.pagoda.rules.ExistConstantApproximator;
 import uk.ac.ox.cs.pagoda.rules.Program;
@@ -40,7 +41,8 @@ public abstract class MultiStageUpperProgram {
 		Collection<DLClause> introducedConstraints = new LinkedList<DLClause>();
 		LinkedList<Atom> newHeadAtoms = new LinkedList<Atom>();
 		for (DLClause clause: m_bottom.process(clauses)) {
-			if (m_bottom.isBottomRule(clause) || clause.getHeadLength() == 1 && !(clause.getHeadAtom(0).getDLPredicate() instanceof AtLeast))
+			if (m_bottom.isBottomRule(clause) || clause.getHeadLength() == 1 && !(clause.getHeadAtom(0).getDLPredicate() instanceof AtLeast)
+					&& RuleHelper.isSafe(clause)) // todo -RULES- check correctness
 				addDatalogRule(clause);
 			else {
 				newHeadAtoms.clear();
@@ -50,7 +52,7 @@ public abstract class MultiStageUpperProgram {
 						AtLeastConcept atLeast = (AtLeastConcept) atom.getDLPredicate();
 						if (atLeast.getToConcept() instanceof AtomicNegationConcept) {
 							AtomicConcept positive = ((AtomicNegationConcept) atLeast.getToConcept()).getNegatedAtomicConcept();
-							AtomicConcept negative = OverApproxExist.getNegationConcept(positive);
+							AtomicConcept negative = (AtomicConcept) OverApproxExist.getNegationPredicate(positive);
 							Atom atom1 = Atom.create(positive, X);
 							Atom atom2 = Atom.create(negative, X);
 							introducedConstraints.add(DLClause.create(new Atom[0], new Atom[]{atom1, atom2}));
@@ -59,7 +61,6 @@ public abstract class MultiStageUpperProgram {
 											AtLeastConcept.create(atLeast.getArity(), atLeast.getOnRole(), negative),
 											atom.getArgument(0)));
 							changed = true;
-							continue;
 						}
 					}
 					else if (atom.getDLPredicate() instanceof AtLeastDataRange)
@@ -82,7 +83,10 @@ public abstract class MultiStageUpperProgram {
 	
 	public static Atom getNegativeAtom(Atom atom) {
 		if (atom.getDLPredicate() instanceof AtomicConcept)
-			return Atom.create(OverApproxExist.getNegationConcept(atom.getDLPredicate()), atom.getArgument(0));
+			return Atom.create(OverApproxExist.getNegationPredicate(atom.getDLPredicate()), atom.getArgument(0));
+
+        if (atom.getDLPredicate() instanceof UnaryPredicate)
+            return Atom.create(OverApproxExist.getNegationPredicate(atom.getDLPredicate()), atom.getArgument(0));
 
 		if (atom.getDLPredicate() instanceof Inequality)
 			return Atom.create(Equality.INSTANCE, atom.getArgument(0), atom.getArgument(1));
@@ -192,9 +196,13 @@ public abstract class MultiStageUpperProgram {
 
 	public abstract Collection<Violation> isIntegrated(MultiStageQueryEngine engine, boolean incrementally);
 
-	// TODO -RULE-
 	protected Violation violate(MultiStageQueryEngine engine, DLClause clause, boolean incrementally) {
-		Utility.logTrace("checking constraint: " + clause);
+        Utility.logTrace("checking constraint: " + clause);
+
+//        // kind of hack
+//        if(RuleHelper.containsPredicate(clause)) {
+//            return violate_forRules(engine, clause, incrementally);
+//        }
 
 		String[] vars = getCommonVars(clause), subVars;
 
@@ -226,7 +234,7 @@ public abstract class MultiStageUpperProgram {
 			for (Atom headAtom: clause.getHeadAtoms())
 				if (headAtom.getDLPredicate() instanceof AtLeastConcept &&
 						((AtomicConcept) ((AtLeastConcept) headAtom.getDLPredicate()).getToConcept()).getIRI().endsWith("_neg"))
-					if (updatedPredicates.contains(OverApproxExist.getNegationConcept(((AtomicConcept) ((AtLeastConcept) headAtom.getDLPredicate()).getToConcept())))) {
+					if (updatedPredicates.contains(OverApproxExist.getNegationPredicate(((AtomicConcept) ((AtLeastConcept) headAtom.getDLPredicate()).getToConcept())))) {
 						affected = true;
 						break;
 					}
@@ -262,7 +270,7 @@ public abstract class MultiStageUpperProgram {
 				else
 					atoms[0] = Atom.create(((InverseRole) alc.getOnRole()).getInverseOf(), Variable.create(y), Variable.create(x));
 
-				atoms[1] = Atom.create(OverApproxExist.getNegationConcept((AtomicConcept) ((AtLeastConcept) headAtom.getDLPredicate()).getToConcept()), Variable.create(y));
+				atoms[1] = Atom.create(OverApproxExist.getNegationPredicate((AtomicConcept) ((AtLeastConcept) headAtom.getDLPredicate()).getToConcept()), Variable.create(y));
 				Set<AnswerTupleID> addAnswers = new HashSet<AnswerTupleID>();
 				TupleIterator tuples = null;
 				try {
@@ -305,7 +313,23 @@ public abstract class MultiStageUpperProgram {
 		return new Violation(clause, bodyAnswers, vars);
 	}
 
-	private void getHeadAnswers(MultiStageQueryEngine engine, Atom headAtom, String[] commonVars, Set<AnswerTupleID> headAnswers) {
+    /***
+     * It computes violation for non-DL rules.
+     *
+     * @param engine
+     * @param clause
+     * @param incrementally
+     * @return
+     */
+    private Violation violate_forRules(MultiStageQueryEngine engine, DLClause clause, boolean incrementally) {
+        // TODO implement
+        // TODO check what "incrementally" is for (seems just an optimisation)
+
+
+        return null;
+    }
+
+    private void getHeadAnswers(MultiStageQueryEngine engine, Atom headAtom, String[] commonVars, Set<AnswerTupleID> headAnswers) {
 		String headQuery = SparqlHelper.getSPARQLQuery(new Atom[]{headAtom}, commonVars);
 		TupleIterator tuples = null;
 		try {

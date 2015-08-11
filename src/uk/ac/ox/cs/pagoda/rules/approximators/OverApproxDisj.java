@@ -2,6 +2,7 @@ package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
 
 import java.util.*;
 
@@ -22,15 +23,20 @@ public class OverApproxDisj implements Approximator {
 		DLClause newClause;
 		if (headAtoms.length > 1) {
 			for (Atom headAtom: headAtoms) {
-				newClause = DLClause.create(new Atom[] {headAtom}, bodyAtoms);
+				newClause = DLClause.create(new Atom[]{headAtom}, bodyAtoms);
 				newClauses.add(newClause);
 //				distincts.add(newClause); 
 			}
-			
+
 			for (DLClause cls: newClauses) {
-				newClause = DLClauseHelper.simplified(cls);
-				if (!isSubsumedBy(newClause, distincts)) 
-					distincts.add(newClause);
+				if(RuleHelper.containsPredicate(cls)) { // TODO remove this hack and implement correctly
+                    distincts.add(cls);
+                }
+                else {
+                    newClause = DLClauseHelper.simplified(cls);
+                    if (!isSubsumedBy(newClause, distincts))
+                        distincts.add(newClause);
+                }
 			}
 		}
 		else distincts.add(clause);

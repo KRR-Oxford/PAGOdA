@@ -45,8 +45,7 @@ public class LowerDatalogProgram extends ApproxProgram implements IncrementalPro
 	@Override
 	public void transform() {
 
-        // TODO check correctness
-		removeExistentialRules();
+		removeExistentialRules(); // TODO check correctness
 
 		if (m_toClassify) {
 			ClassifyThread thread = new ClassifyThread(this);

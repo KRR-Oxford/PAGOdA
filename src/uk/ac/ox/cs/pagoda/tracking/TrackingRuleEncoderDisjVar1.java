@@ -228,7 +228,7 @@ public class TrackingRuleEncoderDisjVar1 extends TrackingRuleEncoderWithGap {
 			if(p.getToConcept() instanceof AtomicConcept)
 				c = (AtomicConcept) p.getToConcept();
 			else {
-				c = OverApproxExist.getNegationConcept(((AtomicNegationConcept) p.getToConcept()).getNegatedAtomicConcept());
+				c = (AtomicConcept) OverApproxExist.getNegationPredicate(((AtomicNegationConcept) p.getToConcept()).getNegatedAtomicConcept());
 			}
 			for (int i = 0; i < num; ++i)
 				expandedAtom.add(Atom.create(c, Ys[i]));

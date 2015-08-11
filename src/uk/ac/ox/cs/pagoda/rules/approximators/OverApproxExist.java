@@ -16,7 +16,6 @@ public class OverApproxExist implements Approximator {
 	public static final String negativeSuffix = "_neg";
 	private static final Variable X = Variable.create("X");
 
-	// TODO -RULES- adapt for rules
 	static int indexOfExistential(Atom headAtom, DLClause originalClause) {
 		if (!(headAtom.getDLPredicate() instanceof AtLeast || headAtom.getDLPredicate() instanceof UnaryPredicate
 			|| headAtom.getDLPredicate() instanceof BinaryPredicate)) return -1;
@@ -26,7 +25,7 @@ public class OverApproxExist implements Approximator {
 			if (alc.getToConcept() instanceof AtomicConcept) {
 				AtomicConcept ac = (AtomicConcept) alc.getToConcept();
 				if (ac.getIRI().endsWith(negativeSuffix)) {
-					alc = AtLeastConcept.create(alc.getNumber(), alc.getOnRole(), AtomicNegationConcept.create(getNegationConcept(ac)));
+					alc = AtLeastConcept.create(alc.getNumber(), alc.getOnRole(), AtomicNegationConcept.create((AtomicConcept) getNegationPredicate(ac)));
 					headAtom = Atom.create(alc, headAtom.getArgument(0));
 				}
 			}
@@ -46,7 +45,7 @@ public class OverApproxExist implements Approximator {
 		return -1;
 	}
 
-	public static AtomicConcept getNegationConcept(DLPredicate p) {
+	public static DLPredicate getNegationPredicate(DLPredicate p) {
 		if (p.equals(AtomicConcept.THING)) return AtomicConcept.NOTHING;
 		if (p.equals(AtomicConcept.NOTHING)) return AtomicConcept.THING;
 
@@ -58,6 +57,24 @@ public class OverApproxExist implements Approximator {
 				iri += negativeSuffix;
 
 			return AtomicConcept.create(iri);
+		}
+		if(p instanceof UnaryPredicate) {
+			String iri = ((UnaryPredicate) p).getIRI();
+			if (iri.endsWith(negativeSuffix))
+				iri = iri.substring(0, iri.length() - 4);
+			else
+				iri += negativeSuffix;
+
+			return UnaryPredicate.create(iri);
+		}
+		if(p instanceof BinaryPredicate) {
+			String iri = ((BinaryPredicate) p).getIRI();
+			if (iri.endsWith(negativeSuffix))
+				iri = iri.substring(0, iri.length() - 4);
+			else
+				iri += negativeSuffix;
+
+			return BinaryPredicate.create(iri);
 		}
 		if (p instanceof AtLeastConcept) {
 			// FIXME !!! here
@@ -99,9 +116,8 @@ public class OverApproxExist implements Approximator {
 			AtomicConcept atomicConcept = null;
 			
 			if (concept instanceof AtomicNegationConcept) {
-				// TODO CHECK: is this already in MultiStageUpperProgram?
 				Atom atom1 = Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
-				Atom atom2 = Atom.create(atomicConcept = getNegationConcept(atomicConcept), X);
+				Atom atom2 = Atom.create(atomicConcept = (AtomicConcept) getNegationPredicate(atomicConcept), X);
 				ret.add(DLClause.create(new Atom[0], new Atom[] {atom1, atom2})); 
 			}
 			else {

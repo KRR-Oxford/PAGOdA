@@ -23,6 +23,7 @@ public class RestrictedApplication extends MultiStageUpperProgram {
 	}
 
 	// It should be shifting
+	// TODO -RULES- adapt
 	public static Collection<DLClause> addAdditionalDatalogRules(DLClause clause, BottomStrategy bottom, Normalisation norm) {
 		LinkedList<DLClause> newClauses = new LinkedList<DLClause>();
 		Atom[] headAtoms = clause.getHeadAtoms();

@@ -1,6 +1,9 @@
 package uk.ac.ox.cs.pagoda.rules.approximators;
 
 import org.semanticweb.HermiT.model.*;
+import uk.ac.ox.cs.pagoda.hermit.RuleHelper;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageUpperProgram;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
@@ -8,6 +11,7 @@ import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 /***
  * Approximates existential rules through a limited form of Skolemisation.
@@ -78,6 +82,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         Tuple<Individual> commonIndividuals = commonIndividualsBuilder.build();
 
         Atom headAtom = clause.getHeadAtom(0);
+        Atom[] bodyAtoms = clause.getBodyAtoms();
 
 //        Atom[] bodyAtoms = clause.getBodyAtoms();
         int offset = OverApproxExist.indexOfExistential(headAtom, originalClause);
@@ -85,6 +90,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
         // BEGIN: copy and paste
         ArrayList<DLClause> ret = new ArrayList<>();
         DLPredicate predicate = headAtom.getDLPredicate();
+        Set<Variable> unsafeVars;
         if(predicate instanceof AtLeastConcept) {
             AtLeastConcept atLeastConcept = (AtLeastConcept) predicate;
             LiteralConcept concept = atLeastConcept.getToConcept();
@@ -94,7 +100,7 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
             if(concept instanceof AtomicNegationConcept) {
                 Atom atom1 =
                         Atom.create(atomicConcept = ((AtomicNegationConcept) concept).getNegatedAtomicConcept(), X);
-                Atom atom2 = Atom.create(atomicConcept = OverApproxExist.getNegationConcept(atomicConcept), X);
+                Atom atom2 = Atom.create(atomicConcept = (AtomicConcept) OverApproxExist.getNegationPredicate(atomicConcept), X);
                 ret.add(DLClause.create(new Atom[0], new Atom[]{atom1, atom2}));
             }
             else {
@@ -131,6 +137,48 @@ public class LimitedSkolemisationApproximator implements TupleDependentApproxima
                 for(int j = i + 1; j < card; ++j)
                     // TODO to be checked ... different as
                     ret.add(DLClause.create(new Atom[]{Atom.create(Inequality.INSTANCE, individuals[i], individuals[j])}, EMPTY_BODY));
+
+        }
+        else if((headAtom.getDLPredicate() instanceof UnaryPredicate ||
+                headAtom.getDLPredicate() instanceof BinaryPredicate) &&
+                (unsafeVars = RuleHelper.getUnsafeVariables(DLClause.create(new Atom[]{headAtom}, bodyAtoms))) != null) {
+            // TODO check correctness
+            SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
+            if(headAtom.getDLPredicate() instanceof UnaryPredicate) {
+                Individual freshIndividual;
+                if(useClauseUniqueIndividual)
+                    freshIndividual = termsManager.getFreshIndividual(originalClause,
+                                                                      offset,
+                                                                      maxTermDepth + 1);
+                else
+                    freshIndividual = termsManager.getFreshIndividual(originalClause,
+                                                                      offset,
+                                                                      commonIndividuals);
+
+                Atom newHead = Atom.create(headAtom.getDLPredicate(), freshIndividual);
+                ret.add(DLClause.create(new Atom[]{newHead}, bodyAtoms));
+            }
+            if(headAtom.getDLPredicate() instanceof BinaryPredicate) {
+                Variable var0 = headAtom.getArgumentVariable(0);
+                Variable var1 = headAtom.getArgumentVariable(1);
+                Term term0, term1;
+                if(unsafeVars.contains(var0))
+                    if(useClauseUniqueIndividual)
+                        term0 = termsManager.getFreshIndividual(originalClause, offset, maxTermDepth + 1);
+                    else
+                        term0 = termsManager.getFreshIndividual(originalClause, offset, commonIndividuals);
+                else
+                    term0 = var0;
+                if(unsafeVars.contains(var1))
+                    if(useClauseUniqueIndividual)
+                        term1 = termsManager.getFreshIndividual(originalClause, offset + 1, maxTermDepth + 1);
+                    else
+                        term1 = termsManager.getFreshIndividual(originalClause, offset + 1, commonIndividuals);
+                else
+                    term1 = var1;
+                Atom newHead = Atom.create(headAtom.getDLPredicate(), term0, term1);
+                ret.add(DLClause.create(new Atom[]{newHead}, bodyAtoms));
+            }
 
         }
         else if(predicate instanceof AtLeastDataRange) {

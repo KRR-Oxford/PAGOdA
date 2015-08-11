@@ -53,7 +53,7 @@ public class TrackingRuleEncoderDisj2 extends TrackingRuleEncoderDisj {
 			
 		AtomicConcept concept =	p.getToConcept() instanceof AtomicConcept ? 
 				(AtomicConcept) p.getToConcept() : 
-					OverApproxExist.getNegationConcept(((AtomicNegationConcept) p.getToConcept()).getNegatedAtomicConcept());
+				(AtomicConcept) OverApproxExist.getNegationPredicate(((AtomicNegationConcept) p.getToConcept()).getNegatedAtomicConcept());
 						
 		Term[] roleArgs, conceptArg;
 		for (Individual i: individuals) {

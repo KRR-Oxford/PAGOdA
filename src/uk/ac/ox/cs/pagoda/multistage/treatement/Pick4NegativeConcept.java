@@ -5,6 +5,8 @@ import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.JRDFox.store.TupleIterator;
 import uk.ac.ox.cs.pagoda.constraints.PredicateDependency;
 import uk.ac.ox.cs.pagoda.hermit.DLClauseHelper;
+import uk.ac.ox.cs.pagoda.model.BinaryPredicate;
+import uk.ac.ox.cs.pagoda.model.UnaryPredicate;
 import uk.ac.ox.cs.pagoda.multistage.AnswerTupleID;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageUpperProgram;
@@ -49,7 +51,7 @@ public abstract class Pick4NegativeConcept extends Treatment {
             tripleManager.addTripleByID(tripleManager.getInstance(gapAtom, assignment));
     }
 
-    // TODO -RULE-
+    // TODO -RULE- check if it works
     protected boolean makeSatisfied(Violation violation, Comparator<Atom> comp) {
         LinkedList<AnswerTupleID> tuples = violation.getTuples();
         DLClause constraint = violation.getConstraint();
@@ -175,6 +177,10 @@ public abstract class Pick4NegativeConcept extends Treatment {
             return ((AtomicConcept) dlPredicate).getIRI();
         if(dlPredicate instanceof AtomicRole)
             return ((AtomicRole) dlPredicate).getIRI();
+        if(dlPredicate instanceof UnaryPredicate)
+            return ((UnaryPredicate) dlPredicate).getIRI();
+        if(dlPredicate instanceof BinaryPredicate)
+            return ((BinaryPredicate) dlPredicate).getIRI();
         return null;
     }
 

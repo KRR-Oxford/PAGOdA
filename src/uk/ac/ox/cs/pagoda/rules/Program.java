@@ -57,8 +57,17 @@ protected PredicateDependency dependencyGraph;
 
         try(BufferedReader br = new BufferedReader(new InputStreamReader(rules))) {
             String line;
-            while((line = br.readLine()) != null)
-                dlClauses.add(RuleHelper.parseClause(line));
+            while((line = br.readLine()) != null) {
+                line = line.trim();
+                if(line.isEmpty())
+                    continue;
+                else if(line.trim().startsWith("PREFIX")) {
+                    String[] split = line.split(" ");
+                    MyPrefixes.PAGOdAPrefixes.declarePrefix(split[1], OWLHelper.removeAngles(split[2]));
+                }
+                else
+				    dlClauses.add(RuleHelper.parseClause(line));
+			}
         } catch (IOException e) {
             e.printStackTrace();
         }

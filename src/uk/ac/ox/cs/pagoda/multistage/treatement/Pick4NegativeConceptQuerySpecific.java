@@ -72,7 +72,7 @@ public class Pick4NegativeConceptQuerySpecific extends Pick4NegativeConcept {
                             ((InverseRole) alc.getOnRole()).getInverseOf();
                     AtomicConcept c = alc.getToConcept() instanceof AtomicConcept ?
                             (AtomicConcept) alc.getToConcept() :
-                            OverApproxExist.getNegationConcept(((AtomicNegationConcept) alc.getToConcept()).getNegatedAtomicConcept());
+                            (AtomicConcept) OverApproxExist.getNegationPredicate(((AtomicNegationConcept) alc.getToConcept()).getNegatedAtomicConcept());
 
                     if(c.equals(AtomicConcept.THING))
                         return dependencyGraph.distance(dsts, r);

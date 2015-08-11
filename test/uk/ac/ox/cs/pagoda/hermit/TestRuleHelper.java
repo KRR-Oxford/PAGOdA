@@ -1,5 +1,6 @@
 package uk.ac.ox.cs.pagoda.hermit;
 
+import org.semanticweb.HermiT.model.DLClause;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import uk.ac.ox.cs.pagoda.MyPrefixes;
@@ -13,6 +14,25 @@ import java.nio.charset.Charset;
 public class TestRuleHelper {
 
     @Test
+    public static void test_disjunctiveRules() {
+        String disjunctiveRules =  "prefix0:Woman(?X) | prefix0:Man(?X) :- prefix0:Human(?X).\n";
+
+        for(String prefix: PREFIXES_ARRAY) {
+            String[] split = prefix.split(" ");
+            MyPrefixes.PAGOdAPrefixes.declarePrefix(split[1], OWLHelper.removeAngles(split[2]));
+        }
+
+        InputStream is = new ByteArrayInputStream(disjunctiveRules.getBytes(Charset.defaultCharset()));
+        DatalogProgram datalogProgram = new DatalogProgram(is);
+
+        System.out.println(">> Upper <<");
+        System.out.println(datalogProgram.getUpper().toString());
+
+        for(DLClause clause: datalogProgram.getUpper().getClauses())
+            Assert.assertTrue(clause.getBodyLength() > 0);
+    }
+
+//    @Test
     public static void test_lowerUpperProgram() {
         String existentialRules = "owl:sameAs(?Z,?W) :- prefix0:isHeadOf(?Y2,?X), prefix0:isHeadOf(?Y1,?X).\n" +
                 "prefix0:WomanCollege(?Y) :- prefix0:College(?X).\n";
@@ -62,7 +82,7 @@ public class TestRuleHelper {
         Assert.assertTrue(assertCondition);
     }
 
-//    @Test
+    @Test
     public static void someTest() {
         for(String line: PREFIXES_ARRAY) {
             String[] split = line.split(" ");

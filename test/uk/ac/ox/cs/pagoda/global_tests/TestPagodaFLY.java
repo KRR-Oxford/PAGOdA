@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 
 public class TestPagodaFLY {
 
-    //	@Test(groups = {"light"})
+    @Test(groups = {"light", "correctness"})
     public void answersCorrectness_withGJFC() throws IOException {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
         Path answers = Paths.get(File.createTempFile("answers", ".json").getAbsolutePath());
@@ -43,7 +43,6 @@ public class TestPagodaFLY {
                               .ontology(Paths.get(ontoDir, "fly/fly_rolledUp.owl"))
                               .query(Paths.get(ontoDir, "fly/queries/fly_rolledUp.sparql"))
                               .answer(answers)
-//                              .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                               .classify(false)
                               .build();
 
