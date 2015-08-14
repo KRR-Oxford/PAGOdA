@@ -1,18 +1,31 @@
 package uk.ac.ox.cs.pagoda.util.tuples;
 
+import java.util.Collections;
+
 /**
  * Allows to create an immutable <tt>Tuple</tt> in a non-atomic way.
  * It can create only one <tt>Tuple</tt>.
  * */
 public class TupleBuilder<T> {
 
-    private Tuple tuple = new Tuple();
+    private Tuple<T> tuple = new Tuple<T>();
 
     private boolean building = true;
 
-    public boolean append(T t) {
-        if(building) tuple.elements.add(t);
-        return building;
+    public TupleBuilder<T> append(T t) {
+        if(building) {
+            tuple.elements.add(t);
+            return this;
+        }
+        return null;
+    }
+
+    public TupleBuilder<T> append(T[] t) {
+        if(building) {
+            Collections.addAll(tuple.elements, t);
+            return this;
+        }
+        return null;
     }
 
     public Tuple<T> build() {

@@ -29,10 +29,14 @@ public abstract class Pick4NegativeConcept extends Treatment {
     PredicateDependency dependencyGraph;
     boolean addGap = false;
 
-    public Pick4NegativeConcept(MultiStageQueryEngine store, MultiStageUpperProgram multiProgram) {
+    public Pick4NegativeConcept(MultiStageQueryEngine store, MultiStageUpperProgram multiProgram, RDFoxTripleManager tripleManager) {
         this.engine = store;
         this.program = multiProgram;
-        this.tripleManager = new RDFoxTripleManager(store.getDataStore(), true);
+        this.tripleManager = tripleManager;
+    }
+
+    public Pick4NegativeConcept(MultiStageQueryEngine store, MultiStageUpperProgram multiProgram) {
+        this(store, multiProgram, new RDFoxTripleManager(store.getDataStore(), true));
     }
 
     @Override
@@ -41,16 +45,23 @@ public abstract class Pick4NegativeConcept extends Treatment {
         addGap = true;
     }
 
-    void addTripleByID(Atom atom, Atom gapAtom, Map<Variable, Integer> assignment) {
+    Set<AtomWithIDTriple> addTripleByID(Atom atom, Atom gapAtom, Map<Variable, Integer> assignment) {
         if(isDisposed()) throw new DisposedException();
+        HashSet<AtomWithIDTriple> result = new HashSet<>();
         int[] newTuple = tripleManager.getInstance(atom, assignment);
+        result.add(new AtomWithIDTriple(atom, newTuple));
         tripleManager.addTripleByID(newTuple);
-        if(addGap)
-            tripleManager.addTripleByID(tripleManager.getInstance(gapAtom, assignment));
+        if(addGap) {
+            int[] instance = tripleManager.getInstance(gapAtom, assignment);
+            tripleManager.addTripleByID(instance);
+            result.add(new AtomWithIDTriple(gapAtom, instance));
+        }
+        return result;
     }
 
     // TODO -RULE-
-    protected boolean makeSatisfied(Violation violation, Comparator<Atom> comp) {
+    protected Set<AtomWithIDTriple> makeSatisfied(Violation violation, Comparator<Atom> comp) {
+        HashSet<AtomWithIDTriple> result = new HashSet<>();
         LinkedList<AnswerTupleID> tuples = violation.getTuples();
         DLClause constraint = violation.getConstraint();
         Map<Variable, Integer> assignment = new HashMap<Variable, Integer>();
@@ -97,7 +108,7 @@ public abstract class Pick4NegativeConcept extends Treatment {
                         if(lastAdded == null || tComp.compare(lastAdded, tuple) != 0) {
                             lastAdded = tuple;
                             tuple.getAssignment(violation.getVariables(), assignment);
-                            addTripleByID(headAtom, gapHeadAtom, assignment);
+                            result.addAll(addTripleByID(headAtom, gapHeadAtom, assignment));
                         }
                         iter.remove();
                     }
@@ -105,9 +116,9 @@ public abstract class Pick4NegativeConcept extends Treatment {
 //				tuples.reset();
 
                 if(tuples.isEmpty())
-                    return true;
+                    return result;
             }
-            if(!tuples.isEmpty()) return false;
+            if(!tuples.isEmpty()) return null;
         }
         else {
             Set<Atom> headAtoms = new HashSet<Atom>();
@@ -136,7 +147,7 @@ public abstract class Pick4NegativeConcept extends Treatment {
                 if(DLClauseHelper.isGround(tHeadAtom)) {
                     if(!addedGroundAtoms.contains(tHeadAtom)) {
                         program.addUpdatedPredicate(tHeadAtom.getDLPredicate());
-                        addTripleByID(tHeadAtom, tGapHeadAtom, null);
+                        result.addAll(addTripleByID(tHeadAtom, tGapHeadAtom, null));
                         addedGroundAtoms.add(tHeadAtom);
                     }
                 }
@@ -149,13 +160,14 @@ public abstract class Pick4NegativeConcept extends Treatment {
             for(AnswerTupleID tuple : tuples) {
                 tuple.getAssignment(violation.getVariables(), assignment);
                 for(Atom atom : headAtoms) {
-                    addTripleByID(atom, getGapAtom(atom), assignment);
+                    Atom gapAtom = getGapAtom(atom);
+                    result.addAll(addTripleByID(atom, gapAtom, assignment));
                 }
             }
         }
 
         assignment.clear();
-        return true;
+        return result;
     }
 
     private Atom getGapAtom(Atom atom) {

@@ -396,24 +396,31 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.importDataFromABoxOf(relevantSubset);
         String relevantOriginalMarkProgram = OWLHelper.getOriginalMarkProgram(relevantSubset);
 
-        int queryDependentMaxTermDepth = properties.getSkolemDepth();
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
-        int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
-                                                                   queryDependentMaxTermDepth);
-        queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());
-        if(materialisationTag == -1) {
-            throw new Error("A consistent ontology has turned out to be " +
-                                    "inconsistent in the Skolemises-relevant-upper-store");
-        }
-        else if(materialisationTag != 1) {
-            Utility.logInfo("Semi-Skolemised relevant upper store cannot be employed");
-            return false;
-        }
 
-        Utility.logInfo("Querying semi-Skolemised upper store...");
-        boolean isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
-                                                   queryRecord.getExtendedQueryText(),
-                                                   Step.SKOLEM_UPPER_BOUND);
+        boolean isFullyProcessed = false;
+        for (int currentMaxTermDepth = 1;
+             currentMaxTermDepth <= properties.getSkolemDepth() && !isFullyProcessed; currentMaxTermDepth++) {
+
+            Utility.logInfo("Trying with maximum depth " + currentMaxTermDepth);
+
+            int materialisationTag = relevantStore.materialiseSkolemly(relevantProgram, null,
+                    currentMaxTermDepth);
+            queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());
+            if(materialisationTag == -1) {
+                throw new Error("A consistent ontology has turned out to be " +
+                                        "inconsistent in the Skolemises-relevant-upper-store");
+            }
+            else if(materialisationTag != 1) {
+                Utility.logInfo("Semi-Skolemised relevant upper store cannot be employed");
+                return false;
+            }
+
+            Utility.logInfo("Querying semi-Skolemised upper store...");
+            isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
+                                                       queryRecord.getExtendedQueryText(),
+                                                       Step.SKOLEM_UPPER_BOUND);
+        }
 
         relevantStore.dispose();
         Utility.logInfo("Semi-Skolemised relevant upper store has been evaluated");

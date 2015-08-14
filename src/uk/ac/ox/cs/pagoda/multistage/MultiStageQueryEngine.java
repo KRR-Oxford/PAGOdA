@@ -1,13 +1,17 @@
 package uk.ac.ox.cs.pagoda.multistage;
 
+import org.semanticweb.HermiT.model.Atom;
 import org.semanticweb.HermiT.model.DLClause;
+import org.semanticweb.HermiT.model.Individual;
 import uk.ac.ox.cs.JRDFox.JRDFStoreException;
+import uk.ac.ox.cs.JRDFox.store.DataStore;
 import uk.ac.ox.cs.pagoda.constraints.BottomStrategy;
 import uk.ac.ox.cs.pagoda.multistage.treatement.Pick4NegativeConceptNaive;
 import uk.ac.ox.cs.pagoda.multistage.treatement.Pick4NegativeConceptQuerySpecific;
 import uk.ac.ox.cs.pagoda.multistage.treatement.Treatment;
 import uk.ac.ox.cs.pagoda.query.GapByStore4ID;
 import uk.ac.ox.cs.pagoda.query.QueryRecord;
+import uk.ac.ox.cs.pagoda.reasoner.light.RDFoxTripleManager;
 import uk.ac.ox.cs.pagoda.rules.DatalogProgram;
 import uk.ac.ox.cs.pagoda.rules.Program;
 import uk.ac.ox.cs.pagoda.rules.approximators.SkolemTermsManager;
@@ -15,21 +19,23 @@ import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
 import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
+import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
+import uk.ac.ox.cs.pagoda.util.tuples.TupleBuilder;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MultiStageQueryEngine extends StageQueryEngine {
 
     private HashMap<String, List> statistics = new HashMap<>();
+    private Set<Tuple<Integer>> oversizedSkolemisedFacts;
+    private RDFoxTripleManager rdFoxTripleManager;
+    private int lastMaxTermDepth = -1;
 
     public MultiStageQueryEngine(String name, boolean checkValidity) {
         super(name, checkValidity);
@@ -73,14 +79,19 @@ public class MultiStageQueryEngine extends StageQueryEngine {
     public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap, int maxTermDepth) {
         if(isDisposed()) throw new DisposedException();
 
+        if(maxTermDepth <= lastMaxTermDepth)
+            throw new IllegalArgumentException("maxTermDepth must be greater than " + lastMaxTermDepth);
+        lastMaxTermDepth = maxTermDepth;
+
         materialise("lower program", dProgram.getLower().toString());
         Program generalProgram = dProgram.getGeneral();
         LimitedSkolemisationApplication program =
                 new LimitedSkolemisationApplication(generalProgram,
                                                     dProgram.getUpperBottomStrategy(),
                                                     maxTermDepth);
-        Treatment treatment = new Pick4NegativeConceptNaive(this, program);
-        return materialise(program, treatment, gap);
+        rdFoxTripleManager = new RDFoxTripleManager(store, true);
+        Treatment treatment = new Pick4NegativeConceptNaive(this, program, rdFoxTripleManager);
+        return materialise(program, treatment, gap, maxTermDepth);
     }
 
     public int materialise4SpecificQuery(Program generalProgram, QueryRecord record, BottomStrategy upperBottom) {
@@ -102,6 +113,12 @@ public class MultiStageQueryEngine extends StageQueryEngine {
     }
 
     private int materialise(MultiStageUpperProgram program, Treatment treatment, GapByStore4ID gap) {
+        return materialise(program, treatment, gap, -1);
+    }
+
+    private int materialise(MultiStageUpperProgram program, Treatment treatment, GapByStore4ID gap, int maxTermDepth) {
+        boolean actuallyCleaned = cleanStoreFromOversizedSkolemisedFacts();
+
         if(gap != null)
             treatment.addAdditionalGapTuples();
         String programName = "multi-stage upper program";
@@ -144,7 +161,7 @@ public class MultiStageQueryEngine extends StageQueryEngine {
 //						store.addRules(new String[] {datalogProgram});
                         store.importRules(datalogProgram);
                     }
-                    store.applyReasoning(incrementally);
+                    store.applyReasoning(incrementally || actuallyCleaned);
                 }
 
 //				Utility.logInfo("The number of sameAs assertions in the current store: " + getSameAsNumber());
@@ -172,7 +189,7 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 }
                 Utility.logDebug("Time to detect violations: " + subTimer.duration());
 
-                store.makeFactsExplicit();
+//                store.makeFactsExplicit();
                 subTimer.reset();
                 oldTripleCount = store.getTriplesCount();
 
@@ -190,11 +207,15 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                     Timer localTimer = new Timer();
                     int number = v.size();
                     long vOldCounter = store.getTriplesCount();
-                    if(!treatment.makeSatisfied(v)) {
+                    Set<Treatment.AtomWithIDTriple> satisfiabilityFacts;
+                    if((satisfiabilityFacts = treatment.makeSatisfied(v)) == null) {
                         validMaterialisation = false;
                         Utility.logInfo(name + " store FAILED for multi-stage materialisation in " + t.duration() + " seconds.");
                         return 0;
                     }
+
+                    addOversizedSkolemisedFacts(getOversizedSkolemisedFacts(satisfiabilityFacts, maxTermDepth));
+
                     Utility.logDebug("Time to make the constraint being satisfied: " + localTimer.duration());
                     Utility.logDebug("Triples in the store: before=" + vOldCounter + ", after=" + store.getTriplesCount() + ", new=" + (store
                             .getTriplesCount() - vOldCounter));
@@ -210,6 +231,65 @@ public class MultiStageQueryEngine extends StageQueryEngine {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private boolean cleanStoreFromOversizedSkolemisedFacts() {
+        if(oversizedSkolemisedFacts == null || oversizedSkolemisedFacts.isEmpty())
+            return false;
+
+        try {
+            for (Tuple<Integer> tuple : oversizedSkolemisedFacts) {
+                int[] triple = new int[]{tuple.get(0), tuple.get(1), tuple.get(2)};
+                store.addTriplesByResourceIDs(triple, DataStore.UpdateType.ScheduleForDeletion);
+            }
+        } catch (JRDFStoreException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        oversizedSkolemisedFacts = new HashSet<>();
+
+        return true;
+    }
+
+    private void addOversizedSkolemisedFacts(Set<Tuple<Integer>> facts) {
+        if(oversizedSkolemisedFacts == null)
+            oversizedSkolemisedFacts = new HashSet<>();
+        oversizedSkolemisedFacts.addAll(facts);
+    }
+
+    /**
+     * Get triples containing Skolem individuals of depth greater or equal than the maximum.
+     *
+     * @param satisfiabilityFacts
+     * @return
+     */
+    private Set<Tuple<Integer>> getOversizedSkolemisedFacts(Set<Treatment.AtomWithIDTriple> satisfiabilityFacts, int maxDepth) {
+        HashSet<Tuple<Integer>> result = new HashSet<>();
+        SkolemTermsManager termsManager = SkolemTermsManager.getInstance();
+        for (Treatment.AtomWithIDTriple atomWithIDTriple : satisfiabilityFacts) {
+            Atom atom = atomWithIDTriple.getAtom();
+            if(atom.getArity() == 1) {
+                if(atom.getArgument(0) instanceof Individual && termsManager.getDepthOf((Individual) atom.getArgument(0)) >= maxDepth) {
+                    int[] idTriple = atomWithIDTriple.getIDTriple();
+                    result.add(new TupleBuilder<Integer>().append(idTriple[0]).append(idTriple[1])
+                            .append(idTriple[2]).build());
+                }
+                else if(!(atom.getArgument(0) instanceof Individual))
+                    throw new IllegalArgumentException("No individuals: " + atom);
+            }
+            else {
+                if((atom.getArgument(0) instanceof Individual && termsManager.getDepthOf((Individual) atom.getArgument(0)) >= maxDepth)
+                    || (atom.getArgument(1) instanceof Individual && termsManager.getDepthOf((Individual) atom.getArgument(1)) >= maxDepth)){
+                    int[] idTriple = atomWithIDTriple.getIDTriple();
+                    result.add(new TupleBuilder<Integer>().append(idTriple[0]).append(idTriple[1])
+                            .append(idTriple[2]).build());
+                }
+                else if(!(atom.getArgument(0) instanceof Individual) && !(atom.getArgument(1) instanceof Individual))
+                    throw new IllegalArgumentException("No individuals: " + atom);
+            }
+
+        }
+        return result;
     }
 
     private void updateStatistics(String key, List<DLClause> value) {

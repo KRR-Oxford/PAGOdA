@@ -93,6 +93,14 @@ public class RDFoxTripleManager {
 			e.printStackTrace();
 		} 
 	}
+
+    public void removeTripleByTermIncrementally(Atom atom) {
+        try {
+            m_store.addTriples(getRDFoxTriple(atom), UpdateType.ScheduleForDeletion);
+        } catch (JRDFStoreException e) {
+            e.printStackTrace();
+        }
+    }
 	
 	public static GroundTerm[] getRDFoxTriple(Atom instance) {
 		if (instance.getArity() == 1) 
@@ -258,5 +266,4 @@ public class RDFoxTripleManager {
 		else 
 			return "\"" + r.m_lexicalForm + "\"^^<" + r.m_datatype.getIRI() + ">"; 
 	}
-	
 }

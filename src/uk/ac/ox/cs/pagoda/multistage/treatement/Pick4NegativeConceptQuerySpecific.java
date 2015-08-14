@@ -31,7 +31,7 @@ public class Pick4NegativeConceptQuerySpecific extends Pick4NegativeConcept {
     }
 
     @Override
-    public boolean makeSatisfied(Violation violation) throws JRDFStoreException {
+    public Set<AtomWithIDTriple> makeSatisfied(Violation violation) throws JRDFStoreException {
         if(isDisposed()) throw new DisposedException();
         return makeSatisfied(violation, comp);
     }
