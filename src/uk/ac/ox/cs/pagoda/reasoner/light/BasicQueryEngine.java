@@ -32,6 +32,13 @@ public class BasicQueryEngine extends RDFoxQueryEngine {
         parameters.m_useBushy = true;
     }
 
+    /***
+     * @return Overall number of triples.
+     */
+    public long getStoreSize() throws JRDFStoreException {
+        return store.getTriplesCount();
+    }
+
     public void materialiseFoldedly(DatalogProgram dProgram, GapByStore4ID gap) {
         if(isDisposed()) throw new DisposedException();
         if(gap != null) {

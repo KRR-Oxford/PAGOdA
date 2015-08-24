@@ -20,6 +20,7 @@ public class PagodaProperties {
     private static final int DEFAULT_SKOLEM_DEPTH;
     private static final boolean DEFAULT_TO_CALL_HERMIT;
     private static final Path DEFAULT_STATISTICS_DIR;
+    private static final long DEFAULT_MAX_TRIPLES_IN_SKOLEM_STORE;
 
     public static boolean shellModeDefault = false;
     private static boolean debug = DEFAULT_DEBUG;
@@ -30,6 +31,7 @@ public class PagodaProperties {
         int defaultSkolemDepth = 1;
         boolean toCallHermit = true;
         Path defaultStatisticsDir = null;
+        long defaultMaxTriplesInSkolemStore = 1000000;
 
         try (InputStream in = PagodaProperties.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
             Properties config = new Properties();
@@ -77,6 +79,10 @@ public class PagodaProperties {
                 defaultSkolemDepth = Integer.parseInt(config.getProperty("skolemDepth"));
                 logger.debug("By default the max skolemisation depth is " + defaultSkolemDepth);
             }
+            if (config.containsKey("maxTriplesInSkolemStore")) {
+                defaultMaxTriplesInSkolemStore = Long.parseLong(config.getProperty("maxTriplesInSkolemStore"));
+                logger.debug("By default the maximum number of triples in the Skolem store is " + defaultMaxTriplesInSkolemStore);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,6 +92,7 @@ public class PagodaProperties {
         DEFAULT_TO_CALL_HERMIT = toCallHermit;
         DEFAULT_STATISTICS_DIR = defaultStatisticsDir;
         DEFAULT_SKOLEM_DEPTH = defaultSkolemDepth;
+        DEFAULT_MAX_TRIPLES_IN_SKOLEM_STORE = defaultMaxTriplesInSkolemStore;
     }
 
     String dataPath = null;
@@ -108,6 +115,7 @@ public class PagodaProperties {
     private boolean useAlwaysSimpleUpperBound = DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
     private SkolemUpperBoundOptions skolemUpperBound = DEFAULT_SKOLEM_UPPER_BOUND;
     private Path statisticsDir = DEFAULT_STATISTICS_DIR;
+    private long maxTriplesInSkolemStore = DEFAULT_MAX_TRIPLES_IN_SKOLEM_STORE;
 
     public PagodaProperties(String path) {
         java.util.Properties m_properties = new java.util.Properties();
@@ -232,5 +240,9 @@ public class PagodaProperties {
 
     public void setStatisticsDir(Path statisticsDir) {
         this.statisticsDir = statisticsDir;
+    }
+
+    public long getMaxTriplesInSkolemStore() {
+        return maxTriplesInSkolemStore;
     }
 }

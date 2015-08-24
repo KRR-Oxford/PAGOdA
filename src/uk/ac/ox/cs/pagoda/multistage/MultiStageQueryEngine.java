@@ -35,7 +35,9 @@ public class MultiStageQueryEngine extends StageQueryEngine {
     private HashMap<String, List> statistics = new HashMap<>();
     private Set<Tuple<Integer>> oversizedSkolemisedFacts;
     private RDFoxTripleManager rdFoxTripleManager;
+
     private int lastMaxTermDepth = -1;
+    private boolean firstCall = true;
 
     public MultiStageQueryEngine(String name, boolean checkValidity) {
         super(name, checkValidity);
@@ -79,11 +81,12 @@ public class MultiStageQueryEngine extends StageQueryEngine {
     public int materialiseSkolemly(DatalogProgram dProgram, GapByStore4ID gap, int maxTermDepth) {
         if(isDisposed()) throw new DisposedException();
 
-        if(maxTermDepth <= lastMaxTermDepth)
+        if(!firstCall && maxTermDepth <= lastMaxTermDepth)
             throw new IllegalArgumentException("maxTermDepth must be greater than " + lastMaxTermDepth);
+        if(firstCall)
+            materialise("lower program", dProgram.getLower().toString());
         lastMaxTermDepth = maxTermDepth;
 
-        materialise("lower program", dProgram.getLower().toString());
         Program generalProgram = dProgram.getGeneral();
         LimitedSkolemisationApplication program =
                 new LimitedSkolemisationApplication(generalProgram,
@@ -91,7 +94,9 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                                                     maxTermDepth);
         rdFoxTripleManager = new RDFoxTripleManager(store, true);
         Treatment treatment = new Pick4NegativeConceptNaive(this, program, rdFoxTripleManager);
-        return materialise(program, treatment, gap, maxTermDepth);
+        int result = materialise(program, treatment, gap, maxTermDepth);
+        firstCall = false;
+        return result;
     }
 
     public int materialise4SpecificQuery(Program generalProgram, QueryRecord record, BottomStrategy upperBottom) {
@@ -117,7 +122,11 @@ public class MultiStageQueryEngine extends StageQueryEngine {
     }
 
     private int materialise(MultiStageUpperProgram program, Treatment treatment, GapByStore4ID gap, int maxTermDepth) {
-        boolean actuallyCleaned = cleanStoreFromOversizedSkolemisedFacts();
+        if(!firstCall)
+            cleanStoreFromOversizedSkolemisedFacts();
+
+        boolean isSkolemising = maxTermDepth > 0;
+//        boolean isSkolemising = true;
 
         if(gap != null)
             treatment.addAdditionalGapTuples();
@@ -157,11 +166,11 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                     }
                 }
                 else {
-                    if(!incrementally) {
+                    if(!incrementally && firstCall) {
 //						store.addRules(new String[] {datalogProgram});
                         store.importRules(datalogProgram);
                     }
-                    store.applyReasoning(incrementally || actuallyCleaned);
+                    store.applyReasoning(incrementally || !firstCall);
                 }
 
 //				Utility.logInfo("The number of sameAs assertions in the current store: " + getSameAsNumber());
@@ -181,15 +190,17 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                 Utility.logDebug("Time to materialise datalog-rules: " + subTimer.duration());
 
                 subTimer.reset();
-                if((violations = program.isIntegrated(this, incrementally)) == null || violations.size() == 0) {
-                    store.clearRulesAndMakeFactsExplicit();
+                if((violations = program.isIntegrated(this, !isSkolemising && incrementally)) == null || violations.size() == 0) {
+                    if(!isSkolemising)
+                        store.clearRulesAndMakeFactsExplicit();
                     Utility.logDebug(name + " store after materialising " + programName + ": " + tripleCount + " (" + (tripleCount - tripleCountBeforeMat) + " new)");
                     Utility.logDebug(name + " store is DONE for multi-stage materialising in " + t.duration() + " seconds.");
                     return isValid() ? 1 : 0;
                 }
                 Utility.logDebug("Time to detect violations: " + subTimer.duration());
 
-//                store.makeFactsExplicit();
+                if(!isSkolemising)
+                    store.makeFactsExplicit();
                 subTimer.reset();
                 oldTripleCount = store.getTriplesCount();
 
@@ -274,8 +285,8 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                     result.add(new TupleBuilder<Integer>().append(idTriple[0]).append(idTriple[1])
                             .append(idTriple[2]).build());
                 }
-                else if(!(atom.getArgument(0) instanceof Individual))
-                    throw new IllegalArgumentException("No individuals: " + atom);
+//                else if(!(atom.getArgument(0) instanceof Individual))
+//                    throw new IllegalArgumentException("No individuals: " + atom);
             }
             else {
                 if((atom.getArgument(0) instanceof Individual && termsManager.getDepthOf((Individual) atom.getArgument(0)) >= maxDepth)
@@ -284,8 +295,8 @@ public class MultiStageQueryEngine extends StageQueryEngine {
                     result.add(new TupleBuilder<Integer>().append(idTriple[0]).append(idTriple[1])
                             .append(idTriple[2]).build());
                 }
-                else if(!(atom.getArgument(0) instanceof Individual) && !(atom.getArgument(1) instanceof Individual))
-                    throw new IllegalArgumentException("No individuals: " + atom);
+//                else if(!(atom.getArgument(0) instanceof Individual) && !(atom.getArgument(1) instanceof Individual))
+//                    throw new IllegalArgumentException("No individuals: " + atom);
             }
 
         }

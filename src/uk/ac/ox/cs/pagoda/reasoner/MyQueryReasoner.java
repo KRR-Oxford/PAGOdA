@@ -2,6 +2,7 @@ package uk.ac.ox.cs.pagoda.reasoner;
 
 import org.semanticweb.karma2.profile.ELHOProfile;
 import org.semanticweb.owlapi.model.OWLOntology;
+import uk.ac.ox.cs.JRDFox.JRDFStoreException;
 import uk.ac.ox.cs.pagoda.multistage.MultiStageQueryEngine;
 import uk.ac.ox.cs.pagoda.owl.EqualitiesEliminator;
 import uk.ac.ox.cs.pagoda.owl.OWLHelper;
@@ -18,6 +19,7 @@ import uk.ac.ox.cs.pagoda.tracking.QueryTracker;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoder;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderDisjVar1;
 import uk.ac.ox.cs.pagoda.tracking.TrackingRuleEncoderWithGap;
+import uk.ac.ox.cs.pagoda.util.ExponentialInterpolation;
 import uk.ac.ox.cs.pagoda.util.PagodaProperties;
 import uk.ac.ox.cs.pagoda.util.Timer;
 import uk.ac.ox.cs.pagoda.util.Utility;
@@ -25,6 +27,7 @@ import uk.ac.ox.cs.pagoda.util.disposable.DisposedException;
 import uk.ac.ox.cs.pagoda.util.tuples.Tuple;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 class MyQueryReasoner extends QueryReasoner {
 
@@ -399,8 +402,32 @@ class MyQueryReasoner extends QueryReasoner {
         relevantStore.materialise("Mark original individuals", relevantOriginalMarkProgram);
 
         boolean isFullyProcessed = false;
-        for (int currentMaxTermDepth = 1;
-             currentMaxTermDepth <= properties.getSkolemDepth() && !isFullyProcessed; currentMaxTermDepth++) {
+        LinkedList<Tuple<Long>> lastTwoTriplesCounts = new LinkedList<>();
+        for (int currentMaxTermDepth = 1; !isFullyProcessed; currentMaxTermDepth++) {
+
+            if(currentMaxTermDepth > properties.getSkolemDepth()) {
+                Utility.logInfo("Maximum term depth reached");
+                break;
+            }
+
+            if(lastTwoTriplesCounts.size() == 2) {
+                if(lastTwoTriplesCounts.get(0).get(1).equals(lastTwoTriplesCounts.get(1).get(1)))
+                    break;
+
+                ExponentialInterpolation interpolation = new ExponentialInterpolation(lastTwoTriplesCounts.get(0).get(0),
+                        lastTwoTriplesCounts.get(0).get(1),
+                        lastTwoTriplesCounts.get(1).get(0),
+                        lastTwoTriplesCounts.get(1).get(1));
+                double triplesEstimate = interpolation.computeValue(currentMaxTermDepth);
+
+                Utility.logDebug("Estimate of the number of triples:" + triplesEstimate);
+
+                // exit condition if the query is not fully answered
+                if(triplesEstimate > properties.getMaxTriplesInSkolemStore()) {
+                    Utility.logInfo("Interrupting Semi-Skolemisation because of triples count limit");
+                    break;
+                }
+            }
 
             Utility.logInfo("Trying with maximum depth " + currentMaxTermDepth);
 
@@ -408,18 +435,31 @@ class MyQueryReasoner extends QueryReasoner {
                     currentMaxTermDepth);
             queryRecord.addProcessingTime(Step.SKOLEM_UPPER_BOUND, t.duration());
             if(materialisationTag == -1) {
+                relevantStore.dispose();
                 throw new Error("A consistent ontology has turned out to be " +
                                         "inconsistent in the Skolemises-relevant-upper-store");
             }
             else if(materialisationTag != 1) {
                 Utility.logInfo("Semi-Skolemised relevant upper store cannot be employed");
-                return false;
+                break;
             }
 
             Utility.logInfo("Querying semi-Skolemised upper store...");
             isFullyProcessed = queryUpperStore(relevantStore, queryRecord,
-                                                       queryRecord.getExtendedQueryText(),
-                                                       Step.SKOLEM_UPPER_BOUND);
+                    queryRecord.getExtendedQueryText(),
+                    Step.SKOLEM_UPPER_BOUND);
+
+            try {
+                lastTwoTriplesCounts.add
+                        (new Tuple<>((long) currentMaxTermDepth, relevantStore.getStoreSize()));
+            } catch (JRDFStoreException e) {
+                e.printStackTrace();
+                break;
+            }
+            if(lastTwoTriplesCounts.size() > 2)
+                lastTwoTriplesCounts.remove();
+
+            Utility.logInfo("Last two triples counts:" + lastTwoTriplesCounts);
         }
 
         relevantStore.dispose();
