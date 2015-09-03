@@ -85,7 +85,7 @@ public class TestPagodaUOBM {
 			  .run();
 	}
 
-	@Test(groups = {"justExecute", "heavy", "nonOriginal"})
+	@Test(groups = {"justExecute", "heavy", "nonOriginal", "existential"})
 	public void justExecute_modifiedUOBM() throws IOException {
 		String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 

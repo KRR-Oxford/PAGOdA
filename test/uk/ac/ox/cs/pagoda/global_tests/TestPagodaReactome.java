@@ -37,4 +37,16 @@ public class TestPagodaReactome {
               .run();
     }
 
+    @Test(groups = {"existential"})
+    public void justExecute_existential() throws IOException {
+        String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
+
+        Pagoda.builder()
+                .ontology(Paths.get(ontoDir, "reactome/biopax-level3-processed.owl"))
+                .data(Paths.get(ontoDir, "reactome/data/sample_10.ttl"))
+                .query(Paths.get(ontoDir, "reactome/existential_queries.sparql"))
+                .build()
+                .run();
+    }
+
 }

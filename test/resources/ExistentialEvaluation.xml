@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="ExistentialEvaluation">
+
+    <test name="ExistentialEvaluation">
+
+        <groups>
+            <run>
+                <include name="existential"/>
+            </run>
+        </groups>
+
+        <classes>
+            <class name="uk.ac.ox.cs.pagoda.global_tests.MadeUpCases" />
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaUOBM" />-->
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.TestPagodaReactome" />-->
+        </classes>
+
+    </test>
+
+</suite>

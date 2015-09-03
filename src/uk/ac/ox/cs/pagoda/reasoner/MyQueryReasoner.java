@@ -74,7 +74,7 @@ class MyQueryReasoner extends QueryReasoner {
         program = new DatalogProgram(ontology);
 //		program.getLower().save();
 //		program.getUpper().save();
-//		program.getGeneral().save();
+		program.getGeneral().save();
 
         if(!program.getGeneral().isHorn())
             lazyUpperStore = new MultiStageQueryEngine("lazy-upper-bound", true);
@@ -459,7 +459,7 @@ class MyQueryReasoner extends QueryReasoner {
             if(lastTwoTriplesCounts.size() > 2)
                 lastTwoTriplesCounts.remove();
 
-            Utility.logInfo("Last two triples counts:" + lastTwoTriplesCounts);
+            Utility.logDebug("Last two triples counts:" + lastTwoTriplesCounts);
         }
 
         relevantStore.dispose();
