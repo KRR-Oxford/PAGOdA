@@ -184,7 +184,9 @@ public class QueryGraph {
 
 	private void rollupEdge(Term u, OWLObjectPropertyExpression op, Term v, boolean inverse) {
 		if (existVars.contains(v)) {
-			concepts.add(u, factory.getOWLObjectSomeValuesFrom(op, factory.getOWLObjectIntersectionOf(concepts.get(v))));
+			Set<OWLClassExpression> exps = concepts.get(v);
+			if (exps == null) exps = new HashSet<OWLClassExpression>();
+			concepts.add(u, factory.getOWLObjectSomeValuesFrom(op, factory.getOWLObjectIntersectionOf(exps)));
 		}
 		else {
 			OWLIndividual obj = getOWLIndividual(v);
