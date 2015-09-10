@@ -5,8 +5,9 @@
 
     <test name="BugTest">
         <classes>
-            <class name="uk.ac.ox.cs.pagoda.global_tests.BugTests"/>
-            <class name="uk.ac.ox.cs.pagoda.endomorph.DependencyGraphTest"/>
+            <class name="uk.ac.ox.cs.pagoda.global_tests.TestGapMappedToLower" />
+            <!--<class name="uk.ac.ox.cs.pagoda.global_tests.BugTests"/>-->
+            <!--<class name="uk.ac.ox.cs.pagoda.endomorph.DependencyGraphTest"/>-->
         </classes>
     </test>
 

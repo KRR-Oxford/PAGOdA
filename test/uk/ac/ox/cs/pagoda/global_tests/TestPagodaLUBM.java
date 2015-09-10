@@ -77,4 +77,16 @@ public class TestPagodaLUBM {
 	public void justExecute_sygenia_1_allBlanks() throws IOException {
 		justExecute_sygenia_allBlanks(1);
 	}
+
+    @Test(groups = {"existential"})
+    public void justExecute_feier() throws IOException {
+        String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
+
+        Pagoda.builder()
+              .ontology(Paths.get(ontoDir, "lubm/univ-bench.owl"))
+              .data(Paths.get(ontoDir, "lubm/data/lubm1.ttl"))
+              .query(Paths.get(ontoDir, "lubm/queries/queries_from_feier-et-al.sparql"))
+              .build()
+              .run();
+    }
 }

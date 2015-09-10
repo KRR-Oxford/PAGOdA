@@ -44,8 +44,8 @@ public class TestPagodaReactome {
         Pagoda.builder()
                 .ontology(Paths.get(ontoDir, "reactome/biopax-level3-processed.owl"))
                 .data(Paths.get(ontoDir, "reactome/data/sample_10.ttl"))
-//                .query(Paths.get(ontoDir, "reactome/existential_queries.sparql"))
-                .query(Paths.get(ontoDir, "reactome/Queries_by_Feier-et-al.sparql"))
+                .query(Paths.get(ontoDir, "reactome/existential_queries.sparql"))
+//                .query(Paths.get(ontoDir, "reactome/Queries_by_Feier-et-al.sparql"))
                 .build()
                 .run();
     }
