@@ -158,13 +158,15 @@ public class Pagoda implements Runnable {
     }
 
     private String getStatisticsFilename(PagodaProperties properties, String queryFile) {
-        String statisticsFilename = "statistics_" +
-                FilenameUtils.removeExtension(FilenameUtils.getName(properties.getOntologyPath().replaceAll("_", "-")));
+        String statisticsFilename = "statistics";
+        statisticsFilename += "_" + FilenameUtils.removeExtension(FilenameUtils.getName(properties.getOntologyPath().replaceAll("_", "-")));
+        statisticsFilename += "_" + FilenameUtils.removeExtension(FilenameUtils.getName(properties.getDataPath().replaceAll("_", "-")));
         statisticsFilename += "_" + FilenameUtils.removeExtension(FilenameUtils.getName(queryFile).replaceAll("_", "-"));
         statisticsFilename += "_" + ((properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.DISABLED)
                 ? "" : (properties.getSkolemUpperBound() == PagodaProperties.SkolemUpperBoundOptions.BEFORE_SUMMARISATION)
                 ? "before" : "after");
-        statisticsFilename += "_" + properties.getSkolemDepth();
+        statisticsFilename += "_skd" + properties.getSkolemDepth();
+        statisticsFilename += "_maxtrpl" + properties.getMaxTriplesInSkolemStore();
         statisticsFilename += ".json";
         statisticsFilename = FilenameUtils.concat(properties.getStatisticsDir().toString(),
                                                   statisticsFilename);

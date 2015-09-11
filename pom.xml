@@ -12,7 +12,11 @@
 		<resources>
 			<resource>
 				<directory>src/resources</directory>
+				<excludes>
+					<exclude>pagoda.properties</exclude>
+				</excludes>
 			</resource>
+
 		</resources>
 		<testResources>
 			<testResource>

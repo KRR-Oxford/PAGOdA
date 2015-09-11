@@ -31,6 +31,7 @@ public class QueryRecord extends Disposable {
     OWLOntology relevantOntology = null;
     Set<DLClause> relevantClauses = new HashSet<DLClause>();
     double[] timer;
+    int[] gapAnswersAtStep;
     int subID;
     DLClause queryClause = null;
     int queryID = -1;
@@ -80,7 +81,11 @@ public class QueryRecord extends Disposable {
 
         int length = Step.values().length;
         timer = new double[length];
-        for(int i = 0; i < length; ++i) timer[i] = 0;
+        gapAnswersAtStep = new int[length];
+        for(int i = 0; i < length; ++i) {
+            timer[i] = 0;
+            gapAnswersAtStep[i] = 0;
+        }
     }
 
     public AnswerTuples getAnswers() {
@@ -280,7 +285,8 @@ public class QueryRecord extends Disposable {
 
         double totalTime = 0.0;
         for(Step step : Step.values()) {
-            result.put(step.toString(), Double.toString(timer[step.ordinal()]));
+            result.put(step.toString() + "_time", Double.toString(timer[step.ordinal()]));
+            result.put(step.toString() + "_gap", Integer.toString(gapAnswersAtStep[step.ordinal()]));
             totalTime += timer[step.ordinal()];
         }
         result.put("totalTime", Double.toString(totalTime));
@@ -396,6 +402,10 @@ public class QueryRecord extends Disposable {
         if(isDisposed()) throw new DisposedException();
 
         timer[step.ordinal()] += time;
+        if(gapAnswerTuples != null)
+            gapAnswersAtStep[step.ordinal()] = getGapAnswersCount();
+        else
+            gapAnswersAtStep[step.ordinal()] = -1;
     }
 
     public int getArity() {
@@ -725,9 +735,9 @@ public class QueryRecord extends Disposable {
         SKOLEM_UPPER_BOUND,
         EL_LOWER_BOUND,
         FRAGMENT,
-        FRAGMENT_REFINEMENT,
+//        FRAGMENT_REFINEMENT,
         SUMMARISATION,
-        DEPENDENCY,
+//        DEPENDENCY,
         FULL_REASONING;
 
         @Override

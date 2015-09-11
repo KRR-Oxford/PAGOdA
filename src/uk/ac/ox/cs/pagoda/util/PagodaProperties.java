@@ -13,6 +13,7 @@ public class PagodaProperties {
 
     public enum SkolemUpperBoundOptions {DISABLED, BEFORE_SUMMARISATION, AFTER_SUMMARISATION}
 
+    public static final String DEFAULT_CONFIG_FILE = "_default_pagoda.properties";
     public static final String CONFIG_FILE = "pagoda.properties";
     public static final boolean DEFAULT_DEBUG = false;
     private static final boolean DEFAULT_USE_ALWAYS_SIMPLE_UPPER_BOUND;
@@ -26,6 +27,8 @@ public class PagodaProperties {
     private static boolean debug = DEFAULT_DEBUG;
 
     static {
+        Logger logger = Logger.getLogger("PagodaProperties");
+
         boolean defaultUseAlwaysSimpleUpperBound = false;
         SkolemUpperBoundOptions defaultSkolemUpperBound = SkolemUpperBoundOptions.DISABLED;
         int defaultSkolemDepth = 1;
@@ -33,11 +36,19 @@ public class PagodaProperties {
         Path defaultStatisticsDir = null;
         long defaultMaxTriplesInSkolemStore = 1000000;
 
-        try (InputStream in = PagodaProperties.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
+        InputStream configStream = PagodaProperties.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
+
+        if(configStream == null) {
+            logger.info("Unable to find user-defined configuration file (\"" + CONFIG_FILE + "\" in classpath)");
+            logger.info("Using default configuration");
+            configStream = PagodaProperties.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_FILE);
+        }
+
+        try {
             Properties config = new Properties();
-            config.load(in);
-            in.close();
-            Logger logger = Logger.getLogger("PagodaProperties");
+            config.load(configStream);
+            configStream.close();
+
             if (config.containsKey("debug")) {
                 debug = Boolean.parseBoolean(config.getProperty("debug"));
                 logger.info("Debugging mode is enabled");
