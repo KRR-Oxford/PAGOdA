@@ -6,10 +6,11 @@
         <groups>
             <run>
                 <!--<include name="correctness"/>-->
-                <include name="light"/>
+                <!--<include name="light"/>-->
                 <!--<include name="justExecute"/>-->
-                <exclude name="heavy"/>
+                <!--<exclude name="heavy"/>-->
                 <!--<include name="nonOriginal"/>-->
+                <include name="existential"/>
             </run>
         </groups>
         <classes>

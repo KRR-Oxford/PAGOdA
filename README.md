@@ -1,35 +1,47 @@
 PAGOdA
-=====
+======
 
-PAGOdA is a conjunctive query answering engine for OWL 2 ontologies. The instruction how to use it can be found on the following website: http://www.cs.ox.ac.uk/isg/tools/PAGOdA/. 
+PAGOdA is a conjunctive query answering engine for OWL 2 ontologies.
 
 
 Project dependencies/requirements
-=====
+=================================
 
+- This software has been developed for Linux
 - JavaSE 8
 - Maven
 
 
-How to compile the project from source in Eclipse?
-=====
+Building and packaging
+======================
 
-- In order to compile the project make sure that you have JavaSE 8 and Maven installed on your computer.
-- After cloning the repository by command git clone https://github.com/yujiaoz/PAGOdA.git, you need to install it using the command "maven install".
-- The project depends on a library JRDFox.jar that is not in central maven repository. The library for different operating systems can be found in lib directory. You need to include the correct one for your computer and add it to the build path. Alternative, if you have maven installed on your computer, you could add it into your local maven repository, modify maven dependencies and make sure that you remove it from the build path. If the provided JRDFox.jar doesn't work, you might need to follow the instruction below to compile the project JRDFox by yourself. 
-
-
-How to compile RDFox?
-===
-
-- Download https://github.com/yujiaoz/PAGOdA/blob/master/lib/RDFox/RDFox.zip.
-- Extract all files in the zip.
-- Go to the directory RDFox/RDFox.
-- Run command "ant". 
-- You will find JRDFox.jar in the directory build/release/lib.
+This is a Maven project, hence Maven should be used for building and packaging.
+* Compile `mvn compile`
+* Create jars `mvn package`; 
+you will get a jar without dependencies *target/pagoda-x.y.z.jar* and a runnable jar with dependencies *target/pagoda-x.y.z-jar-with-dependencies.jar*.
+* Execute tests `mvn test -DskipTests=false`;
 
 
-How to run the project?
-===
+Configuring the engine
+======================
 
-To run PAGOdA inside your java project, please check the simple example in src/example/simpleExample.jar. To run PAGOdA in command line once you have a jar package, follow the instruction on the following website https://www.cs.ox.ac.uk/isg/tools/PAGOdA/. 
+The engine provides a standard configuration, but it is most likely that is not suitable for your purposes.
+You should provide your own configuration in a file called `pagoda.properties` including it in the classpath.
+Such a file should resemble the file `src/resources/_default_pagoda.properties`.
+
+
+Executing
+=========
+
+Once you have the runnable jar, you can make the system answer queries through the command line interface.
+
+Run `java -jar pagoda-x.y.z-jar-with-dependencies.jar` for getting a list of the mandatory arguments and optional parameters.
+
+Run `java -cp pagoda-x.y.z-jar-with-dependencies.jar:<your_path_to_properties>/pagoda.properties arg [arg]...` for executing the engine with a custom configuration.
+
+Using it as a library
+=====================
+
+The API is offered by the class `QueryReasoner`, however we provide a more handy wrapper, that is the class `Pagoda`.
+Thanks to such a wrapper, you can build an instance of `Pagoda` by specifying different parameters and after that you will get
+a runnable `Pagoda` object.

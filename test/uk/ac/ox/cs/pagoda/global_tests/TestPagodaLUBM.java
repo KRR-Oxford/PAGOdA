@@ -85,7 +85,7 @@ public class TestPagodaLUBM {
         Pagoda.builder()
               .ontology(Paths.get(ontoDir, "lubm/univ-bench.owl"))
               .data(Paths.get(ontoDir, "lubm/data/lubm1.ttl"))
-              .query(Paths.get(ontoDir, "lubm/queries/queries_from_feier-et-al.sparql"))
+              .query(Paths.get(ontoDir, "lubm/queries/queries_from_rules.sparql"))
               .build()
               .run();
     }

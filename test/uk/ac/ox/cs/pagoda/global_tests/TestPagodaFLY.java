@@ -51,17 +51,20 @@ public class TestPagodaFLY {
         CheckAnswers.assertSameAnswers(answers, givenAnswers);
     }
 
-    @Test(groups = {"light", "justExecute", "nonOriginal"})
+    @Test(groups = {"light", "justExecute", "nonOriginal", "existential"})
     public void justExecute_newQueries() throws IOException {
         String ontoDir = TestUtil.getConfig().getProperty("ontoDir");
 
         Pagoda.builder()
 //                .ontology(Paths.get(ontoDir, "fly/fly_rolledUp.owl"))
 			  .ontology(Paths.get(ontoDir, "fly/fly_anatomy_XP_with_GJ_FC_individuals.owl"))
-                .query(Paths.get(ontoDir, "fly/queries/new_queries.sparql"))
+//                .query(Paths.get(ontoDir, "fly/queries/fly_rolledUp.sparql"))
+//                .query(Paths.get(ontoDir, "fly/queries/new_queries.sparql"))
+                .query("/home/alessandro/Desktop/query-8.sparql")
 //			  .answer(Paths.get("/home/alessandro/Desktop/answers.json"))
                 .classify(false)
                 .hermit(true)
+                .skolemDepth(3)
                 .skolem(PagodaProperties.SkolemUpperBoundOptions.BEFORE_SUMMARISATION)
                 .build()
                 .run();
